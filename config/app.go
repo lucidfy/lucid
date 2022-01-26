@@ -2,6 +2,7 @@ package config
 
 import "time"
 
+const SCHEMA = "http"
 const HOST = "0.0.0.0"
 const PORT = "8080"
 const WRITE_TIMEOUT = time.Second * 15

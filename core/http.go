@@ -30,7 +30,7 @@ func HttpApplication() {
 	}
 
 	// open the browser
-	openbrowser("http://" + config.HOST + ":" + config.PORT)
+	openbrowser(config.SCHEMA + "://" + config.HOST + ":" + config.PORT)
 
 	// Run our server in a goroutine so that it doesn't block.
 	go func() {
