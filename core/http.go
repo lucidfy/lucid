@@ -3,14 +3,16 @@ package core
 import (
 	"context"
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
 	"os/signal"
+	"runtime"
 	"time"
 
 	"github.com/daison12006013/gorvel/config"
-	"github.com/gorilla/mux"
 )
 
 func HttpApplication() {
@@ -24,8 +26,11 @@ func HttpApplication() {
 		WriteTimeout: config.WRITE_TIMEOUT,
 		ReadTimeout:  config.READ_TIMEOUT,
 		IdleTimeout:  config.IDLE_TIMEOUT,
-		Handler:      routes(), // Pass our instance of gorilla/mux in.
+		Handler:      config.Router(), // Pass our instance of gorilla/mux in.
 	}
+
+	// open the browser
+	openbrowser("http://" + config.HOST + ":" + config.PORT)
 
 	// Run our server in a goroutine so that it doesn't block.
 	go func() {
@@ -55,12 +60,21 @@ func HttpApplication() {
 	os.Exit(0)
 }
 
-func routes() *mux.Router {
-	handler := mux.NewRouter()
+func openbrowser(url string) {
+	var err error
 
-	for r, c := range config.Routes {
-		handler.HandleFunc(r, c.(func(http.ResponseWriter, *http.Request)))
+	switch runtime.GOOS {
+	case "linux":
+		err = exec.Command("xdg-open", url).Start()
+	case "windows":
+		err = exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
+	case "darwin":
+		err = exec.Command("open", url).Start()
+	default:
+		err = fmt.Errorf("unsupported platform")
 	}
 
-	return handler
+	if err != nil {
+		log.Fatal(err)
+	}
 }

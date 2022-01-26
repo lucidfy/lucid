@@ -1,9 +1,14 @@
 package config
 
 import (
-	"github.com/daison12006013/gorvel/controllers"
+	"github.com/daison12006013/gorvel/handlers"
+	"github.com/gorilla/mux"
 )
 
-var Routes = map[string]interface{}{
-	"/": controllers.Home,
+func Router() *mux.Router {
+	h := mux.NewRouter()
+
+	h.HandleFunc("/", handlers.Home)
+
+	return h
 }
