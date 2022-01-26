@@ -1,4 +1,4 @@
-package core
+package app
 
 func ConsoleApplication() {
 	// TODO!

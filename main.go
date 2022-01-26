@@ -1,9 +1,7 @@
 package main
 
-import (
-	"github.com/daison12006013/gorvel/core"
-)
+import "github.com/daison12006013/gorvel/internals/app"
 
 func main() {
-	core.HttpApplication()
+	app.HttpApplication()
 }
