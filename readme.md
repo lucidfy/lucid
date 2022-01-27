@@ -16,8 +16,8 @@ $> wget -c https://github.com/daison12006013/gorvel/archive/refs/heads/master.ta
 $> cd gorvel-master
 ```
 
-Once you extracted gorvel, you may compile or run directly the `main.go`
+Once you extracted gorvel, you may compile or run directly the `serve.go`
 
 ```bash
-$> go run main.go
+$> go run serve.go
 ```

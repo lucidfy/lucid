@@ -1,4 +1,4 @@
-package app
+package kernel
 
 import (
 	"context"
@@ -12,7 +12,8 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/daison12006013/gorvel/config"
+	"github.com/daison12006013/gorvel/constants"
+	"github.com/daison12006013/gorvel/routes"
 )
 
 func HttpApplication() {
@@ -21,16 +22,18 @@ func HttpApplication() {
 	flag.Parse()
 
 	srv := &http.Server{
-		Addr: config.HOST + ":" + config.PORT,
+		Addr: constants.HOST + ":" + constants.PORT,
 		// Good practice to set timeouts to avoid Slowloris attacks.
-		WriteTimeout: config.WRITE_TIMEOUT,
-		ReadTimeout:  config.READ_TIMEOUT,
-		IdleTimeout:  config.IDLE_TIMEOUT,
-		Handler:      config.Router(), // Pass our instance of gorilla/mux in.
+		WriteTimeout: time.Second * 15,
+		ReadTimeout:  time.Second * 15,
+		IdleTimeout:  time.Second * 60,
+		Handler:      routes.Router(), // Pass our instance of gorilla/mux in.
 	}
 
-	// open the browser
-	openbrowser(config.SCHEMA + "://" + config.HOST + ":" + config.PORT)
+	httpPath := constants.SCHEMA + "://" + constants.HOST + ":" + constants.PORT
+
+	fmt.Println("Serving at " + httpPath)
+	openbrowser(httpPath)
 
 	// Run our server in a goroutine so that it doesn't block.
 	go func() {
@@ -50,9 +53,11 @@ func HttpApplication() {
 	// Create a deadline to wait for.
 	ctx, cancel := context.WithTimeout(context.Background(), wait)
 	defer cancel()
+
 	// Doesn't block if no connections, but will otherwise wait
 	// until the timeout deadline.
 	srv.Shutdown(ctx)
+
 	// Optionally, you could run srv.Shutdown in a goroutine and block on
 	// <-ctx.Done() if your application should wait for other services
 	// to finalize based on context cancellation.
