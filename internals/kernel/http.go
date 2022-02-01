@@ -12,7 +12,7 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/daison12006013/gorvel/constants"
+	appconfig "github.com/daison12006013/gorvel/constants/app.config"
 	"github.com/daison12006013/gorvel/routes"
 )
 
@@ -22,7 +22,7 @@ func HttpApplication() {
 	flag.Parse()
 
 	srv := &http.Server{
-		Addr: constants.HOST + ":" + constants.PORT,
+		Addr: appconfig.HOST + ":" + appconfig.PORT,
 		// Good practice to set timeouts to avoid Slowloris attacks.
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
@@ -30,7 +30,7 @@ func HttpApplication() {
 		Handler:      routes.Router(), // Pass our instance of gorilla/mux in.
 	}
 
-	httpPath := constants.SCHEMA + "://" + constants.HOST + ":" + constants.PORT
+	httpPath := appconfig.SCHEMA + "://" + appconfig.HOST + ":" + appconfig.PORT
 
 	fmt.Println("Serving at " + httpPath)
 	openbrowser(httpPath)

@@ -1,18 +1,9 @@
-package users
+package passwordresets
 
 import (
 	databaseconfig "github.com/daison12006013/gorvel/constants/databases.config"
 	"github.com/daison12006013/gorvel/internals/database/sqlite"
 )
-
-func RawQuery(stmt string) []interface{} {
-	var attr Attributes
-
-	driver := sqlite.Make(databaseconfig.DB_DATABASE)
-	records := driver.Query(stmt, &attr)
-
-	return records
-}
 
 func First() Attributes {
 	var record Attributes

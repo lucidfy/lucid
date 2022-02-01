@@ -1,0 +1,4 @@
+package mysql
+
+func Init() {
+}
