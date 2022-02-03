@@ -19,27 +19,26 @@ type UserModel struct {
 }
 
 func TestQuerySelect(t *testing.T) {
-	var user UserModel
+	var users []UserModel
 
-	db, err := sql.Open("sqlite3", "../../databases/sqlite.db")
+	driver, err := sql.Open("sqlite3", "../../databases/sqlite.db")
 
 	if err != nil {
-		panic(err)
+		t.Errorf("Could not connect to sqlite: %q", err)
 	}
 
-	schema := Interpreter()
-	stmt := schema.Table("users").Where("id = ?", 1).Limit(1).ToSql()
+	interpreter := Interpreter()
+	stmt := interpreter.Table("users").Where("id = ?", 1).Limit(1).ToSql()
 
-	records := Select(
-		db,
-		&user,
-		stmt,
-		schema.GetBindings()...,
-	)
+	err = Connect(driver).
+		Select(stmt).
+		Find(&users, interpreter.GetBindings()...)
 
-	for _, u := range records {
-		record := u.(*UserModel) // convert interface into the Struct
+	if err != nil {
+		t.Errorf("query throws an error %q", err)
+	}
 
+	for _, record := range users {
 		got := record.Name
 		want := "John Doe"
 

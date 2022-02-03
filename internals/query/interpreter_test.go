@@ -85,10 +85,12 @@ func TestOthers(t *testing.T) {
 		Having("fname like ?", "John%").
 		Having("lname like ?", "Doe%").
 		OrderBy("created_at", "desc").
-		GroupBy("age").Limit(100).
+		GroupBy("age").
+		Limit(100).
+		Offset(10).
 		ToSql()
 
-	want := "select * from `users` group by age having fname like ? and lname like ? order by created_at desc limit 100"
+	want := "select * from `users` group by age having fname like ? and lname like ? order by created_at desc limit 100 offset 10"
 
 	if got != want {
 		t.Errorf("got %q, wanted %q", got, want)

@@ -1,4 +1,0 @@
-package mysql
-
-func Init() {
-}
