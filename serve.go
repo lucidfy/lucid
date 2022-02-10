@@ -1,1 +1,1 @@
-internals/mains/http/http.go
+internal/mains/http/http.go

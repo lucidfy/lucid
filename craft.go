@@ -1,1 +1,1 @@
-internals/mains/cli/cli.go
+internal/mains/cli/cli.go
