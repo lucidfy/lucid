@@ -8,7 +8,7 @@ import (
 )
 
 func View(w http.ResponseWriter, filepath string, data interface{}) {
-	filepath = path.PathTo("/resources/views/") + filepath
+	filepath = path.Load().ViewPath(filepath)
 	t, _ := template.ParseFiles(filepath)
 	t.Execute(w, data)
 }
