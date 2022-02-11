@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/daison12006013/gorvel/internal/dbadapter"
-	"github.com/daison12006013/gorvel/internal/filemanager"
+	"github.com/daison12006013/gorvel/internal/facade/path"
 	"github.com/daison12006013/gorvel/internal/query"
 )
 
@@ -13,8 +13,9 @@ func Lists(currentPage int, perPage int, orderByCol string, orderBySort string) 
 	var err error
 
 	// connect to our database
-	basepath, _ := filemanager.ProjectPath()
-	db := query.Connect(dbadapter.SQLite(basepath + os.Getenv("DB_DATABASE")))
+	db := query.Connect(dbadapter.SQLite(
+		path.Load().DatabasePath(os.Getenv("DB_DATABASE")),
+	))
 
 	selectStmt := query.Interpreter().
 		Table(Table).

@@ -3,7 +3,7 @@ package routes
 import (
 	"net/http"
 
-	app "github.com/daison12006013/gorvel/app"
+	"github.com/daison12006013/gorvel/app"
 	"github.com/daison12006013/gorvel/app/handlers"
 	"github.com/gorilla/mux"
 )
@@ -17,10 +17,16 @@ func Routes() *[]route {
 		},
 		{
 			path:        "/users",
+			method:      []string{"POST"},
+			handler:     handlers.UserCreate,
+			middlewares: []string{"auth"},
+		},
+		{
+			path:        "/users",
 			method:      []string{"GET"},
 			handler:     handlers.UserLists,
 			queries:     []string{},
-			middlewares: []mux.MiddlewareFunc{},
+			middlewares: []string{"auth"},
 		},
 	}
 
@@ -32,19 +38,17 @@ type route struct {
 	method      []string
 	queries     []string
 	handler     func(http.ResponseWriter, *http.Request)
-	middlewares []mux.MiddlewareFunc
+	middlewares []string
 }
 
-// *---------------------------------------------------------------
-// * Here, you can find how we iterate the routes() lists,
-// * we're using gorilla/mux package to serve our routing with
-// * extensive support with http requests + middlewares.
-// *---------------------------------------------------------------
-
+// Here, you can find how we iterate the routes() function,
+// we're using gorilla/mux package to serve our routing with
+// extensive support with http requests + middlewares.
 func Register() *mux.Router {
 	registrar := mux.NewRouter().StrictSlash(true)
 
-	injectMiddleware(registrar, *app.Middleware)
+	// * Register the global middlewares
+	injectMiddleware(registrar, app.Middleware...)
 
 	for _, route := range *Routes() {
 		subrouter := registrar.NewRoute().Subrouter()
@@ -53,13 +57,15 @@ func Register() *mux.Router {
 			Methods(getMethods(route.method)...).
 			Queries(route.queries...)
 
-		injectMiddleware(subrouter, route.middlewares)
+		for _, v := range route.middlewares {
+			injectMiddleware(subrouter, app.RouteMiddleware[v])
+		}
 	}
 
 	return registrar
 }
 
-func injectMiddleware(route *mux.Router, middlewares []mux.MiddlewareFunc) {
+func injectMiddleware(route *mux.Router, middlewares ...mux.MiddlewareFunc) {
 	for _, middleware := range middlewares {
 		route.Use(middleware)
 	}

@@ -5,12 +5,12 @@ import (
 	"log"
 	"os"
 
-	"github.com/daison12006013/gorvel/internal/filemanager"
+	"github.com/daison12006013/gorvel/internal/facade/path"
 )
 
 func MakeWriter() (io.Writer, *os.File) {
 	f, err := os.OpenFile(
-		filemanager.PathTo(os.Getenv("LOG_FILE")),
+		path.PathTo(os.Getenv("LOG_FILE")),
 		os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666,
 	)
 
