@@ -3,13 +3,10 @@ package kernel
 import (
 	"context"
 	"flag"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
-	"os/exec"
 	"os/signal"
-	"runtime"
 	"time"
 
 	"github.com/daison12006013/gorvel/routes"
@@ -29,10 +26,9 @@ func HttpApplication() {
 		Handler:      routes.Register(), // Pass our instance of gorilla/mux in.
 	}
 
-	httpPath := os.Getenv("SCHEMA") + "://" + os.Getenv("HOST") + ":" + os.Getenv("PORT")
-
-	log.Println("Serving at " + httpPath)
-	openbrowser(httpPath)
+	// httpPath := os.Getenv("SCHEMA") + "://" + os.Getenv("HOST") + ":" + os.Getenv("PORT")
+	// log.Println("Serving at " + httpPath)
+	// openbrowser(httpPath)
 
 	// Run our server in a goroutine so that it doesn't block.
 	go func() {
@@ -64,21 +60,21 @@ func HttpApplication() {
 	os.Exit(0)
 }
 
-func openbrowser(url string) {
-	var err error
-
-	switch runtime.GOOS {
-	case "linux":
-		err = exec.Command("xdg-open", url).Start()
-	case "windows":
-		err = exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
-	case "darwin":
-		err = exec.Command("open", url).Start()
-	default:
-		err = fmt.Errorf("unsupported platform")
-	}
-
-	if err != nil {
-		log.Fatal(err)
-	}
-}
+// func openbrowser(url string) {
+// 	var err error
+//
+// 	switch runtime.GOOS {
+// 	case "linux":
+// 		err = exec.Command("xdg-open", url).Start()
+// 	case "windows":
+// 		err = exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
+// 	case "darwin":
+// 		err = exec.Command("open", url).Start()
+// 	default:
+// 		err = fmt.Errorf("unsupported platform")
+// 	}
+//
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// }

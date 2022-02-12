@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/daison12006013/gorvel/app/models/users"
-	"github.com/daison12006013/gorvel/internal/facade/logger"
-	"github.com/daison12006013/gorvel/internal/response"
+	"github.com/daison12006013/gorvel/pkg/facade/logger"
+	"github.com/daison12006013/gorvel/pkg/response"
 )
 
 func UserLists(w http.ResponseWriter, r *http.Request) {

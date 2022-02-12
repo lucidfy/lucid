@@ -3,7 +3,7 @@ package hash
 import (
 	"testing"
 
-	"github.com/daison12006013/gorvel/internal/env"
+	"github.com/daison12006013/gorvel/pkg/env"
 )
 
 func init() {

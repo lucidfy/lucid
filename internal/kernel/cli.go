@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/daison12006013/gorvel/internal/env"
+	"github.com/daison12006013/gorvel/pkg/env"
 	cli "github.com/urfave/cli/v2"
 )
 

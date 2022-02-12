@@ -3,7 +3,7 @@ package env
 import (
 	"os"
 
-	"github.com/daison12006013/gorvel/internal/facade/path"
+	"github.com/daison12006013/gorvel/pkg/facade/path"
 	"github.com/joho/godotenv"
 )
 

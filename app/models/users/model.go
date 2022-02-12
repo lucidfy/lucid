@@ -4,9 +4,9 @@ import (
 	"math"
 	"os"
 
-	"github.com/daison12006013/gorvel/internal/dbadapter"
-	"github.com/daison12006013/gorvel/internal/facade/path"
-	"github.com/daison12006013/gorvel/internal/query"
+	"github.com/daison12006013/gorvel/pkg/dbadapter"
+	"github.com/daison12006013/gorvel/pkg/facade/path"
+	"github.com/daison12006013/gorvel/pkg/query"
 )
 
 func Lists(currentPage int, perPage int, orderByCol string, orderBySort string) (*Paginate, error) {

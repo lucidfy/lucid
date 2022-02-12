@@ -1,0 +1,3 @@
+#!/bin/bash
+go run ./cmd/openbrowser/main.go
+reflex -d none -s -R vendor. -r \.go$ -- go run ./cmd/serve/main.go

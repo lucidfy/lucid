@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"text/template"
 
-	"github.com/daison12006013/gorvel/internal/facade/path"
+	"github.com/daison12006013/gorvel/pkg/facade/path"
 )
 
 func View(w http.ResponseWriter, filepath string, data interface{}) {

@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/daison12006013/gorvel/internal/response"
+	"github.com/daison12006013/gorvel/pkg/response"
 )
 
 func Home(w http.ResponseWriter, r *http.Request) {
