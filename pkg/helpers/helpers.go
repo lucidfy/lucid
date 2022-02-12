@@ -7,5 +7,5 @@ import (
 
 func DD(data ...interface{}) {
 	fmt.Println(data...)
-	os.Exit(2)
+	os.Exit(1)
 }

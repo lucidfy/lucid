@@ -2,25 +2,19 @@ package query
 
 import (
 	"database/sql"
-	"errors"
 	"reflect"
 )
 
 type Result struct {
 	db        *sql.DB
 	statement string
-	data      []interface{}
 	err       error
 }
 
 func Connect(db *sql.DB) *Result {
-	r := Result{db, "", nil, nil}
+	r := Result{db, "", nil}
 
 	return &r
-}
-
-func (r *Result) Get() ([]interface{}, error) {
-	return r.data, r.err
 }
 
 func (r *Result) Select(stmt string) *Result {
@@ -91,12 +85,4 @@ func (r *Result) Find(model interface{}, args ...interface{}) error {
 	}
 
 	return nil
-}
-
-func (r *Result) First() (interface{}, error) {
-	if len(r.data) > 0 {
-		return r.data[0], nil
-	}
-
-	return nil, errors.New("calling First() but no record found")
 }

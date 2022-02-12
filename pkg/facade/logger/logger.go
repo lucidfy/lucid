@@ -31,19 +31,19 @@ func New(prefix string) (*log.Logger, *os.File) {
 func Info(title string, data ...interface{}) {
 	logger, file := New(fmt.Sprintf("[%s] [info] ", os.Getenv("APP_ENV")))
 	defer file.Close()
-	logger.Printf("%s: %v", title, data)
+	logger.Printf("%s %v", title, data)
 }
 
 func Warning(title string, data ...interface{}) {
 	logger, file := New(fmt.Sprintf("[%s] [warning] ", os.Getenv("APP_ENV")))
 	defer file.Close()
-	logger.Printf("%s: %v", title, data)
+	logger.Printf("%s %v", title, data)
 }
 
 func Error(title string, data ...interface{}) {
 	logger, file := New(fmt.Sprintf("[%s] [error] ", os.Getenv("APP_ENV")))
 	defer file.Close()
-	logger.Printf("%s: %v", title, data)
+	logger.Printf("%s %v", title, data)
 }
 
 func Printf(format string, v ...interface{}) {

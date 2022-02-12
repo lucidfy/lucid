@@ -9,14 +9,18 @@ import (
 	"github.com/daison12006013/gorvel/pkg/query"
 )
 
-func Lists(currentPage int, perPage int, orderByCol string, orderBySort string) (*Paginate, error) {
-	var err error
-
-	// connect to our database
+// connect to our database
+func db() *query.Result {
 	db := query.Connect(dbadapter.SQLite(
 		path.Load().DatabasePath(os.Getenv("DB_DATABASE")),
 	))
+	return db
+}
 
+func Lists(currentPage int, perPage int, orderByCol string, orderBySort string) (*Paginate, error) {
+	var err error
+
+	db := db()
 	selectStmt := query.Interpreter().
 		Table(Table).
 		OrderBy(orderByCol, orderBySort).
@@ -35,9 +39,9 @@ func Lists(currentPage int, perPage int, orderByCol string, orderBySort string) 
 		return nil, err
 	}
 
-	// query the data
-	var data []Attributes
-	err = db.Select(selectStmt).Find(&data)
+	// query the records
+	var records []Attributes
+	err = db.Select(selectStmt).Find(&records)
 	if err != nil {
 		return nil, err
 	}
@@ -45,9 +49,36 @@ func Lists(currentPage int, perPage int, orderByCol string, orderBySort string) 
 	var paginated Paginate
 	paginated.PerPage = perPage
 	paginated.CurrentPage = currentPage
-	paginated.Data = data
+	paginated.Data = records
 	paginated.Total = total
 	paginated.LastPage = int(math.Ceil(float64(total) / float64(perPage)))
 
 	return &paginated, nil
+}
+
+func FindById(id string) (*Attributes, error) {
+	db := db()
+	interpreter := query.Interpreter()
+	selectStmt := interpreter.
+		Table(Table).
+		Where("id = ?", id).
+		Limit(1).
+		ToSql()
+
+	var records []Attributes
+
+	err := db.Select(selectStmt).Find(
+		&records,
+		interpreter.GetBindings()...,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if len(records) > 0 {
+		return &records[0], nil
+	}
+
+	return nil, nil
 }
