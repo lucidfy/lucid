@@ -8,12 +8,6 @@ import (
 )
 
 func Home(w http.ResponseWriter, r *http.Request) {
-	// If we're properly writing a response from the http.ResponseWriter,
-	// therefore no need to write the header as Status 200 "OK",
-	// although it is still good to write it at first, and override
-	// underneath if there are conditional cases that you want to filter-out
-	w.WriteHeader(http.StatusOK)
-
 	// let's extend the request
 	request := request.Parse(r)
 
@@ -24,7 +18,8 @@ func Home(w http.ResponseWriter, r *http.Request) {
 
 	// this is api request
 	if request.IsJson() && request.WantsJson() {
-		response.Json(w, data)
+		response.Json(w, data, http.StatusOK)
+		return
 	}
 
 	// render the template

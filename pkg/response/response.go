@@ -10,6 +10,8 @@ import (
 )
 
 func View(w http.ResponseWriter, filepaths []string, data interface{}) {
+	w.WriteHeader(http.StatusOK)
+
 	for idx, filepath := range filepaths {
 		filepaths[idx] = path.Load().ViewPath(filepath)
 	}
@@ -23,6 +25,8 @@ func View(w http.ResponseWriter, filepaths []string, data interface{}) {
 	t.Execute(w, data)
 }
 
-func Json(w http.ResponseWriter, data interface{}) {
+func Json(w http.ResponseWriter, data interface{}, status int) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
 	json.NewEncoder(w).Encode(data)
 }

@@ -11,12 +11,6 @@ import (
 )
 
 func Find(w http.ResponseWriter, r *http.Request) {
-	// If we're properly writing a response from the http.ResponseWriter,
-	// therefore no need to write the header as Status 200 "OK",
-	// although it is still good to write it at first, and override
-	// underneath if there are conditional cases that you want to filter-out
-	w.WriteHeader(http.StatusOK)
-
 	// let's extend the request
 	req := request.Parse(r)
 
@@ -28,6 +22,7 @@ func Find(w http.ResponseWriter, r *http.Request) {
 			logger.Fatal(err)
 		}
 		w.WriteHeader(http.StatusNotFound)
+		return
 	}
 
 	// prepare the data
@@ -38,7 +33,8 @@ func Find(w http.ResponseWriter, r *http.Request) {
 
 	// this is api request
 	if req.IsJson() && req.WantsJson() {
-		response.Json(w, data)
+		response.Json(w, data, http.StatusOK)
+		return
 	}
 
 	// render the template
