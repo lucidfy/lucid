@@ -6,7 +6,7 @@ import (
 )
 
 type Result struct {
-	db        *sql.DB
+	DB        *sql.DB
 	statement string
 	err       error
 }
@@ -24,7 +24,7 @@ func (r *Result) Select(stmt string) *Result {
 }
 
 func (r *Result) Find(model interface{}, args ...interface{}) error {
-	rows, err := r.db.Query(r.statement, args...)
+	rows, err := r.DB.Query(r.statement, args...)
 
 	if err != nil {
 		return err

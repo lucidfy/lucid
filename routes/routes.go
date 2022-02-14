@@ -19,11 +19,13 @@ func Routes() *[]routeStruct {
 		{
 			path: "/users",
 			resources: map[string]handlerStruct{
-				"create": usershandler.Create, //   POST   /users
-				"delete": usershandler.Delete, //   DELETE /users/{id?}
-				"find":   usershandler.Find,   //   GET    /users/{id}
-				"lists":  usershandler.Lists,  //   GET    /users
-				"update": usershandler.Update, //   PUT    /users
+				"lists":   usershandler.Lists,  //  GET    /users
+				"create":  usershandler.Create, //  GET    /users/create
+				"store":   usershandler.Store,  //  POST   /users
+				"show":    usershandler.Show,   //  GET    /users/{id}
+				"edit":    usershandler.Show,   //  GET    /users/{id}/edit
+				"update":  usershandler.Update, //  PUT    /users/{id}
+				"destroy": usershandler.Delete, //  DELETE /users/{id}
 			},
 			middlewares: []string{"auth"},
 		},
@@ -69,16 +71,20 @@ func Register() *mux.Router {
 func resources(router *mux.Router, route routeStruct) {
 	for action, handler := range route.resources {
 		switch action {
-		case "create":
-			register(router, route.path, handler, []string{"POST"}, route)
-		case "delete":
-			register(router, route.path, handler, []string{"DELETE"}, route)
-		case "find":
-			register(router, route.path+"/{id}", handler, []string{"GET"}, route)
 		case "lists":
 			register(router, route.path, handler, []string{"GET"}, route)
+		case "create":
+			register(router, route.path+"/create", handler, []string{"GET"}, route)
+		case "store":
+			register(router, route.path, handler, []string{"POST"}, route)
+		case "show":
+			register(router, route.path+"/{id}", handler, []string{"GET"}, route)
+		case "edit":
+			register(router, route.path+"/{id}/edit", handler, []string{"GET"}, route)
 		case "update":
 			register(router, route.path+"/{id}", handler, []string{"PUT"}, route)
+		case "destroy":
+			register(router, route.path+"/{id}", handler, []string{"DELETE"}, route)
 		}
 	}
 }

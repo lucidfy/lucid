@@ -16,6 +16,16 @@ func View(w http.ResponseWriter, filepaths []string, data interface{}) {
 		filepaths[idx] = path.Load().ViewPath(filepath)
 	}
 
+	// validate that the csrf token exists
+	// append the csrf token inside
+	csrfToken := w.Header().Get("X-CSRF-Token")
+	if len(csrfToken) > 0 {
+		if m, ok := (data).(map[string]interface{}); ok {
+			m["csrf_token"] = csrfToken
+			data = m
+		}
+	}
+
 	t, err := template.ParseFiles(filepaths...)
 
 	if err != nil {

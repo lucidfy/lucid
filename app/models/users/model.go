@@ -1,10 +1,12 @@
 package users
 
 import (
+	"fmt"
 	"math"
 	"os"
 
 	"github.com/daison12006013/gorvel/pkg/dbadapter"
+	"github.com/daison12006013/gorvel/pkg/facade/logger"
 	"github.com/daison12006013/gorvel/pkg/facade/path"
 	"github.com/daison12006013/gorvel/pkg/query"
 )
@@ -18,9 +20,8 @@ func db() *query.Result {
 }
 
 func Lists(currentPage int, perPage int, orderByCol string, orderBySort string) (*Paginate, error) {
-	var err error
+	conn := db()
 
-	db := db()
 	selectStmt := query.Interpreter().
 		Table(Table).
 		OrderBy(orderByCol, orderBySort).
@@ -32,16 +33,16 @@ func Lists(currentPage int, perPage int, orderByCol string, orderBySort string) 
 		Table(Table).
 		CountSql()
 
-	// query the total count
 	var total int
-	err = db.Select(countStmt).Find(&total)
+
+	err := conn.Select(countStmt).Find(&total)
 	if err != nil {
 		return nil, err
 	}
 
 	// query the records
 	var records []Attributes
-	err = db.Select(selectStmt).Find(&records)
+	err = conn.Select(selectStmt).Find(&records)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +58,7 @@ func Lists(currentPage int, perPage int, orderByCol string, orderBySort string) 
 }
 
 func FindById(id string) (*Attributes, error) {
-	db := db()
+	conn := db()
 	interpreter := query.Interpreter()
 	selectStmt := interpreter.
 		Table(Table).
@@ -67,7 +68,7 @@ func FindById(id string) (*Attributes, error) {
 
 	var records []Attributes
 
-	err := db.Select(selectStmt).Find(
+	err := conn.Select(selectStmt).Find(
 		&records,
 		interpreter.GetBindings()...,
 	)
@@ -81,4 +82,37 @@ func FindById(id string) (*Attributes, error) {
 	}
 
 	return nil, nil
+}
+
+func Exists(id string) bool {
+	conn := db()
+	interpreter := query.Interpreter()
+	countStmt := interpreter.
+		Table(Table).
+		Where("id = ?", id).
+		CountSql()
+
+	var total int
+	err := conn.Select(countStmt).Find(
+		&total,
+		interpreter.GetBindings()...,
+	)
+	if err != nil {
+		logger.Fatal(err)
+		return false
+	}
+
+	return total > 0
+}
+
+func DeleteById(id string) bool {
+	conn := db()
+	stmt := fmt.Sprintf("DELETE FROM %s where id = $1;", Table)
+	_, err := conn.DB.Exec(stmt, id)
+	if err != nil {
+		logger.Fatal(err)
+		return false
+	}
+
+	return true
 }

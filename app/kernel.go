@@ -9,6 +9,8 @@ import (
 // These middleware are run during every request to your application.
 var Middleware = []mux.MiddlewareFunc{
 	middlewares.HttpAccessLogMiddleware,
+	middlewares.CsrfProtectMiddleware,
+	middlewares.CsrfSetterMiddleware,
 }
 
 // The application's route middleware.
