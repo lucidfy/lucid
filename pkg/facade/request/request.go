@@ -2,9 +2,8 @@ package request
 
 import (
 	"net/http"
+	"net/url"
 	"strings"
-
-	"github.com/gorilla/mux"
 )
 
 type reqStruct struct {
@@ -19,23 +18,31 @@ func Parse(r *http.Request) reqStruct {
 }
 
 // This returns all avaiable queries from
-func (t reqStruct) All() map[string]string {
-	params := mux.Vars(t.httpRequest)
+func (t reqStruct) All() url.Values {
+	params := t.httpRequest.URL.Query()
 	return params
 }
 
 // This returns the specific value from the provided key
-func (t reqStruct) Get(k string) *string {
+func (t reqStruct) Get(k string) []string {
 	val, ok := t.All()[k]
 	if ok {
-		return &val
+		return val
 	}
-	return nil
+	return []string{}
 }
 
-// Proxy method similar to Get(...)
-func (t reqStruct) Input(k string) *string {
-	return t.Get(k)
+func (t reqStruct) GetFirst(k string) string {
+	val := t.Get(k)
+	if len(val) > 0 {
+		return val[0]
+	}
+	return ""
+}
+
+// Proxy method similar to GetFirst(...)
+func (t reqStruct) Input(k string) string {
+	return t.GetFirst(k)
 }
 
 // Check if the string exists in the content type

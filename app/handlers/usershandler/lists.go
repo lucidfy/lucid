@@ -3,6 +3,7 @@ package usershandler
 import (
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/daison12006013/gorvel/app/models/users"
 	"github.com/daison12006013/gorvel/pkg/facade/logger"
@@ -10,16 +11,20 @@ import (
 	"github.com/daison12006013/gorvel/pkg/response"
 )
 
+const PER_PAGE = 2
+
 func Lists(w http.ResponseWriter, r *http.Request) {
 	// let's extend the request
 	req := request.Parse(r)
 
-	records, err := users.Lists(1, 10, "id", "desc")
-	if err != nil {
-		// if we're on debugging mode, just throw the error
-		if os.Getenv("APP_DEBUG") == "true" {
-			logger.Fatal(err)
-		}
+	currentPage, err := strconv.Atoi(req.GetFirst("page"))
+	if errHandle(err) {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	records, err := users.Lists(currentPage, PER_PAGE, "id", "desc")
+	if errHandle(err) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
@@ -38,7 +43,18 @@ func Lists(w http.ResponseWriter, r *http.Request) {
 
 	response.View(
 		w,
-		[]string{"base.html", "users/lists.html"},
+		[]string{"base.go.tmpl", "users/lists.go.tmpl"},
 		data,
 	)
+}
+
+func errHandle(err error) bool {
+	if err != nil {
+		// if we're on debugging mode, just throw the error
+		if os.Getenv("APP_DEBUG") == "true" {
+			logger.Fatal(err)
+		}
+		return true
+	}
+	return false
 }
