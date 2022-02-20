@@ -4,13 +4,30 @@ package databases
 
 import (
 	"os"
+	"time"
 
+	"github.com/daison12006013/gorvel/pkg/errors"
 	"github.com/daison12006013/gorvel/pkg/facade/path"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
-func Resolve() *gorm.Dialector {
+func Resolve() *gorm.DB {
+	db, err := gorm.Open(*Dialector(), &gorm.Config{
+		NowFunc: func() time.Time {
+			utc, _ := time.LoadLocation("")
+			return time.Now().In(utc)
+		},
+	})
+
+	if errors.Handler("SQL connection error", err) {
+		panic(err)
+	}
+
+	return db
+}
+
+func Dialector() *gorm.Dialector {
 	var dialect *gorm.Dialector
 	switch os.Getenv("DB_CONNECTION") {
 	case "sqlite":

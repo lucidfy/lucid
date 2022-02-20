@@ -2,10 +2,11 @@ package users
 
 import (
 	"github.com/Masterminds/squirrel"
+	"github.com/daison12006013/gorvel/databases"
 )
 
-func Lists(currentPage int, perPage int, orderByCol string, orderBySort string) (*Paginate, error) {
-	db := db()
+func Lists(baseUrl string, currentPage int, perPage int, orderByCol string, orderBySort string) (*Paginate, error) {
+	db := databases.Resolve()
 
 	selectStmt, _, _ := squirrel.
 		Select("*").
@@ -24,6 +25,7 @@ func Lists(currentPage int, perPage int, orderByCol string, orderBySort string) 
 	db.Raw(selectStmt).Scan(&records)
 
 	var paginated Paginate
+	paginated.BaseUrl = baseUrl
 	paginated.Reconstruct(&records, total, perPage, currentPage)
 
 	return &paginated, nil

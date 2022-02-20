@@ -4,10 +4,7 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/daison12006013/gorvel/databases"
-	"github.com/daison12006013/gorvel/pkg/errors"
 	"github.com/daison12006013/gorvel/pkg/paginate"
-	"gorm.io/gorm"
 )
 
 const Table = "users"
@@ -18,7 +15,6 @@ type Paginate struct {
 }
 
 type Attributes struct {
-	// gorm.Model
 	ID              uint           `gorm:"primarykey" json:"id"`
 	Name            string         `gorm:"column:name" json:"name"`
 	Email           string         `gorm:"column:email" json:"email"`
@@ -27,21 +23,6 @@ type Attributes struct {
 	RememberToken   sql.NullString `gorm:"column:remember_token" json:"remember_token,omitempty"`
 	CreatedAt       time.Time      `gorm:"column:created_at" json:"created_at"`
 	UpdatedAt       time.Time      `gorm:"column:updated_at" json:"updated_at"`
-}
-
-func db() *gorm.DB {
-	db, err := gorm.Open(*databases.Resolve(), &gorm.Config{
-		NowFunc: func() time.Time {
-			utc, _ := time.LoadLocation("")
-			return time.Now().In(utc)
-		},
-	})
-
-	if errors.Handler("SQL connection error", err) {
-		panic(err)
-	}
-
-	return db
 }
 
 // func (t *Attributes) GetCreatedAt() time.Time {

@@ -7,11 +7,12 @@ import (
 	"github.com/daison12006013/gorvel/app/models/users"
 	"github.com/daison12006013/gorvel/pkg/errors"
 	"github.com/daison12006013/gorvel/pkg/facade/request"
+	"github.com/daison12006013/gorvel/pkg/facade/urls"
 	"github.com/daison12006013/gorvel/pkg/response"
 	"github.com/gorilla/csrf"
 )
 
-const PER_PAGE = 2
+const PER_PAGE = 5
 
 func Lists(w http.ResponseWriter, r *http.Request) {
 	// let's extend the request
@@ -23,7 +24,8 @@ func Lists(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	records, err := users.Lists(currentPage, PER_PAGE, "id", "desc")
+	uri := r.URL.RequestURI()
+	records, err := users.Lists(urls.BaseUrl(&uri), currentPage, PER_PAGE, "id", "desc")
 	if errors.Handler("cannot fetch users list", err) {
 		w.WriteHeader(http.StatusNotFound)
 		return
@@ -38,17 +40,9 @@ func Lists(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// prepare the data
-	data := map[string]interface{}{
-		"title":      "Users List",
-		"records":    records,
-		"usersTable": usersTable,
-		"pagination": records.Links(),
-	}
-
 	// this is api request
 	if req.IsJson() && req.WantsJson() {
-		response.Json(w, data, http.StatusOK)
+		response.Json(w, records.ToArray(), http.StatusOK)
 		return
 	}
 
@@ -57,9 +51,14 @@ func Lists(w http.ResponseWriter, r *http.Request) {
 		[]string{
 			"base.go.html",
 			"users/lists.go.html",
-			// OTHER WAY of parsing the component
+			// OTHER WAY of parsing a component
 			// "users/_table.go.html",
 		},
-		data,
+		map[string]interface{}{
+			"title":      "Users List",
+			"records":    records,
+			"usersTable": usersTable,
+			"pagination": records.Links(),
+		},
 	)
 }

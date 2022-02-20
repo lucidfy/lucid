@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/daison12006013/gorvel/pkg/facade/logger"
+	"github.com/daison12006013/gorvel/pkg/facade/urls"
 	"github.com/daison12006013/gorvel/routes"
 )
 
@@ -24,7 +25,7 @@ func Init() *App {
 	flag.Parse()
 
 	srv := &http.Server{
-		Addr: os.Getenv("HOST") + ":" + os.Getenv("PORT"),
+		Addr: urls.GetAddr(),
 
 		// Good practice to set timeouts to avoid Slowloris attacks.
 		WriteTimeout: time.Second * 15,

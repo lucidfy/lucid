@@ -2,17 +2,17 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"os/exec"
 	"runtime"
 
 	"github.com/daison12006013/gorvel/pkg/env"
 	"github.com/daison12006013/gorvel/pkg/facade/logger"
+	"github.com/daison12006013/gorvel/pkg/facade/urls"
 )
 
 func main() {
 	env.LoadEnv()
-	url := os.Getenv("SCHEMA") + "://" + os.Getenv("HOST") + ":" + os.Getenv("PORT")
+	url := urls.BaseUrl(nil)
 	logger.Info("Serving at " + url)
 	openbrowser(url)
 }

@@ -23,7 +23,7 @@ func (p *Paginate) Reconstruct(items interface{}, total int, perPage int, curren
 	p.LastPage = int(math.Ceil(float64(total) / float64(perPage)))
 
 	p.OnEachSide = 3
-	p.fragment = nil
+	p.Fragment = nil
 
 	return p
 }
@@ -74,34 +74,21 @@ func (p *Paginate) NextPageUrl() *string {
 	return nil
 }
 
-// func (p *Paginate) LastPage() {}
-
-// func (p *Paginate) ToArray() map[string]interface{} {
-// 	return map[string]interface{}{
-// 		"current_page": p.currentPage(),
-// 		"data": p.items,
-// 		"first_page_url": p.url(1),
-// 		"from": p.firstItem(),
-// 		"last_page": p.lastPage(),
-// 		"last_page_url": p.url(p.lastPage()),
-// 		"links": p.linkCollection()->toArray(),
-// 		"next_page_url": p.nextPageUrl(),
-// 		"path": p.path(),
-// 		"per_page": p.perPage(),
-// 		"prev_page_url": p.previousPageUrl(),
-// 		"to": p.lastItem(),
-// 		"total": p.total(),
-// 	};
-// }
-
-// func (p *Paginate) JsonSerialize() {}
-// func (p *Paginate) ToJson() {}
-
-// func (p *Paginate) setCurrentPage(currentPage int) {
-// 	p.CurrentPage = currentPage
-// }
-
-// func (p *Paginate) linkCollection() {}
+func (p *Paginate) ToArray() map[string]interface{} {
+	return map[string]interface{}{
+		"current_page":   p.CurrentPage,
+		"data":           p.Items,
+		"first_page_url": p.Url(1),
+		"from":           p.FirstItem(),
+		"last_page":      p.LastPage,
+		"last_page_url":  p.Url(p.LastPage),
+		"next_page_url":  p.NextPageUrl(),
+		"per_page":       p.PerPage,
+		"prev_page_url":  p.PreviousPageUrl(),
+		"to":             p.LastItem(),
+		"total":          p.Total,
+	}
+}
 
 func (p *Paginate) Elements() map[int]string {
 	window := UrlWindow(*p).Get()

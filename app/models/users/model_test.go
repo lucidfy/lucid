@@ -33,7 +33,7 @@ func TestLists(t *testing.T) {
 		t.Errorf("paginated.LastPage should not be Zero")
 	}
 
-	// if len(paginated.Items) == 0 {
-	// 	t.Errorf("paginated.Items should have a record")
-	// }
+	if len(*paginated.Items.(*[]Attributes)) == 0 {
+		t.Errorf("paginated.Items should have a record")
+	}
 }
