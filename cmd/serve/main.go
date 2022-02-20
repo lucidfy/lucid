@@ -7,5 +7,8 @@ import (
 
 func main() {
 	env.LoadEnv()
-	kernel.HttpApplication()
+	kernel.
+		Init().
+		Run().
+		WithGracefulShutdown()
 }

@@ -3,6 +3,7 @@ package response
 import (
 	"bytes"
 	"encoding/json"
+	h "html/template"
 	"net/http"
 	"text/template"
 
@@ -17,24 +18,25 @@ func View(w http.ResponseWriter, filepaths []string, data interface{}) {
 		filepaths[idx] = path.Load().ViewPath(filepath)
 	}
 
-	// validate that the csrf token exists
-	// append the csrf token inside
-	csrfToken := w.Header().Get("X-CSRF-Token")
-	if len(csrfToken) > 0 {
-		if m, ok := (data).(map[string]interface{}); ok {
-			m["csrf_token"] = csrfToken
-			data = m
-		}
-	}
+	data = constructDataFromHeader(data, w.Header().Get("X-CSRF-Token"), "csrf_token")
 
 	t, err := template.ParseFiles(filepaths...)
-
 	if err != nil {
 		logger.Fatal(err)
 		panic(err)
 	}
 
 	t.Execute(w, data)
+}
+
+func constructDataFromHeader(data interface{}, val string, key string) interface{} {
+	if len(val) > 0 {
+		if m, ok := (data).(map[string]interface{}); ok {
+			m[key] = val
+			data = m
+		}
+	}
+	return data
 }
 
 func Json(w http.ResponseWriter, data interface{}, status int) {
@@ -62,4 +64,12 @@ func Render(filepaths []string, data interface{}) (string, error) {
 	}
 
 	return tpl.String(), nil
+}
+
+func HTML(filepaths []string, data interface{}) (h.HTML, error) {
+	rendered, err := Render(filepaths, data)
+	if err != nil {
+		return h.HTML(""), err
+	}
+	return h.HTML(rendered), nil
 }

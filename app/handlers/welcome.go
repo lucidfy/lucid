@@ -26,9 +26,9 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	response.View(
 		w,
 		// this example below, we're telling the compiler
-		// to parse the base.go.tmpl first, and then parse the welcome.go.tmpl
+		// to parse the base.go.html first, and then parse the welcome.go.html
 		// therefore the defined "body" should render accordingly
-		[]string{"base.go.tmpl", "welcome.go.tmpl"},
+		[]string{"base.go.html", "welcome.go.html"},
 		data,
 	)
 }

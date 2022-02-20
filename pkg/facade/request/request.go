@@ -32,17 +32,20 @@ func (t reqStruct) Get(k string) []string {
 	return []string{}
 }
 
-func (t reqStruct) GetFirst(k string) string {
-	val := t.Get(k)
-	if len(val) > 0 {
-		return val[0]
+func (t reqStruct) GetFirst(k string, dfault string) string {
+	if dfault != "" {
+		val := t.Get(k)
+		if len(val) > 0 {
+			return val[0]
+		}
 	}
-	return ""
+
+	return dfault
 }
 
 // Proxy method similar to GetFirst(...)
-func (t reqStruct) Input(k string) string {
-	return t.GetFirst(k)
+func (t reqStruct) Input(k string, dfault string) string {
+	return t.GetFirst(k, dfault)
 }
 
 // Check if the string exists in the content type

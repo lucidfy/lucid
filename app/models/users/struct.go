@@ -2,13 +2,11 @@ package users
 
 import (
 	"database/sql"
-	"os"
 	"time"
 
-	"github.com/daison12006013/gorvel/pkg/facade/logger"
-	"github.com/daison12006013/gorvel/pkg/facade/path"
+	"github.com/daison12006013/gorvel/databases"
+	"github.com/daison12006013/gorvel/pkg/errors"
 	"github.com/daison12006013/gorvel/pkg/paginate"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
@@ -17,28 +15,59 @@ const PrimaryKey = "id"
 
 type Paginate struct {
 	paginate.Paginate
-	Items []Attributes
 }
 
 type Attributes struct {
-	gorm.Model
-	ID              uint           `json:"id" gorm:"primarykey"`
-	Name            string         `json:"name"`
-	Email           string         `json:"email"`
-	EmailVerifiedAt time.Time      `json:"email_verified_at"`
-	Password        string         `json:"password"`
-	RememberToken   sql.NullString `json:"remember_token"`
-	CreatedAt       time.Time      `json:"created_at"`
-	UpdatedAt       time.Time      `json:"updated_at"`
+	// gorm.Model
+	ID              uint           `gorm:"primarykey" json:"id"`
+	Name            string         `gorm:"column:name" json:"name"`
+	Email           string         `gorm:"column:email" json:"email"`
+	EmailVerifiedAt *time.Time     `gorm:"column:email_verified_at" json:"email_verified_at,omitempty"`
+	Password        string         `gorm:"column:password" json:"password"`
+	RememberToken   sql.NullString `gorm:"column:remember_token" json:"remember_token,omitempty"`
+	CreatedAt       time.Time      `gorm:"column:created_at" json:"created_at"`
+	UpdatedAt       time.Time      `gorm:"column:updated_at" json:"updated_at"`
 }
 
 func db() *gorm.DB {
-	filepath := path.Load().DatabasePath(os.Getenv("DB_DATABASE"))
-	db, err := gorm.Open(sqlite.Open(filepath), &gorm.Config{})
+	db, err := gorm.Open(*databases.Resolve(), &gorm.Config{
+		NowFunc: func() time.Time {
+			utc, _ := time.LoadLocation("")
+			return time.Now().In(utc)
+		},
+	})
 
-	if err != nil {
-		logger.Fatal(err)
+	if errors.Handler("SQL connection error", err) {
+		panic(err)
 	}
 
 	return db
 }
+
+// func (t *Attributes) GetCreatedAt() time.Time {
+// 	helpers.DD(t.CreatedAt)
+// 	tp, err := time.Parse("2006-01-02 3:04PM", t.CreatedAt)
+// 	if err != nil {
+// 		logger.Fatal(err)
+// 		panic(err)
+// 	}
+// 	return tp
+// }
+
+// func (t *Attributes) GetUpdatedAt() time.Time {
+// 	tp, err := time.Parse("2006-01-02 3:04PM", t.CreatedAt)
+// 	if err != nil {
+// 		logger.Fatal(err)
+// 		panic(err)
+// 	}
+// 	return tp
+// }
+
+// func (t *Attributes) GetEmailVerifiedAt() time.Time {
+// 	tp, err := time.Parse("2006-01-02 3:04PM", t.CreatedAt)
+// 	if err != nil {
+// 		logger.Fatal(err)
+// 		panic(err)
+// 	}
+// 	return tp
+// }

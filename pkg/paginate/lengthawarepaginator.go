@@ -7,7 +7,7 @@ import (
 	"github.com/daison12006013/gorvel/pkg/response"
 )
 
-var defaultView string = "_pagination/tailwind.go.tmpl"
+var defaultView string = "pkg/pagination/tailwind.go.html"
 
 func Construct(items interface{}, total int, perPage int, currentPage int) *Paginate {
 	p := Paginate{}

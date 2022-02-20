@@ -7,17 +7,16 @@ import (
 	"github.com/gorilla/csrf"
 )
 
-type ContextKey string
-
-const ContextToken ContextKey = "csrf_token"
-
 func CsrfProtectMiddleware(next http.Handler) http.Handler {
 	protect := csrf.Protect(
 		// 1st param is the csrf auth key
 		[]byte(os.Getenv("CSRF_AUTH_KEY")),
 
 		// 2nd param is the option with variadic param
+		csrf.Path("/"),
+		csrf.RequestHeader("X-CSRF-Token"),
 		csrf.FieldName("csrf_token"),
+		csrf.TrustedOrigins([]string{os.Getenv("CSRF_TRUSTED_ORIGIN")}),
 	)
 	return protect(next)
 }

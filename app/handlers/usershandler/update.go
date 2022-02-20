@@ -46,7 +46,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
 
 	response.View(
 		w,
-		[]string{"base.go.tmpl", fmt.Sprintf("users/%s.go.tmpl", html)},
+		[]string{"base.go.html", fmt.Sprintf("users/%s.go.html", html)},
 		data,
 	)
 }

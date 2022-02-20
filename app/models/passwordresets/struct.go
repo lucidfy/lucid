@@ -1,14 +1,12 @@
 package passwordresets
 
+import "github.com/daison12006013/gorvel/pkg/paginate"
+
 const Table = "password_resets"
 const PrimaryKey = "id"
 
 type Paginate struct {
-	Total       int
-	PerPage     int
-	CurrentPage int
-	LastPage    int
-	Data        []Attributes
+	paginate.Paginate
 }
 
 type Attributes struct {

@@ -23,79 +23,91 @@ func MakeWriter() (io.Writer, *os.File) {
 
 func New(prefix string) (*log.Logger, *os.File) {
 	wrt, f := MakeWriter()
-	logger := log.New(os.Stderr, prefix, log.LstdFlags)
-	logger.SetOutput(wrt)
-	return logger, f
+	l := log.New(os.Stderr, prefix, log.LstdFlags)
+	l.SetOutput(wrt)
+	return l, f
+}
+
+func Debug(title string, data ...interface{}) {
+	text("[%s] [debug] ", title, data...)
 }
 
 func Info(title string, data ...interface{}) {
-	logger, file := New(fmt.Sprintf("[%s] [info] ", os.Getenv("APP_ENV")))
-	defer file.Close()
-	logger.Printf("%s %v", title, data)
+	text("[%s] [info] ", title, data...)
 }
 
 func Warning(title string, data ...interface{}) {
-	logger, file := New(fmt.Sprintf("[%s] [warning] ", os.Getenv("APP_ENV")))
-	defer file.Close()
-	logger.Printf("%s %v", title, data)
+	text("[%s] [warning] ", title, data...)
 }
 
 func Error(title string, data ...interface{}) {
-	logger, file := New(fmt.Sprintf("[%s] [error] ", os.Getenv("APP_ENV")))
+	text("[%s] [error] ", title, data...)
+}
+
+func text(txt string, title string, data ...interface{}) {
+	l, file := New(fmt.Sprintf(txt, os.Getenv("APP_ENV")))
 	defer file.Close()
-	logger.Printf("%s %v", title, data)
+	data = prepend(title, data...)
+	l.Printf("%s %+v\n", data...)
+}
+
+func prepend(addtl interface{}, data ...interface{}) []interface{} {
+	data = append(data, 0)
+	copy(data[1:], data)
+	data[0] = addtl
+	return data
 }
 
 func Printf(format string, v ...interface{}) {
-	logger, file := New("")
+	l, file := New("")
 	defer file.Close()
-	logger.Printf(format, v...)
+	l.Printf(format, v...)
 }
 
 func Print(v ...interface{}) {
-	logger, file := New("")
+	l, file := New("")
 	defer file.Close()
-	logger.Print(v...)
+	l.Print(v...)
 }
 
 func Println(v ...interface{}) {
-	logger, file := New("")
+	l, file := New("")
 	defer file.Close()
-	logger.Println(v...)
+	l.Println(v...)
 }
 
 func Fatal(v ...interface{}) {
-	logger, file := New("")
+	l, file := New("")
 	defer file.Close()
-	logger.Fatal(v...)
+	l.Fatal(v...)
 }
 
 func Fatalf(format string, v ...interface{}) {
-	logger, file := New("")
+	l, file := New("")
 	defer file.Close()
-	logger.Fatalf(format, v...)
+	l.Fatalf(format, v...)
 }
 
 func Fatalln(v ...interface{}) {
-	logger, file := New("")
+	l, file := New("")
 	defer file.Close()
-	logger.Fatalln(v...)
+	l.Fatalln(v...)
 }
 
 func Panic(v ...interface{}) {
-	logger, file := New("")
+	l, file := New("")
 	defer file.Close()
-	logger.Panic(v...)
+	l.Panic(v...)
 }
 
 func Panicf(format string, v ...interface{}) {
-	logger, file := New("")
+	l, file := New("")
 	defer file.Close()
-	logger.Panicf(format, v...)
+	l.Panicf(format, v...)
 }
 
 func Panicln(v ...interface{}) {
-	logger, file := New("")
+	l, file := New("")
 	defer file.Close()
-	logger.Panicln(v...)
+	l.Panicln(v...)
 }

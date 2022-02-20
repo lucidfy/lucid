@@ -13,7 +13,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 
 	response.View(
 		w,
-		[]string{"base.go.tmpl", "users/create.go.tmpl"},
+		[]string{"base.go.html", "users/create.go.html"},
 		data,
 	)
 }
