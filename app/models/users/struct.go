@@ -12,6 +12,10 @@ const PrimaryKey = "id"
 
 type Paginate struct {
 	paginate.Paginate
+
+	OrderByCol  *string
+	OrderBySort *string
+	TextSearch  *string
 }
 
 type Attributes struct {

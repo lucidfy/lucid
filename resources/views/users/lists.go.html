@@ -10,13 +10,13 @@
             </span>
 
             <div class="my-5 shadow-gray-700 shadow-lg">
-                {{ $.usersTable }}
+                {{ template "component" .}}
 
-                {{/* OTHER WAY */}}
-                {{/* {{ template "component" .}} */}}
+                {{/* You can also print out the table instead. */}}
+                {{/* {{ $.tables }} */}}
             </div>
 
-            {{ $.pagination }}
+            {{ $.records.Links }}
         </div>
     </body>
 {{end}}

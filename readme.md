@@ -25,3 +25,15 @@ $> wget -c https://github.com/daison12006013/gorvel/archive/refs/heads/master.ta
 $> cd gorvel-master
 $> bash ./serve
 ```
+
+## Checklist
+
+- [x] Route
+- [ ] Console Commands
+  - [x] route:defined
+  - [x] route:registered
+  - [ ] make:resource
+    - [ ] Model
+    - [ ] C.R.U.D. Handlers
+- [x] Pagination
+- [x] ORM using gORM (by default)

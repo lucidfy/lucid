@@ -13,5 +13,9 @@ func GetAddr() string {
 }
 
 func BaseUrl(uri *string) string {
-	return os.Getenv("SCHEMA") + "://" + GetAddr() + *uri
+	var u string = ""
+	if uri != nil {
+		u = *uri
+	}
+	return os.Getenv("SCHEME") + "://" + GetAddr() + u
 }

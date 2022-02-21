@@ -11,7 +11,16 @@ func init() {
 }
 
 func TestLists(t *testing.T) {
-	paginated, err := Lists(1, 3, "id", "desc")
+	id := "id"
+	desc := "desc"
+
+	var paginated Paginate
+	paginated.CurrentPage = 1
+	paginated.BaseUrl = ""
+	paginated.PerPage = 3
+	paginated.OrderByCol = &id
+	paginated.OrderBySort = &desc
+	err := Lists(&paginated)
 
 	if err != nil {
 		t.Errorf("paginated lists is not working %q", err)

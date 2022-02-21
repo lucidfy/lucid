@@ -1,34 +1,37 @@
 package users
 
 import (
-	"github.com/Masterminds/squirrel"
+	sq "github.com/Masterminds/squirrel"
 	"github.com/daison12006013/gorvel/databases"
 )
 
-func Lists(baseUrl string, currentPage int, perPage int, orderByCol string, orderBySort string) (*Paginate, error) {
+func Lists(p *Paginate) error {
 	db := databases.Resolve()
 
-	selectStmt, _, _ := squirrel.
-		Select("*").
-		From(Table).
-		OrderBy(orderByCol + " " + orderBySort).
-		Limit(uint64(perPage)).
-		Offset(uint64(((currentPage) - 1) * perPage)).
-		ToSql()
+	countBuilder := sq.Select("count(*)").From(Table)
+	selectBuilder := sq.Select("*").From(Table).
+		OrderBy(*p.OrderByCol + " " + *p.OrderBySort).
+		Limit(uint64(p.PerPage)).
+		Offset(uint64(((p.CurrentPage) - 1) * p.PerPage))
 
-	countStmt, _, _ := squirrel.Select("count(*)").From(Table).ToSql()
+	countStmt, countArgs, _ := query(p, countBuilder).ToSql()
+	selectStmt, selectArgs, _ := query(p, selectBuilder).ToSql()
 
 	var total int
-	db.Raw(countStmt).Scan(&total)
+	db.Raw(countStmt, countArgs...).Scan(&total)
 
 	var records []Attributes
-	db.Raw(selectStmt).Scan(&records)
+	db.Raw(selectStmt, selectArgs...).Scan(&records)
 
-	var paginated Paginate
-	paginated.BaseUrl = baseUrl
-	paginated.Reconstruct(&records, total, perPage, currentPage)
+	p.Reconstruct(&records, total)
+	return nil
+}
 
-	return &paginated, nil
+func query(p *Paginate, builder sq.SelectBuilder) sq.SelectBuilder {
+	if p.TextSearch != nil {
+		builder = builder.Where(sq.Like{"name": *p.TextSearch + "%"})
+	}
+	return builder
 }
 
 // func FindById(id string) (*Attributes, error) {

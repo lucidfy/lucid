@@ -10,17 +10,18 @@ import (
 var defaultView string = "pkg/pagination/tailwind.go.html"
 
 func Construct(items interface{}, total int, perPage int, currentPage int) *Paginate {
-	p := Paginate{}
-	p.Reconstruct(items, total, perPage, currentPage)
+	p := Paginate{
+		PerPage:     perPage,
+		CurrentPage: currentPage,
+	}
+	p.Reconstruct(items, total)
 	return &p
 }
 
-func (p *Paginate) Reconstruct(items interface{}, total int, perPage int, currentPage int) *Paginate {
+func (p *Paginate) Reconstruct(items interface{}, total int) *Paginate {
 	p.Items = items
-	p.PerPage = perPage
-	p.CurrentPage = currentPage
 	p.Total = total
-	p.LastPage = int(math.Ceil(float64(total) / float64(perPage)))
+	p.LastPage = int(math.Ceil(float64(total) / float64(p.PerPage)))
 
 	p.OnEachSide = 3
 	p.Fragment = nil
