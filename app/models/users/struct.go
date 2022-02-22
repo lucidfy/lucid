@@ -10,12 +10,27 @@ import (
 const Table = "users"
 const PrimaryKey = "id"
 
-type Paginate struct {
-	paginate.Paginate
+type Input struct {
+	Visible       bool
+	Placeholder   interface{}
+	Value         interface{}
+	CanSearch     bool
+	SearchColumn  []string
+	SearchPattern string
+}
 
+type Header struct {
+	Name  interface{}
+	Input Input
+}
+
+type SearchableTable struct {
+	Paginate paginate.Paginate
+
+	Headers     []Header
+	Params      map[string]string
 	OrderByCol  *string
 	OrderBySort *string
-	TextSearch  *string
 }
 
 type Attributes struct {

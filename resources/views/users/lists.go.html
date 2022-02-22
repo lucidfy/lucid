@@ -5,18 +5,11 @@
 {{define "body"}}
     <body class="bg-gray-800 flex h-screen mt-auto">
         <div class="text-white m-auto w-4/5">
-            <span class="mb-2 text-xs">
-                <span class="border-dotted border-gray-400 border-b"><a href="/">Home</a></span> <i class="mx-2">&#8725;</i>
-            </span>
-
             <div class="my-5 shadow-gray-700 shadow-lg">
                 {{ template "component" .}}
-
-                {{/* You can also print out the table instead. */}}
-                {{/* {{ $.tables }} */}}
             </div>
 
-            {{ $.records.Links }}
+            {{ $.data.Paginate.Links }}
         </div>
     </body>
 {{end}}

@@ -65,8 +65,12 @@ func (t ParsedRequest) GetFirst(k string, dfault *string) *string {
 }
 
 // Proxy method to GetFirst(...)
-func (t ParsedRequest) Input(k string, dfault *string) *string {
-	return t.GetFirst(k, dfault)
+func (t ParsedRequest) Input(k string, dfault string) string {
+	d := t.GetFirst(k, &dfault)
+	if d == nil {
+		return ""
+	}
+	return *d
 }
 
 // Check if the string exists in the content type

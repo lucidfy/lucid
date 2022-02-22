@@ -1,35 +1,55 @@
 package users
 
 import (
+	"fmt"
+
 	sq "github.com/Masterminds/squirrel"
 	"github.com/daison12006013/gorvel/databases"
 )
 
-func Lists(p *Paginate) error {
+func Lists(s *SearchableTable) error {
 	db := databases.Resolve()
 
-	countBuilder := sq.Select("count(*)").From(Table)
-	selectBuilder := sq.Select("*").From(Table).
-		OrderBy(*p.OrderByCol + " " + *p.OrderBySort).
-		Limit(uint64(p.PerPage)).
-		Offset(uint64(((p.CurrentPage) - 1) * p.PerPage))
-
-	countStmt, countArgs, _ := query(p, countBuilder).ToSql()
-	selectStmt, selectArgs, _ := query(p, selectBuilder).ToSql()
-
 	var total int
+	countBuilder := sq.Select("count(*)").From(Table)
+	countStmt, countArgs, _ := query(s, countBuilder).ToSql()
 	db.Raw(countStmt, countArgs...).Scan(&total)
 
 	var records []Attributes
+	selectBuilder := sq.Select("*").From(Table).
+		OrderBy(*s.OrderByCol + " " + *s.OrderBySort).
+		Limit(uint64(s.Paginate.PerPage)).
+		Offset(uint64(((s.Paginate.CurrentPage) - 1) * s.Paginate.PerPage))
+
+	selectStmt, selectArgs, _ := query(s, selectBuilder).ToSql()
 	db.Raw(selectStmt, selectArgs...).Scan(&records)
 
-	p.Reconstruct(&records, total)
+	// reconstruct the searchable table
+	s.Paginate.Reconstruct(&records, total)
+
 	return nil
 }
 
-func query(p *Paginate, builder sq.SelectBuilder) sq.SelectBuilder {
-	if p.TextSearch != nil {
-		builder = builder.Where(sq.Like{"name": *p.TextSearch + "%"})
+func query(s *SearchableTable, builder sq.SelectBuilder) sq.SelectBuilder {
+	for _, header := range s.Headers {
+		if !header.Input.CanSearch || header.Input.Value == "" {
+			continue
+		}
+
+		var pred sq.Or
+		for _, searchColumn := range header.Input.SearchColumn {
+			switch header.Input.SearchPattern {
+			case "-":
+				pred = append(pred, sq.Eq{searchColumn: fmt.Sprintf("%v", header.Input.Value)})
+			case "<-":
+				pred = append(pred, sq.Like{searchColumn: "%" + fmt.Sprintf("%v", header.Input.Value)})
+			case "->":
+				pred = append(pred, sq.Like{searchColumn: fmt.Sprintf("%v", header.Input.Value) + "%"})
+			case "<->":
+				pred = append(pred, sq.Like{searchColumn: "%" + fmt.Sprintf("%v", header.Input.Value) + "%"})
+			}
+		}
+		builder = builder.Where(pred)
 	}
 	return builder
 }

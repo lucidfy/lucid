@@ -11,24 +11,24 @@ import (
 	"github.com/gorilla/csrf"
 )
 
-var defaultCurrentPage string = "1"
-var defaultPerPage string = "5"
-var defaultSortCol string = "id"
-var defaultSortType string = "desc"
+const PAGE = "1"
+const PER_PAGE = "5"
+const SORT_COLUMN = "id"
+const SORT_TYPE = "desc"
 
 func Lists(w http.ResponseWriter, r *http.Request) {
 	// let's extend the request
 	rp := request.Parse(r)
 
-	// prepare the paginated structure
-	records, e := prepare(rp)
+	// prepare the searchable structure
+	searchable, e := prepare(rp)
 	if errors.Handler("getting query 'page' error", e) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
-	// fetch the records
-	err := users.Lists(records)
+	// fetch the searchable
+	err := users.Lists(searchable)
 	if errors.Handler("cannot fetch users list", err) {
 		w.WriteHeader(http.StatusNotFound)
 		return
@@ -36,21 +36,9 @@ func Lists(w http.ResponseWriter, r *http.Request) {
 
 	// here, we determine if the requestor wants a json response
 	if rp.IsJson() && rp.WantsJson() {
-		response.Json(w, records.ToArray(), http.StatusOK)
+		response.Json(w, searchable.Paginate.ToArray(), http.StatusOK)
 		return
 	}
-
-	/*
-		*ALTERNATIVE: way of rendering the user's table
-		tables, err := response.HTML([]string{"users/_table.go.html"}, map[string]interface{}{
-			"records":        records,
-			csrf.TemplateTag: csrf.TemplateField(r),
-		})
-		if errors.Handler("users table not working", err) {
-			w.WriteHeader(http.StatusNotFound)
-			return
-		}
-	*/
 
 	// or else, provide an html response instead.
 	response.View(
@@ -62,18 +50,17 @@ func Lists(w http.ResponseWriter, r *http.Request) {
 		},
 		map[string]interface{}{
 			"title":          "Users List",
-			"records":        records,
+			"data":           searchable,
 			csrf.TemplateTag: csrf.TemplateField(r),
-
-			// *ALTERNATIVE
-			// "tables": tables,
 		},
 	)
 }
 
-func prepare(rp request.ParsedRequest) (*users.Paginate, error) {
+// --------
+//
+func prepare(rp request.ParsedRequest) (*users.SearchableTable, error) {
 	// get the current "page", literally the default of each current page should always be 1
-	currentPage, err := strconv.Atoi(*rp.GetFirst("page", &defaultCurrentPage))
+	currentPage, err := strconv.Atoi(rp.Input("page", PAGE))
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +68,7 @@ func prepare(rp request.ParsedRequest) (*users.Paginate, error) {
 	// get the "per-page", though the default will be relying to defaultPerPage
 	// then check if the per page reaches the cap of 20 records per page
 	// if ever someone tries to bypass the value, we over-write it to 20
-	perPage, err := strconv.Atoi(*rp.GetFirst("per-page", &defaultPerPage))
+	perPage, err := strconv.Atoi(rp.Input("per-page", PER_PAGE))
 	if err != nil {
 		return nil, err
 	}
@@ -89,16 +76,90 @@ func prepare(rp request.ParsedRequest) (*users.Paginate, error) {
 		perPage = 20
 	}
 
-	orderByCol := *rp.GetFirst("sort-column", &defaultSortCol)
-	orderBySort := *rp.GetFirst("sort-type", &defaultSortType)
+	var s users.SearchableTable
+	s = *data(rp, &s)
 
-	var p users.Paginate
-	p.CurrentPage = currentPage
-	p.PerPage = perPage
-	p.OrderByCol = &orderByCol
-	p.OrderBySort = &orderBySort
-	p.TextSearch = rp.GetFirst("search", nil)
-	p.BaseUrl = rp.FullUrl()
+	s.Paginate.CurrentPage = currentPage
+	s.Paginate.PerPage = perPage
+	s.Paginate.BaseUrl = rp.FullUrl()
 
-	return &p, nil
+	orderByCol := rp.Input("sort-column", SORT_COLUMN)
+	orderBySort := rp.Input("sort-type", SORT_TYPE)
+	s.OrderByCol = &orderByCol
+	s.OrderBySort = &orderBySort
+
+	return &s, nil
+}
+
+// --------
+//
+func data(rp request.ParsedRequest, searchable *users.SearchableTable) *users.SearchableTable {
+	searchable.Headers = []users.Header{
+		{
+			Name: "name",
+			Input: users.Input{
+				Visible:       true,
+				Placeholder:   "Name*",
+				Value:         rp.Input("search[name]", ""),
+				CanSearch:     true,
+				SearchColumn:  []string{"name"},
+				SearchPattern: "->",
+			},
+		},
+		{
+			Name: "email",
+			Input: users.Input{
+				Visible:       true,
+				Placeholder:   "Email",
+				Value:         rp.Input("search[email]", ""),
+				CanSearch:     true,
+				SearchColumn:  []string{"email"},
+				SearchPattern: "-",
+			},
+		},
+		{
+			Name: "search",
+			Input: users.Input{
+				Visible:       false,
+				Placeholder:   "*Search*",
+				Value:         rp.Input("search", ""),
+				CanSearch:     true,
+				SearchColumn:  []string{"email", "name"},
+				SearchPattern: "<->",
+			},
+		},
+		{
+			Name: "page",
+			Input: users.Input{
+				Visible:   false,
+				Value:     rp.Input("page", PAGE),
+				CanSearch: false,
+			},
+		},
+		{
+			Name: "per-page",
+			Input: users.Input{
+				Visible:   false,
+				Value:     rp.Input("per-page", PER_PAGE),
+				CanSearch: false,
+			},
+		},
+		{
+			Name: "sort-column",
+			Input: users.Input{
+				Visible:   false,
+				Value:     rp.Input("sort-column", SORT_COLUMN),
+				CanSearch: false,
+			},
+		},
+		{
+			Name: "sort-type",
+			Input: users.Input{
+				Visible:   false,
+				Value:     rp.Input("sort-type", SORT_TYPE),
+				CanSearch: false,
+			},
+		},
+	}
+	return searchable
 }
