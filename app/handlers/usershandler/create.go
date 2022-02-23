@@ -20,7 +20,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 
 func Store(w http.ResponseWriter, r *http.Request) {
 	// let's extend the request
-	// req := request.Parse(r)
+	// req := request.Parse(w, r)
 
 	// prepare message and status
 	message := "Successfully Created!"

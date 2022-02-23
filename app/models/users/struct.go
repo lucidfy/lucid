@@ -8,7 +8,7 @@ import (
 const Table = "users"
 const PrimaryKey = "id"
 
-type Attributes struct {
+type Model struct {
 	ID              uint           `gorm:"primarykey" json:"id"`
 	Name            string         `gorm:"column:name" json:"name"`
 	Email           string         `gorm:"column:email" json:"email"`
@@ -17,4 +17,9 @@ type Attributes struct {
 	RememberToken   sql.NullString `gorm:"column:remember_token" json:"remember_token,omitempty"`
 	CreatedAt       time.Time      `gorm:"column:created_at" json:"created_at"`
 	UpdatedAt       time.Time      `gorm:"column:updated_at" json:"updated_at"`
+}
+
+// https://gorm.io/docs/conventions.html#TableName
+func (Model) TableName() string {
+	return Table
 }

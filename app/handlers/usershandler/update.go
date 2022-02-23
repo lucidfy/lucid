@@ -11,7 +11,7 @@ import (
 
 func Show(w http.ResponseWriter, r *http.Request) {
 	// let's extend the request
-	rp := request.Parse(r)
+	rp := request.Parse(w, r)
 
 	// // fetch the record in the database
 	// record, err := users.FindById(*req.Input("id"))

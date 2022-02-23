@@ -19,7 +19,7 @@ const SORT_TYPE = "desc"
 
 func Lists(w http.ResponseWriter, r *http.Request) {
 	// let's extend the request
-	rp := request.Parse(r)
+	rp := request.Parse(w, r)
 
 	// prepare the searchable structure
 	searchable, e := prepare(rp)
@@ -53,6 +53,7 @@ func Lists(w http.ResponseWriter, r *http.Request) {
 			"title":          "Users List",
 			"data":           searchable,
 			csrf.TemplateTag: csrf.TemplateField(r),
+			"success":        rp.GetFlash("success"),
 		},
 	)
 }

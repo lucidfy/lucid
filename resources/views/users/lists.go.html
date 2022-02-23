@@ -5,6 +5,12 @@
 {{define "body"}}
     <body class="bg-gray-800 flex h-screen mt-auto">
         <div class="text-white m-auto w-4/5">
+            {{ if $.success }}
+                <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800" role="alert">
+                    {{ $.success }}
+                </div>
+            {{ end }}
+
             <div class="my-5 shadow-gray-700 shadow-lg">
                 {{ template "component" .}}
             </div>

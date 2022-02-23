@@ -43,7 +43,7 @@ func TestLists(t *testing.T) {
 		t.Errorf("s.Paginate.LastPage should not be Zero")
 	}
 
-	if len(*s.Paginate.Items.(*[]Attributes)) == 0 {
+	if len(*s.Paginate.Items.(*[]Model)) == 0 {
 		t.Errorf("s.Paginate.Items should have a record")
 	}
 }

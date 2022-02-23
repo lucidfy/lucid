@@ -1,8 +1,13 @@
 package users
 
 import (
+	"fmt"
+
 	"github.com/daison12006013/gorvel/databases"
+	"github.com/daison12006013/gorvel/pkg/errors"
 	"github.com/daison12006013/gorvel/pkg/paginate/searchable"
+
+	sq "github.com/Masterminds/squirrel"
 )
 
 func Lists(st *searchable.Table) error {
@@ -10,76 +15,45 @@ func Lists(st *searchable.Table) error {
 
 	// fetch counts
 	var total int
-	countStmt, countArgs, _ := st.QueryCount(Table).ToSql()
+	countStmt, countArgs, err := st.QueryCount(Table).ToSql()
+	if errors.Handler("error fetching count", err) {
+		panic(err)
+	}
 	db.Raw(countStmt, countArgs...).Scan(&total)
 
 	// fetch the data
-	var records []Attributes
-	selectStmt, selectArgs, _ := st.QuerySelect(Table).ToSql()
+	var records []Model
+	selectStmt, selectArgs, err := st.QuerySelect(Table).ToSql()
+	if errors.Handler("error fetching data", err) {
+		panic(err)
+	}
 	db.Raw(selectStmt, selectArgs...).Scan(&records)
 
 	// reload the pagination data
 	st.Paginate.Reconstruct(&records, total)
-
 	return nil
 }
 
-// func FindById(id string) (*Attributes, error) {
-// 	conn := db()
-// 	interpreter := query.Interpreter()
-// 	selectStmt := interpreter.
-// 		Table(Table).
-// 		Where("id = ?", id).
-// 		Limit(1).
-// 		ToSql()
+func Exists(id *string) (bool, error) {
+	if id == nil {
+		return false, fmt.Errorf("id should not be null")
+	}
 
-// 	var records []Attributes
+	db := databases.Resolve()
 
-// 	err := conn.Select(selectStmt).Find(
-// 		&records,
-// 		interpreter.GetBindings()...,
-// 	)
+	stmt, args, _ := sq.Select("1").From(Table).Where(sq.Eq{"id": &id}).ToSql()
+	stmt, args, _ = sq.Expr("select exists("+stmt+") as found", args).ToSql()
 
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	var found bool
+	db.Raw(stmt, args).Scan(&found)
+	return found, nil
+}
 
-// 	if len(records) > 0 {
-// 		return &records[0], nil
-// 	}
-
-// 	return nil, nil
-// }
-
-// func Exists(id string) bool {
-// 	conn := db()
-// 	interpreter := query.Interpreter()
-// 	countStmt := interpreter.
-// 		Table(Table).
-// 		Where("id = ?", id).
-// 		CountSql()
-
-// 	var total int
-// 	err := conn.Select(countStmt).Find(
-// 		&total,
-// 		interpreter.GetBindings()...,
-// 	)
-// 	if err != nil {
-// 		logger.Fatal(err)
-// 		return false
-// 	}
-
-// 	return total > 0
-// }
-
-// func DeleteById(id string) bool {
-// 	conn := db()
-// 	stmt := fmt.Sprintf("DELETE FROM %s where id = $1;", Table)
-// 	_, err := conn.DB.Exec(stmt, id)
-// 	if err != nil {
-// 		logger.Fatal(err)
-// 		return false
-// 	}
-
-// 	return true
-// }
+func Delete(id *string) (bool, error) {
+	if id == nil {
+		return false, fmt.Errorf("id should not be null")
+	}
+	db := databases.Resolve()
+	db.Delete(&Model{}, id)
+	return true, nil
+}

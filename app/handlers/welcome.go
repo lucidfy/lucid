@@ -9,7 +9,7 @@ import (
 
 func Home(w http.ResponseWriter, r *http.Request) {
 	// let's extend the request
-	request := request.Parse(r)
+	request := request.Parse(w, r)
 
 	// prepare the data
 	data := map[string]interface{}{
