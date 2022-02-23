@@ -7,6 +7,7 @@ import (
 	"github.com/daison12006013/gorvel/app/models/users"
 	"github.com/daison12006013/gorvel/pkg/errors"
 	"github.com/daison12006013/gorvel/pkg/facade/request"
+	"github.com/daison12006013/gorvel/pkg/paginate/searchable"
 	"github.com/daison12006013/gorvel/pkg/response"
 	"github.com/gorilla/csrf"
 )
@@ -22,15 +23,15 @@ func Lists(w http.ResponseWriter, r *http.Request) {
 
 	// prepare the searchable structure
 	searchable, e := prepare(rp)
-	if errors.Handler("getting query 'page' error", e) {
-		w.WriteHeader(http.StatusNotFound)
+	if errors.Handler("error preparing searchable table", e) {
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	// fetch the searchable
 	err := users.Lists(searchable)
-	if errors.Handler("cannot fetch users list", err) {
-		w.WriteHeader(http.StatusNotFound)
+	if errors.Handler("error fetching users list", err) {
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
@@ -56,9 +57,7 @@ func Lists(w http.ResponseWriter, r *http.Request) {
 	)
 }
 
-// --------
-//
-func prepare(rp request.ParsedRequest) (*users.SearchableTable, error) {
+func prepare(rp request.ParsedRequest) (*searchable.Table, error) {
 	// get the current "page", literally the default of each current page should always be 1
 	currentPage, err := strconv.Atoi(rp.Input("page", PAGE))
 	if err != nil {
@@ -76,28 +75,26 @@ func prepare(rp request.ParsedRequest) (*users.SearchableTable, error) {
 		perPage = 20
 	}
 
-	var s users.SearchableTable
-	s = *data(rp, &s)
+	var st searchable.Table
+	st = *table(rp, &st)
 
-	s.Paginate.CurrentPage = currentPage
-	s.Paginate.PerPage = perPage
-	s.Paginate.BaseUrl = rp.FullUrl()
+	st.Paginate.CurrentPage = currentPage
+	st.Paginate.PerPage = perPage
+	st.Paginate.BaseUrl = rp.FullUrl()
 
 	orderByCol := rp.Input("sort-column", SORT_COLUMN)
 	orderBySort := rp.Input("sort-type", SORT_TYPE)
-	s.OrderByCol = &orderByCol
-	s.OrderBySort = &orderBySort
+	st.OrderByCol = &orderByCol
+	st.OrderBySort = &orderBySort
 
-	return &s, nil
+	return &st, nil
 }
 
-// --------
-//
-func data(rp request.ParsedRequest, searchable *users.SearchableTable) *users.SearchableTable {
-	searchable.Headers = []users.Header{
+func table(rp request.ParsedRequest, st *searchable.Table) *searchable.Table {
+	st.Headers = []searchable.Header{
 		{
 			Name: "name",
-			Input: users.Input{
+			Input: searchable.Input{
 				Visible:       true,
 				Placeholder:   "Name*",
 				Value:         rp.Input("search[name]", ""),
@@ -108,7 +105,7 @@ func data(rp request.ParsedRequest, searchable *users.SearchableTable) *users.Se
 		},
 		{
 			Name: "email",
-			Input: users.Input{
+			Input: searchable.Input{
 				Visible:       true,
 				Placeholder:   "Email",
 				Value:         rp.Input("search[email]", ""),
@@ -119,7 +116,7 @@ func data(rp request.ParsedRequest, searchable *users.SearchableTable) *users.Se
 		},
 		{
 			Name: "search",
-			Input: users.Input{
+			Input: searchable.Input{
 				Visible:       false,
 				Placeholder:   "*Search*",
 				Value:         rp.Input("search", ""),
@@ -130,7 +127,7 @@ func data(rp request.ParsedRequest, searchable *users.SearchableTable) *users.Se
 		},
 		{
 			Name: "page",
-			Input: users.Input{
+			Input: searchable.Input{
 				Visible:   false,
 				Value:     rp.Input("page", PAGE),
 				CanSearch: false,
@@ -138,7 +135,7 @@ func data(rp request.ParsedRequest, searchable *users.SearchableTable) *users.Se
 		},
 		{
 			Name: "per-page",
-			Input: users.Input{
+			Input: searchable.Input{
 				Visible:   false,
 				Value:     rp.Input("per-page", PER_PAGE),
 				CanSearch: false,
@@ -146,7 +143,7 @@ func data(rp request.ParsedRequest, searchable *users.SearchableTable) *users.Se
 		},
 		{
 			Name: "sort-column",
-			Input: users.Input{
+			Input: searchable.Input{
 				Visible:   false,
 				Value:     rp.Input("sort-column", SORT_COLUMN),
 				CanSearch: false,
@@ -154,12 +151,12 @@ func data(rp request.ParsedRequest, searchable *users.SearchableTable) *users.Se
 		},
 		{
 			Name: "sort-type",
-			Input: users.Input{
+			Input: searchable.Input{
 				Visible:   false,
 				Value:     rp.Input("sort-type", SORT_TYPE),
 				CanSearch: false,
 			},
 		},
 	}
-	return searchable
+	return st
 }

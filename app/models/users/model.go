@@ -1,57 +1,27 @@
 package users
 
 import (
-	"fmt"
-
-	sq "github.com/Masterminds/squirrel"
 	"github.com/daison12006013/gorvel/databases"
+	"github.com/daison12006013/gorvel/pkg/paginate/searchable"
 )
 
-func Lists(s *SearchableTable) error {
+func Lists(st *searchable.Table) error {
 	db := databases.Resolve()
 
+	// fetch counts
 	var total int
-	countBuilder := sq.Select("count(*)").From(Table)
-	countStmt, countArgs, _ := query(s, countBuilder).ToSql()
+	countStmt, countArgs, _ := st.QueryCount(Table).ToSql()
 	db.Raw(countStmt, countArgs...).Scan(&total)
 
+	// fetch the data
 	var records []Attributes
-	selectBuilder := sq.Select("*").From(Table).
-		OrderBy(*s.OrderByCol + " " + *s.OrderBySort).
-		Limit(uint64(s.Paginate.PerPage)).
-		Offset(uint64(((s.Paginate.CurrentPage) - 1) * s.Paginate.PerPage))
-
-	selectStmt, selectArgs, _ := query(s, selectBuilder).ToSql()
+	selectStmt, selectArgs, _ := st.QuerySelect(Table).ToSql()
 	db.Raw(selectStmt, selectArgs...).Scan(&records)
 
-	// reconstruct the searchable table
-	s.Paginate.Reconstruct(&records, total)
+	// reload the pagination data
+	st.Paginate.Reconstruct(&records, total)
 
 	return nil
-}
-
-func query(s *SearchableTable, builder sq.SelectBuilder) sq.SelectBuilder {
-	for _, header := range s.Headers {
-		if !header.Input.CanSearch || header.Input.Value == "" {
-			continue
-		}
-
-		var pred sq.Or
-		for _, searchColumn := range header.Input.SearchColumn {
-			switch header.Input.SearchPattern {
-			case "-":
-				pred = append(pred, sq.Eq{searchColumn: fmt.Sprintf("%v", header.Input.Value)})
-			case "<-":
-				pred = append(pred, sq.Like{searchColumn: "%" + fmt.Sprintf("%v", header.Input.Value)})
-			case "->":
-				pred = append(pred, sq.Like{searchColumn: fmt.Sprintf("%v", header.Input.Value) + "%"})
-			case "<->":
-				pred = append(pred, sq.Like{searchColumn: "%" + fmt.Sprintf("%v", header.Input.Value) + "%"})
-			}
-		}
-		builder = builder.Where(pred)
-	}
-	return builder
 }
 
 // func FindById(id string) (*Attributes, error) {

@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/daison12006013/gorvel/pkg/env"
+	"github.com/daison12006013/gorvel/pkg/paginate/searchable"
 )
 
 func init() {
@@ -14,7 +15,7 @@ func TestLists(t *testing.T) {
 	id := "id"
 	desc := "desc"
 
-	var s SearchableTable
+	var s searchable.Table
 	s.Paginate.CurrentPage = 1
 	s.Paginate.BaseUrl = ""
 	s.Paginate.PerPage = 3

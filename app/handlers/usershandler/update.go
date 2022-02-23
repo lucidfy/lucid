@@ -5,12 +5,13 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/daison12006013/gorvel/pkg/facade/request"
 	"github.com/daison12006013/gorvel/pkg/response"
 )
 
 func Show(w http.ResponseWriter, r *http.Request) {
-	// // let's extend the request
-	// req := request.Parse(r)
+	// let's extend the request
+	rp := request.Parse(r)
 
 	// // fetch the record in the database
 	// record, err := users.FindById(*req.Input("id"))
@@ -24,7 +25,9 @@ func Show(w http.ResponseWriter, r *http.Request) {
 	// }
 
 	// // prepare the data
-	data := map[string]interface{}{}
+	data := map[string]interface{}{
+		"previousUrl": rp.PreviousUrl(),
+	}
 	// data := map[string]interface{}{
 	// 	"title":  record.Name + "'s Profile",
 	// 	"record": record,
