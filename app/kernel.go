@@ -10,6 +10,7 @@ import (
 var Middleware = []mux.MiddlewareFunc{
 	middlewares.HttpAccessLogMiddleware,
 	middlewares.SessionPersistenceMiddleware,
+	middlewares.CsrfShouldSkipMiddleware,
 	middlewares.CsrfProtectMiddleware,
 	middlewares.CsrfSetterMiddleware,
 }

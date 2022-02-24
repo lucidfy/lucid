@@ -68,25 +68,22 @@ func append(path string, str string) string {
 	return path + str
 }
 
-func BasePath() (string, error) {
+func BasePath() (*string, error) {
 	_, callerFile, _, _ := runtime.Caller(0)
 	path := filepath.Dir(callerFile)
-
 	projectpath, err := filepath.Abs(path + "/../../../")
 
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return projectpath, nil
+	return &projectpath, nil
 }
 
 func PathTo(path string) string {
 	basepath, err := BasePath()
-
 	if err != nil {
 		panic(err)
 	}
-
-	return basepath + path
+	return *basepath + path
 }

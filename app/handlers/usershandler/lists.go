@@ -54,6 +54,7 @@ func Lists(w http.ResponseWriter, r *http.Request) {
 			"data":           searchable,
 			csrf.TemplateTag: csrf.TemplateField(r),
 			"success":        rp.GetFlash("success"),
+			"error":          rp.GetFlash("error"),
 		},
 	)
 }

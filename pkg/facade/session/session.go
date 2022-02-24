@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/daison12006013/gorvel/pkg/errors"
 	"github.com/gorilla/securecookie"
 )
 
@@ -14,22 +13,22 @@ type Secured struct {
 	HttpRequest    *http.Request
 }
 
-func Construct(w http.ResponseWriter, r *http.Request) Secured {
+func Construct(w http.ResponseWriter, r *http.Request) *Secured {
 	var sessionName string = os.Getenv("SESSION_NAME")
 
 	gorvelSession, err := r.Cookie(sessionName)
-	if errors.Handler("error fetching Cookie "+sessionName, err) {
-		panic(err)
+	if err != nil && err == http.ErrNoCookie {
+		return nil
 	}
 
-	return Secured{
+	return &Secured{
 		SecuredCookie:  securecookie.New([]byte(gorvelSession.Value), nil),
 		ResponseWriter: w,
 		HttpRequest:    r,
 	}
 }
 
-func (s Secured) Set(name string, value string) (bool, error) {
+func (s *Secured) Set(name string, value string) (bool, error) {
 	encoded, err := s.SecuredCookie.Encode(name, value)
 	if err == nil {
 		cookie := &http.Cookie{Name: name, Value: encoded, Path: "/"}
@@ -39,7 +38,11 @@ func (s Secured) Set(name string, value string) (bool, error) {
 	return false, err
 }
 
-func (s Secured) Get(name string) (*string, error) {
+func (s *Secured) Get(name string) (*string, error) {
+	if s.HttpRequest == nil {
+		return nil, nil
+	}
+
 	cookie, err := s.HttpRequest.Cookie(name)
 	if err == nil {
 		var value string

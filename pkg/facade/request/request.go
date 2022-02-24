@@ -60,6 +60,10 @@ func (t ParsedRequest) GetFlash(name string) *string {
 	name = "flash-" + name
 
 	s := session.Construct(t.ResponseWriter, t.HttpRequest)
+	if s == nil {
+		return nil
+	}
+
 	value, err := s.Get(name)
 	if (err != nil && err == http.ErrNoCookie) || value == nil {
 		return nil

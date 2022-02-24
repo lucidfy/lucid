@@ -12,8 +12,12 @@ import (
 
 func SessionPersistenceMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		sessionName := os.Getenv("SESSION_NAME")
+		if IsJsonRequest(w, r) {
+			next.ServeHTTP(w, r)
+			return
+		}
 
+		sessionName := os.Getenv("SESSION_NAME")
 		_, err := r.Cookie(sessionName)
 
 		if err != nil {
