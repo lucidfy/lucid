@@ -3,24 +3,27 @@ package usershandler
 import (
 	"net/http"
 
+	"github.com/daison12006013/gorvel/pkg/engines"
 	"github.com/daison12006013/gorvel/pkg/response"
 )
 
 func Create(w http.ResponseWriter, r *http.Request) {
-	data := map[string]interface{}{
-		"title": "Create Form",
-	}
+	engine := engines.MuxEngine{Writer: w, Request: r}
+	// request := engine.ParsedRequest().(request.MuxRequest)
+	response := engine.ParsedResponse().(response.MuxResponse)
+
+	data := map[string]interface{}{"title": "Create Form"}
 
 	response.View(
-		w,
 		[]string{"base.go.html", "users/create.go.html"},
 		data,
 	)
 }
 
 func Store(w http.ResponseWriter, r *http.Request) {
-	// let's extend the request
-	// req := request.Parse(w, r)
+	engine := engines.MuxEngine{Writer: w, Request: r}
+	// request := engine.ParsedRequest().(request.MuxRequest)
+	response := engine.ParsedResponse().(response.MuxResponse)
 
 	// prepare message and status
 	message := "Successfully Created!"
@@ -29,7 +32,7 @@ func Store(w http.ResponseWriter, r *http.Request) {
 	// * TODO
 
 	// prepare the data
-	response.Json(w, map[string]interface{}{
+	response.Json(map[string]interface{}{
 		"message": message,
 	}, status)
 }

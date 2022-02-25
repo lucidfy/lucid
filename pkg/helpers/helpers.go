@@ -1,12 +1,14 @@
 package helpers
 
 import (
+	"fmt"
+	"log"
 	"os"
-
-	"github.com/daison12006013/gorvel/pkg/facade/logger"
 )
 
 func DD(data ...interface{}) {
-	logger.Debug("(die-dump) ->", data...)
+	prefix := fmt.Sprintf("[%s] [debug] (die-dump) -> ", os.Getenv("APP_ENV"))
+	l := log.New(os.Stderr, prefix, log.LstdFlags)
+	l.Printf("%+v\n", data...)
 	os.Exit(1)
 }

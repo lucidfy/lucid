@@ -11,13 +11,13 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type ParsedRequest struct {
+type MuxRequest struct {
 	ResponseWriter http.ResponseWriter
 	HttpRequest    *http.Request
 }
 
-func Parse(w http.ResponseWriter, r *http.Request) ParsedRequest {
-	t := ParsedRequest{
+func Mux(w http.ResponseWriter, r *http.Request) MuxRequest {
+	t := MuxRequest{
 		ResponseWriter: w,
 		HttpRequest:    r,
 	}
@@ -26,7 +26,7 @@ func Parse(w http.ResponseWriter, r *http.Request) ParsedRequest {
 
 // Url  ----------------------------------------------------
 
-func (t ParsedRequest) CurrentUrl() string {
+func (t MuxRequest) CurrentUrl() string {
 	h := t.HttpRequest.URL.Host
 	if len(h) > 0 {
 		return h
@@ -36,30 +36,28 @@ func (t ParsedRequest) CurrentUrl() string {
 	return urls.BaseUrl(nil)
 }
 
-func (t ParsedRequest) FullUrl() string {
+func (t MuxRequest) FullUrl() string {
 	return t.CurrentUrl() + t.HttpRequest.URL.RequestURI()
 }
 
-func (t ParsedRequest) PreviousUrl() string {
+func (t MuxRequest) PreviousUrl() string {
 	return t.HttpRequest.Referer()
 }
 
-func (t ParsedRequest) RedirectPrevious() {
+func (t MuxRequest) RedirectPrevious() {
 	http.Redirect(t.ResponseWriter, t.HttpRequest, t.PreviousUrl(), http.StatusFound)
 }
 
-func (t ParsedRequest) SetFlash(name string, value string) ParsedRequest {
+func (t MuxRequest) SetFlash(name string, value string) {
 	name = "flash-" + name
-	s := session.Construct(t.ResponseWriter, t.HttpRequest)
+	s := session.Mux(t.ResponseWriter, t.HttpRequest)
 	s.Set(name, value)
-
-	return t
 }
 
-func (t ParsedRequest) GetFlash(name string) *string {
+func (t MuxRequest) GetFlash(name string) *string {
 	name = "flash-" + name
 
-	s := session.Construct(t.ResponseWriter, t.HttpRequest)
+	s := session.Mux(t.ResponseWriter, t.HttpRequest)
 	if s == nil {
 		return nil
 	}
@@ -78,13 +76,13 @@ func (t ParsedRequest) GetFlash(name string) *string {
 // Request  -------------------------------------------------
 
 // This returns all avaiable queries from
-func (t ParsedRequest) All() url.Values {
+func (t MuxRequest) All() url.Values {
 	params := t.HttpRequest.URL.Query()
 	return params
 }
 
 // This returns the specific value from the provided key
-func (t ParsedRequest) Get(k string) []string {
+func (t MuxRequest) Get(k string) []string {
 	// check the queries if exists
 	val, ok := t.All()[k]
 	if ok {
@@ -100,7 +98,7 @@ func (t ParsedRequest) Get(k string) []string {
 	return []string{}
 }
 
-func (t ParsedRequest) GetFirst(k string, dfault *string) *string {
+func (t MuxRequest) GetFirst(k string, dfault *string) *string {
 	val := t.Get(k)
 	if len(val) > 0 {
 		return &val[0]
@@ -109,7 +107,7 @@ func (t ParsedRequest) GetFirst(k string, dfault *string) *string {
 }
 
 // Proxy method to GetFirst(...)
-func (t ParsedRequest) Input(k string, dfault string) string {
+func (t MuxRequest) Input(k string, dfault string) string {
 	d := t.GetFirst(k, &dfault)
 	if d == nil {
 		return ""
@@ -118,31 +116,31 @@ func (t ParsedRequest) Input(k string, dfault string) string {
 }
 
 // Check if the string exists in the content type
-func (t ParsedRequest) HasContentType(substr string) bool {
+func (t MuxRequest) HasContentType(substr string) bool {
 	contentType := t.HttpRequest.Header.Get("Content-Type")
 	return strings.Contains(contentType, substr)
 }
 
-func (t ParsedRequest) HasAccept(substr string) bool {
+func (t MuxRequest) HasAccept(substr string) bool {
 	accept := t.HttpRequest.Header.Get("Accept")
 	return strings.Contains(accept, substr)
 }
 
 // Check if the request is form
-func (t ParsedRequest) IsForm() bool {
+func (t MuxRequest) IsForm() bool {
 	return t.HasContentType("application/x-www-form-urlencoded")
 }
 
 // Check if the request is json
-func (t ParsedRequest) IsJson() bool {
+func (t MuxRequest) IsJson() bool {
 	return t.HasContentType("json")
 }
 
 // Check if the request is multipart
-func (t ParsedRequest) IsMultipart() bool {
+func (t MuxRequest) IsMultipart() bool {
 	return t.HasContentType("multipart")
 }
 
-func (t ParsedRequest) WantsJson() bool {
+func (t MuxRequest) WantsJson() bool {
 	return t.HasAccept("json")
 }

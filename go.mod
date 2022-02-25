@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	github.com/Masterminds/squirrel v1.5.2
+	github.com/dchest/uniuri v0.0.0-20200228104902-7aecb25e1fe5
 	github.com/forgoer/openssl v1.1.1
 	github.com/golang-module/carbon v1.5.5
 	github.com/gorilla/csrf v1.7.1

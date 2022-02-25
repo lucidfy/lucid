@@ -5,13 +5,15 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/daison12006013/gorvel/pkg/engines"
 	"github.com/daison12006013/gorvel/pkg/facade/request"
 	"github.com/daison12006013/gorvel/pkg/response"
 )
 
 func Show(w http.ResponseWriter, r *http.Request) {
-	// let's extend the request
-	rp := request.Parse(w, r)
+	engine := engines.MuxEngine{Writer: w, Request: r}
+	request := engine.ParsedRequest().(request.MuxRequest)
+	response := engine.ParsedResponse().(response.MuxResponse)
 
 	// // fetch the record in the database
 	// record, err := users.FindById(*req.Input("id"))
@@ -26,7 +28,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
 
 	// // prepare the data
 	data := map[string]interface{}{
-		"previousUrl": rp.PreviousUrl(),
+		"previousUrl": request.PreviousUrl(),
 	}
 	// data := map[string]interface{}{
 	// 	"title":  record.Name + "'s Profile",
@@ -48,7 +50,6 @@ func Show(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.View(
-		w,
 		[]string{"base.go.html", fmt.Sprintf("users/%s.go.html", html)},
 		data,
 	)

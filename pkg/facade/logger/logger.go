@@ -9,9 +9,16 @@ import (
 	"github.com/daison12006013/gorvel/pkg/facade/path"
 )
 
+// determine if the file logging is enabled
+// to gain more performance, we can just use buffer
+// output, rather than enabling file writing
+func isEnabled() bool {
+	return os.Getenv("LOGGING_ENABLED") == "true"
+}
+
 func MakeWriter() (io.Writer, *os.File) {
 	f, err := os.OpenFile(
-		path.PathTo(os.Getenv("LOG_FILE")),
+		path.PathTo(os.Getenv("LOGGING_FILE")),
 		os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666,
 	)
 	if err != nil {
@@ -22,8 +29,13 @@ func MakeWriter() (io.Writer, *os.File) {
 }
 
 func New(prefix string) (*log.Logger, *os.File) {
-	wrt, f := MakeWriter()
 	l := log.New(os.Stderr, prefix, log.LstdFlags)
+
+	if !isEnabled() {
+		return l, nil
+	}
+
+	wrt, f := MakeWriter()
 	l.SetOutput(wrt)
 	return l, f
 }
