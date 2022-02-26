@@ -6,14 +6,12 @@ import (
 	"strings"
 
 	"github.com/daison12006013/gorvel/pkg/engines"
-	"github.com/daison12006013/gorvel/pkg/facade/request"
-	"github.com/daison12006013/gorvel/pkg/response"
 )
 
-func Show(w http.ResponseWriter, r *http.Request) {
-	engine := engines.MuxEngine{Writer: w, Request: r}
-	request := engine.ParsedRequest().(request.MuxRequest)
-	response := engine.ParsedResponse().(response.MuxResponse)
+func Show(T engines.EngineInterface) {
+	engine := T.(engines.MuxEngine)
+	request := engine.Request
+	response := engine.Response
 
 	// // fetch the record in the database
 	// record, err := users.FindById(*req.Input("id"))
@@ -45,7 +43,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
 	// then check if the url path contains /edit
 	// therefore use "edit"
 	html := "show"
-	if strings.Contains(r.URL.Path, "/edit") {
+	if strings.Contains(engine.HttpRequest.URL.Path, "/edit") {
 		html = "edit"
 	}
 
@@ -55,6 +53,9 @@ func Show(w http.ResponseWriter, r *http.Request) {
 	)
 }
 
-func Update(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
+func Update(T engines.EngineInterface) {
+	engine := T.(engines.MuxEngine)
+	// request := engine.Request
+	// response := engine.Response
+	engine.HttpResponseWriter.WriteHeader(http.StatusOK)
 }

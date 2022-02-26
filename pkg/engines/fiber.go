@@ -11,20 +11,32 @@ import (
 // TODO: replace this with proper fiber implementation!
 
 type FiberEngine struct {
-	Writer  http.ResponseWriter
-	Request *http.Request
+	HttpResponseWriter http.ResponseWriter
+	HttpRequest        *http.Request
+
+	Response response.MuxResponse
+	Request  request.MuxRequest
 }
 
 // ---
 
-func (f FiberEngine) ParsedResponse() interface{} {
-	return response.Mux(f.Writer, f.Request)
+func Fiber(w http.ResponseWriter, r *http.Request) FiberEngine {
+	return FiberEngine{
+		HttpResponseWriter: w,
+		HttpRequest:        r,
+		Response:           response.Mux(w, r),
+		Request:            request.Mux(w, r),
+	}
 }
 
-func (f FiberEngine) ParsedRequest() interface{} {
-	return request.Mux(f.Writer, f.Request)
+func (m FiberEngine) ParsedResponse() interface{} {
+	return m.Response
 }
 
-func (f FiberEngine) ParsedSession() interface{} {
-	return session.Mux(f.Writer, f.Request)
+func (m FiberEngine) ParsedRequest() interface{} {
+	return m.Request
+}
+
+func (m FiberEngine) ParsedSession() interface{} {
+	return session.Mux(m.HttpResponseWriter, m.HttpRequest)
 }

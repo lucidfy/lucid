@@ -4,14 +4,12 @@ import (
 	"net/http"
 
 	"github.com/daison12006013/gorvel/pkg/engines"
-	"github.com/daison12006013/gorvel/pkg/facade/request"
-	"github.com/daison12006013/gorvel/pkg/response"
 )
 
-func Home(w http.ResponseWriter, r *http.Request) {
-	engine := engines.MuxEngine{Writer: w, Request: r}
-	request := engine.ParsedRequest().(request.MuxRequest)
-	response := engine.ParsedResponse().(response.MuxResponse)
+func Home(T engines.EngineInterface) {
+	engine := T.(engines.MuxEngine)
+	request := engine.Request
+	response := engine.Response
 
 	// prepare the data
 	data := map[string]interface{}{

@@ -9,7 +9,6 @@ import (
 	"github.com/daison12006013/gorvel/pkg/errors"
 	"github.com/daison12006013/gorvel/pkg/facade/request"
 	"github.com/daison12006013/gorvel/pkg/paginate/searchable"
-	"github.com/daison12006013/gorvel/pkg/response"
 	"github.com/gorilla/csrf"
 )
 
@@ -18,22 +17,22 @@ const PER_PAGE = "5"
 const SORT_COLUMN = "id"
 const SORT_TYPE = "desc"
 
-func Lists(w http.ResponseWriter, r *http.Request) {
-	engine := engines.MuxEngine{Writer: w, Request: r}
-	request := engine.ParsedRequest().(request.MuxRequest)
-	response := engine.ParsedResponse().(response.MuxResponse)
+func Lists(T engines.EngineInterface) {
+	engine := T.(engines.MuxEngine)
+	request := engine.Request
+	response := engine.Response
 
 	// prepare the searchable structure
 	searchable, e := prepare(request)
 	if errors.Handler("error preparing searchable table", e) {
-		response.ResponseWriter.WriteHeader(http.StatusInternalServerError)
+		engine.HttpResponseWriter.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	// fetch the searchable
 	err := users.Lists(searchable)
 	if errors.Handler("error fetching users list", err) {
-		response.ResponseWriter.WriteHeader(http.StatusInternalServerError)
+		engine.HttpResponseWriter.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
@@ -53,7 +52,7 @@ func Lists(w http.ResponseWriter, r *http.Request) {
 		map[string]interface{}{
 			"title":          "Users List",
 			"data":           searchable,
-			csrf.TemplateTag: csrf.TemplateField(r),
+			csrf.TemplateTag: csrf.TemplateField(engine.HttpRequest),
 			"success":        request.GetFlash("success"),
 			"error":          request.GetFlash("error"),
 		},

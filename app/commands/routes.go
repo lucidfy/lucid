@@ -5,7 +5,8 @@ import (
 	"strings"
 
 	"github.com/daison12006013/gorvel/pkg/errors"
-	"github.com/daison12006013/gorvel/routes"
+	"github.com/daison12006013/gorvel/pkg/facade/routes"
+	"github.com/daison12006013/gorvel/registrar"
 	"github.com/gorilla/mux"
 	"github.com/jedib0t/go-pretty/v6/table"
 	cli "github.com/urfave/cli/v2"
@@ -58,7 +59,8 @@ type Defined struct {
 func registered() []Registered {
 	routings := []Registered{}
 
-	routes.Register().Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
+	handlers := routes.Mux().Register(registrar.Routes()).(*mux.Router)
+	handlers.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
 		path, err := route.GetPathTemplate()
 		if err != nil {
 			return nil
@@ -102,7 +104,8 @@ func registered() []Registered {
 func defined() []Defined {
 	routings := []Defined{}
 
-	for _, route := range *routes.Explain() {
+	mux := routes.Mux()
+	for _, route := range *mux.Explain(registrar.Routes()).(*[]routes.Routing) {
 		routings = append(routings, Defined{
 			counter:     len(routings) + 1,
 			name:        route.Name,

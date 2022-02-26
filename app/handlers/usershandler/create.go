@@ -4,13 +4,12 @@ import (
 	"net/http"
 
 	"github.com/daison12006013/gorvel/pkg/engines"
-	"github.com/daison12006013/gorvel/pkg/response"
 )
 
-func Create(w http.ResponseWriter, r *http.Request) {
-	engine := engines.MuxEngine{Writer: w, Request: r}
-	// request := engine.ParsedRequest().(request.MuxRequest)
-	response := engine.ParsedResponse().(response.MuxResponse)
+func Create(T engines.EngineInterface) {
+	engine := T.(engines.MuxEngine)
+	// request := engine.Request
+	response := engine.Response
 
 	data := map[string]interface{}{"title": "Create Form"}
 
@@ -20,10 +19,10 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	)
 }
 
-func Store(w http.ResponseWriter, r *http.Request) {
-	engine := engines.MuxEngine{Writer: w, Request: r}
-	// request := engine.ParsedRequest().(request.MuxRequest)
-	response := engine.ParsedResponse().(response.MuxResponse)
+func Store(T engines.EngineInterface) {
+	engine := T.(engines.MuxEngine)
+	// request := engine.Request
+	response := engine.Response
 
 	// prepare message and status
 	message := "Successfully Created!"

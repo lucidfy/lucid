@@ -5,14 +5,12 @@ import (
 
 	"github.com/daison12006013/gorvel/app/models/users"
 	"github.com/daison12006013/gorvel/pkg/engines"
-	"github.com/daison12006013/gorvel/pkg/facade/request"
-	"github.com/daison12006013/gorvel/pkg/response"
 )
 
-func Delete(w http.ResponseWriter, r *http.Request) {
-	engine := engines.MuxEngine{Writer: w, Request: r}
-	request := engine.ParsedRequest().(request.MuxRequest)
-	response := engine.ParsedResponse().(response.MuxResponse)
+func Delete(T engines.EngineInterface) {
+	engine := T.(engines.MuxEngine)
+	request := engine.Request
+	response := engine.Response
 
 	// prepare message and status
 	message := "Successfully Deleted!"

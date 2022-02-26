@@ -1,22 +1,23 @@
-package routes
+package registrar
 
 import (
 	"github.com/daison12006013/gorvel/app/handlers"
 	"github.com/daison12006013/gorvel/app/handlers/usershandler"
+	r "github.com/daison12006013/gorvel/pkg/facade/routes"
 )
 
-func Routes() *[]Routing {
-	r := &[]Routing{
+func Routes() *[]r.Routing {
+	return &[]r.Routing{
 		{
 			Path:    "/",
 			Name:    "welcome",
-			Method:  Method{"GET"},
+			Method:  r.Method{"GET"},
 			Handler: handlers.Home,
 		},
 		{
 			Path: "/users",
 			Name: "users",
-			Resources: Resources{
+			Resources: r.Resources{
 				"index":   usershandler.Lists,  //  GET    /users
 				"create":  usershandler.Create, //  GET    /users/create
 				"store":   usershandler.Store,  //  POST   /users
@@ -25,8 +26,7 @@ func Routes() *[]Routing {
 				"update":  usershandler.Update, //  PUT    /users/{id}, POST /users/{id}/update
 				"destroy": usershandler.Delete, //  DELETE /users/{id}, POST /users/{id}/delete
 			},
-			Middlewares: Middlewares{"auth"},
+			Middlewares: r.Middlewares{"auth"},
 		},
 	}
-	return r
 }

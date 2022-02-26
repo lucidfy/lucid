@@ -10,8 +10,10 @@ import (
 	"time"
 
 	"github.com/daison12006013/gorvel/pkg/facade/logger"
+	"github.com/daison12006013/gorvel/pkg/facade/routes"
 	"github.com/daison12006013/gorvel/pkg/facade/urls"
-	"github.com/daison12006013/gorvel/routes"
+	"github.com/daison12006013/gorvel/registrar"
+	"github.com/gorilla/mux"
 )
 
 type App struct {
@@ -24,6 +26,8 @@ func Init() *App {
 	flag.DurationVar(&wait, "graceful-timeout", time.Second*15, "the duration for which the server gracefully wait for existing connections to finish - e.g. 15s or 1m")
 	flag.Parse()
 
+	handler := routes.Mux().Register(registrar.Routes()).(*mux.Router)
+
 	srv := &http.Server{
 		Addr: urls.GetAddr(),
 
@@ -31,7 +35,7 @@ func Init() *App {
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 60,
-		Handler:      routes.Register(),
+		Handler:      handler,
 	}
 
 	return &App{
