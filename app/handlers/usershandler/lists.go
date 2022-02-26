@@ -117,6 +117,22 @@ func table(request request.MuxRequest, st *searchable.Table) *searchable.Table {
 			},
 		},
 		{
+			Name: "created_at",
+			Input: searchable.Input{
+				Visible:     true,
+				Placeholder: "Created At",
+				CanSearch:   false,
+			},
+		},
+		{
+			Name: "updated_at",
+			Input: searchable.Input{
+				Visible:     true,
+				Placeholder: "Updated At",
+				CanSearch:   false,
+			},
+		},
+		{
 			Name: "search",
 			Input: searchable.Input{
 				Visible:       false,

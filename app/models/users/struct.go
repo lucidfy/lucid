@@ -3,6 +3,8 @@ package users
 import (
 	"database/sql"
 	"time"
+
+	"github.com/golang-module/carbon"
 )
 
 const Table = "users"
@@ -22,4 +24,12 @@ type Model struct {
 // https://gorm.io/docs/conventions.html#TableName
 func (Model) TableName() string {
 	return Table
+}
+
+func (m Model) HumanCreatedAt() string {
+	return carbon.Time2Carbon(m.CreatedAt).ToDayDateTimeString()
+}
+
+func (m Model) HumanUpdatedAt() string {
+	return carbon.Time2Carbon(m.UpdatedAt).ToDayDateTimeString()
 }
