@@ -59,7 +59,7 @@ type Defined struct {
 func registered() []Registered {
 	routings := []Registered{}
 
-	handlers := routes.Mux().Register(registrar.Routes()).(*mux.Router)
+	handlers := routes.Mux().Register(registrar.Routes).(*mux.Router)
 	handlers.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
 		path, err := route.GetPathTemplate()
 		if err != nil {
@@ -104,8 +104,8 @@ func registered() []Registered {
 func defined() []Defined {
 	routings := []Defined{}
 
-	mux := routes.Mux()
-	for _, route := range *mux.Explain(registrar.Routes()).(*[]routes.Routing) {
+	routes := *routes.Mux().Explain(registrar.Routes).(*[]routes.Routing)
+	for _, route := range routes {
 		routings = append(routings, Defined{
 			counter:     len(routings) + 1,
 			name:        route.Name,
