@@ -49,11 +49,31 @@ func Exists(id *string) (bool, error) {
 	return found, nil
 }
 
-func Delete(id *string) (bool, error) {
-	if id == nil {
-		return false, fmt.Errorf("id should not be null")
-	}
+// ---
+
+type FindStruct struct {
+	Record *Model
+}
+
+func Find(id *string) *FindStruct {
 	db := databases.Resolve()
-	db.Delete(&Model{}, id)
-	return true, nil
+	user := &Model{}
+	db.First(user, id)
+	return &FindStruct{Record: user}
+}
+
+func (f *FindStruct) Delete() bool {
+	db := databases.Resolve()
+	db.Delete(f.Record)
+	return true
+}
+
+func (f *FindStruct) Update(column string, value interface{}) {
+	db := databases.Resolve()
+	db.Model(f.Record).Update(column, value)
+}
+
+func (f *FindStruct) Updates(inputs map[string]interface{}) {
+	db := databases.Resolve()
+	db.Model(f.Record).Updates(inputs)
 }

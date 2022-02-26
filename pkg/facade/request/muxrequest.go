@@ -2,7 +2,6 @@ package request
 
 import (
 	"net/http"
-	"net/url"
 	"strings"
 	"time"
 
@@ -76,37 +75,50 @@ func (t MuxRequest) GetFlash(name string) *string {
 // Request  -------------------------------------------------
 
 // This returns all avaiable queries from
-func (t MuxRequest) All() url.Values {
-	params := t.HttpRequest.URL.Query()
+func (t MuxRequest) All() map[string]string {
+	params := map[string]string{}
+
+	// via form inputs
+	for idx, val := range t.HttpRequest.Form {
+		if len(val) > 0 {
+			params[idx] = val[0]
+		}
+	}
+
+	// via query params
+	for idx, val := range t.HttpRequest.URL.Query() {
+		if len(val) > 0 {
+			params[idx] = val[0]
+		}
+	}
+
+	// via route params
+	for idx, val := range mux.Vars(t.HttpRequest) {
+		params[idx] = val
+	}
+
 	return params
 }
 
 // This returns the specific value from the provided key
-func (t MuxRequest) Get(k string) []string {
+func (t MuxRequest) Get(k string) *string {
 	// check the queries if exists
 	val, ok := t.All()[k]
 	if ok {
-		return val
+		return &val
 	}
-
-	// or try to extract from the route
-	vars := mux.Vars(t.HttpRequest)
-	if val, ok := vars[k]; ok {
-		return []string{val}
-	}
-
-	return []string{}
+	return nil
 }
 
 func (t MuxRequest) GetFirst(k string, dfault *string) *string {
 	val := t.Get(k)
-	if len(val) > 0 {
-		return &val[0]
+	if val == nil {
+		return dfault
 	}
-	return dfault
+	return val
 }
 
-// Proxy method to GetFirst(...)
+// Proxy method to GetFirst(...) but non-pointer
 func (t MuxRequest) Input(k string, dfault string) string {
 	d := t.GetFirst(k, &dfault)
 	if d == nil {

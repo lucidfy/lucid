@@ -52,9 +52,9 @@ func Lists(T engines.EngineInterface) {
 		map[string]interface{}{
 			"title":          "Users List",
 			"data":           searchable,
-			csrf.TemplateTag: csrf.TemplateField(engine.HttpRequest),
 			"success":        request.GetFlash("success"),
 			"error":          request.GetFlash("error"),
+			csrf.TemplateTag: csrf.TemplateField(engine.HttpRequest),
 		},
 	)
 }

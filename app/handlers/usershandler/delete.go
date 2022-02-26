@@ -20,20 +20,22 @@ func Delete(T engines.EngineInterface) {
 
 	exists, _ := users.Exists(id)
 	if exists {
-		users.Delete(id)
+		users.Find(id).Delete()
 	} else {
 		message = "Record not found!"
 		status = http.StatusNotFound
 	}
 
-	// prepare the data
+	// for api based
 	if request.IsJson() && request.WantsJson() {
 		response.Json(map[string]interface{}{
 			"ok":      true,
 			"message": message,
 		}, status)
+		return
 	}
 
+	// for form based, just redirect
 	request.SetFlash("success", message)
 	request.RedirectPrevious()
 }
