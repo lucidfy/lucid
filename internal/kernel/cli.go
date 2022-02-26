@@ -5,7 +5,7 @@ import (
 
 	"github.com/daison12006013/gorvel/console"
 	"github.com/daison12006013/gorvel/pkg/env"
-	"github.com/daison12006013/gorvel/pkg/facade/logger"
+	"github.com/daison12006013/gorvel/pkg/errors"
 	cli "github.com/urfave/cli/v2"
 )
 
@@ -14,13 +14,12 @@ func ConsoleApplication() {
 
 	app := &cli.App{
 		Name:     "craft",
-		Usage:    "A command to craft gorvel templates.",
-		Commands: console.Init(),
+		Usage:    "A crafting console command tool for garvel!",
+		Commands: *console.Commands,
 	}
 
 	err := app.Run(os.Args)
-
-	if err != nil {
-		logger.Fatal(err)
+	if errors.Handler("error running craft console command", err) {
+		panic(err)
 	}
 }
