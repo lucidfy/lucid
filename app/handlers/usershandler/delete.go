@@ -16,11 +16,11 @@ func Delete(T engines.EngineInterface) {
 	message := "Successfully Deleted!"
 	status := http.StatusOK
 
-	id := request.GetFirst("id", nil)
+	id := request.Input("id", nil).(string)
 
-	exists, _ := users.Exists(id)
+	exists, _ := users.Exists(&id)
 	if exists {
-		users.Find(id).Delete()
+		users.Find(&id).Delete()
 	} else {
 		message = "Record not found!"
 		status = http.StatusNotFound

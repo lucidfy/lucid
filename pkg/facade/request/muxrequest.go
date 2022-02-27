@@ -75,8 +75,8 @@ func (t MuxRequest) GetFlash(name string) *string {
 // Request  -------------------------------------------------
 
 // This returns all avaiable queries from
-func (t MuxRequest) All() map[string]string {
-	params := map[string]string{}
+func (t MuxRequest) All() map[string]interface{} {
+	params := map[string]interface{}{}
 
 	// via form inputs
 	for idx, val := range t.HttpRequest.Form {
@@ -101,16 +101,16 @@ func (t MuxRequest) All() map[string]string {
 }
 
 // This returns the specific value from the provided key
-func (t MuxRequest) Get(k string) *string {
+func (t MuxRequest) Get(k string) interface{} {
 	// check the queries if exists
 	val, ok := t.All()[k]
 	if ok {
-		return &val
+		return val
 	}
 	return nil
 }
 
-func (t MuxRequest) GetFirst(k string, dfault *string) *string {
+func (t MuxRequest) GetFirst(k string, dfault interface{}) interface{} {
 	val := t.Get(k)
 	if val == nil {
 		return dfault
@@ -118,13 +118,9 @@ func (t MuxRequest) GetFirst(k string, dfault *string) *string {
 	return val
 }
 
-// Proxy method to GetFirst(...) but non-pointer
-func (t MuxRequest) Input(k string, dfault string) string {
-	d := t.GetFirst(k, &dfault)
-	if d == nil {
-		return ""
-	}
-	return *d
+// Proxy method to Input(...)
+func (t MuxRequest) Input(k string, dfault interface{}) interface{} {
+	return t.GetFirst(k, dfault)
 }
 
 // Check if the string exists in the content type

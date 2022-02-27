@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/daison12006013/gorvel/databases"
+	"github.com/daison12006013/gorvel/pkg/array"
 	"github.com/daison12006013/gorvel/pkg/errors"
 	"github.com/daison12006013/gorvel/pkg/paginate/searchable"
 
@@ -51,29 +52,32 @@ func Exists(id *string) (bool, error) {
 
 // ---
 
-type FindStruct struct {
+type Finder struct {
 	Record *Model
 }
 
-func Find(id *string) *FindStruct {
+func Find(id *string) *Finder {
 	db := databases.Resolve()
 	user := &Model{}
 	db.First(user, id)
-	return &FindStruct{Record: user}
+	return &Finder{Record: user}
 }
 
-func (f *FindStruct) Delete() bool {
+func (f *Finder) Delete() bool {
 	db := databases.Resolve()
 	db.Delete(f.Record)
 	return true
 }
 
-func (f *FindStruct) Update(column string, value interface{}) {
+func (f *Finder) Updates(inputs map[string]interface{}) {
 	db := databases.Resolve()
-	db.Model(f.Record).Update(column, value)
-}
 
-func (f *FindStruct) Updates(inputs map[string]interface{}) {
-	db := databases.Resolve()
+	// only filter updatable fields!
+	for k := range inputs {
+		if array.In(k, Updatables) < 0 {
+			delete(inputs, k)
+		}
+	}
+
 	db.Model(f.Record).Updates(inputs)
 }

@@ -15,8 +15,8 @@ func Show(T engines.EngineInterface) {
 	request := engine.Request
 	response := engine.Response
 
-	id := request.GetFirst("id", nil)
-	record := users.Find(id).Record
+	id := request.Input("id", nil).(string)
+	record := users.Find(&id).Record
 
 	if request.IsJson() && request.WantsJson() {
 		response.Json(record, http.StatusOK)
@@ -51,11 +51,9 @@ func Update(T engines.EngineInterface) {
 	message := "Successfully Updated!"
 	status := http.StatusOK
 
-	found := users.Find(request.GetFirst("id", nil))
-	found.Updates(map[string]interface{}{
-		"name":  request.Input("name", found.Record.Name),
-		"email": request.Input("email", found.Record.Email),
-	})
+	id := request.Input("id", nil).(string)
+	found := users.Find(&id)
+	found.Updates(request.All())
 
 	// for api based
 	if request.IsJson() && request.WantsJson() {

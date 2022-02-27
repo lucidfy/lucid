@@ -10,6 +10,14 @@ import (
 const Table = "users"
 const PrimaryKey = "id"
 
+var Updatables = []string{
+	"name",
+	"email",
+	"email_verified_at",
+	"password",
+	"remember_token",
+}
+
 type Model struct {
 	ID              uint           `gorm:"primarykey" json:"id"`
 	Name            string         `gorm:"column:name" json:"name"`
@@ -21,15 +29,14 @@ type Model struct {
 	UpdatedAt       time.Time      `gorm:"column:updated_at" json:"updated_at"`
 }
 
-// https://gorm.io/docs/conventions.html#TableName
-func (Model) TableName() string {
+func (Model) TableName() string { // https://gorm.io/docs/conventions.html#TableName
 	return Table
 }
 
-func (m Model) HumanCreatedAt() string {
+func (m Model) ReadableCreatedAt() string {
 	return carbon.Time2Carbon(m.CreatedAt).ToDayDateTimeString()
 }
 
-func (m Model) HumanUpdatedAt() string {
+func (m Model) ReadableUpdatedAt() string {
 	return carbon.Time2Carbon(m.UpdatedAt).ToDayDateTimeString()
 }
