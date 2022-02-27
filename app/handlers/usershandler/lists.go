@@ -2,6 +2,7 @@ package usershandler
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/daison12006013/gorvel/app/models/users"
 	"github.com/daison12006013/gorvel/pkg/engines"
@@ -11,8 +12,8 @@ import (
 	"github.com/gorilla/csrf"
 )
 
-const PAGE = 1
-const PER_PAGE = 5
+const PAGE = "1"
+const PER_PAGE = "5"
 const SORT_COLUMN = "id"
 const SORT_TYPE = "desc"
 
@@ -59,10 +60,19 @@ func Lists(T engines.EngineInterface) {
 }
 
 func prepare(request request.MuxRequest) (*searchable.Table, error) {
+	// get the current "page", literally the default of each current page should always be 1
+	currentPage, err := strconv.Atoi(request.Input("page", PAGE).(string))
+	if err != nil {
+		return nil, err
+	}
+
 	// get the "per-page", though the default will be relying to defaultPerPage
 	// then check if the per page reaches the cap of 20 records per page
 	// if ever someone tries to bypass the value, we over-write it to 20
-	perPage := request.Input("per-page", PER_PAGE).(int)
+	perPage, err := strconv.Atoi(request.Input("per-page", PER_PAGE).(string))
+	if err != nil {
+		return nil, err
+	}
 	if perPage > 20 {
 		perPage = 20
 	}
@@ -70,7 +80,7 @@ func prepare(request request.MuxRequest) (*searchable.Table, error) {
 	var st searchable.Table
 	st = *table(request, &st)
 
-	st.Paginate.CurrentPage = request.Input("page", PAGE).(int)
+	st.Paginate.CurrentPage = currentPage
 	st.Paginate.PerPage = perPage
 	st.Paginate.BaseUrl = request.FullUrl()
 
@@ -137,7 +147,7 @@ func table(request request.MuxRequest, st *searchable.Table) *searchable.Table {
 			Name: "page",
 			Input: searchable.Input{
 				Visible:   false,
-				Value:     request.Input("page", PAGE).(int),
+				Value:     request.Input("page", PAGE).(string),
 				CanSearch: false,
 			},
 		},
@@ -145,7 +155,7 @@ func table(request request.MuxRequest, st *searchable.Table) *searchable.Table {
 			Name: "per-page",
 			Input: searchable.Input{
 				Visible:   false,
-				Value:     request.Input("per-page", PER_PAGE).(int),
+				Value:     request.Input("per-page", PER_PAGE).(string),
 				CanSearch: false,
 			},
 		},
