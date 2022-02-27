@@ -6,14 +6,13 @@ import (
 
 	"github.com/daison12006013/gorvel/pkg/errors"
 	"github.com/daison12006013/gorvel/pkg/facade/routes"
-	"github.com/daison12006013/gorvel/registrar"
 	"github.com/gorilla/mux"
 	"github.com/jedib0t/go-pretty/v6/table"
 	cli "github.com/urfave/cli/v2"
 )
 
-func DefinedRoutes(c *cli.Context) error {
-	defined := defined()
+func DefinedRoutes(c *cli.Context, r *[]routes.Routing) error {
+	defined := defined(r)
 
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
@@ -25,8 +24,8 @@ func DefinedRoutes(c *cli.Context) error {
 	return nil
 }
 
-func RegisteredRoutes(c *cli.Context) error {
-	registered := registered()
+func RegisteredRoutes(c *cli.Context, r *[]routes.Routing) error {
+	registered := registered(r)
 
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
@@ -56,10 +55,10 @@ type Defined struct {
 	queries     string
 }
 
-func registered() []Registered {
+func registered(r *[]routes.Routing) []Registered {
 	routings := []Registered{}
 
-	handlers := routes.Mux().Register(registrar.Routes).(*mux.Router)
+	handlers := routes.Mux().Register(r).(*mux.Router)
 	handlers.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
 		path, err := route.GetPathTemplate()
 		if err != nil {
@@ -101,10 +100,10 @@ func registered() []Registered {
 	return routings
 }
 
-func defined() []Defined {
+func defined(r *[]routes.Routing) []Defined {
 	routings := []Defined{}
 
-	routes := *routes.Mux().Explain(registrar.Routes).(*[]routes.Routing)
+	routes := *routes.Mux().Explain(r).(*[]routes.Routing)
 	for _, route := range routes {
 		routings = append(routings, Defined{
 			counter:     len(routings) + 1,

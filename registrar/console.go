@@ -1,4 +1,4 @@
-package console
+package registrar
 
 import (
 	"github.com/daison12006013/gorvel/app/commands"
@@ -28,12 +28,18 @@ var Commands = &[]*cli.Command{
 		Name:    "route:defined",
 		Aliases: []string{"ro:de"},
 		Usage:   "Get the lists of defined routes",
-		Action:  commands.DefinedRoutes,
+		Action: func(c *cli.Context) error {
+			commands.DefinedRoutes(c, Routes)
+			return nil
+		},
 	},
 	{
 		Name:    "route:registered",
 		Aliases: []string{"ro:re"},
 		Usage:   "Get the lists of registered routes",
-		Action:  commands.RegisteredRoutes,
+		Action: func(c *cli.Context) error {
+			commands.RegisteredRoutes(c, Routes)
+			return nil
+		},
 	},
 }
