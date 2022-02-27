@@ -11,7 +11,7 @@ var Routes = &[]r.Routing{
 		Path:    "/",
 		Name:    "welcome",
 		Method:  r.Method{"GET"},
-		Handler: handlers.Home,
+		Handler: handlers.Welcome,
 	},
 	{
 		Path: "/users",

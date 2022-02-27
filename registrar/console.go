@@ -7,20 +7,39 @@ import (
 
 var Commands = &[]*cli.Command{
 	{
-		Name:    "model",
-		Aliases: []string{"mo"},
+		Name:    "make:model",
+		Aliases: []string{"m:m"},
 		Usage:   "Creates a model",
 		Action:  commands.CraftModel,
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:  "name",
+				Value: "",
+				Usage: `The name of your package (i.e: "profiles")`,
+			},
+			&cli.StringFlag{
+				Name:  "table",
+				Value: "",
+				Usage: `The name of your table (i.e: "user_profiles")`,
+			},
+		},
 	},
 	{
-		Name:    "handler",
-		Aliases: []string{"hd"},
+		Name:    "make:handler",
+		Aliases: []string{"m:h"},
 		Usage:   "Creates an http handler",
 		Action:  commands.CraftHandler,
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:  "name",
+				Value: "",
+				Usage: `The name of your handler (i.e: "users")`,
+			},
+		},
 	},
 	{
-		Name:    "resource",
-		Aliases: []string{"res"},
+		Name:    "make:resource",
+		Aliases: []string{"m:r"},
 		Usage:   "Creates a resource along with the model",
 		Action:  commands.CraftResource,
 	},

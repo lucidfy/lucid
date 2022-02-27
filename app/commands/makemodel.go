@@ -7,6 +7,6 @@ import (
 )
 
 func CraftModel(c *cli.Context) error {
-	fmt.Println("make model ", c.Args().First())
+	fmt.Println("make model ", c.Args().First(), c.String("name"), c.String("table"))
 	return nil
 }

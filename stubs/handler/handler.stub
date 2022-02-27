@@ -6,14 +6,14 @@ import (
 	"github.com/daison12006013/gorvel/pkg/engines"
 )
 
-func Welcome(T engines.EngineInterface) {
+func ##NAME_STUDLY##(T engines.EngineInterface) {
 	engine := T.(engines.MuxEngine)
 	request := engine.Request
 	response := engine.Response
 
 	// prepare the data
 	data := map[string]interface{}{
-		"title": "Gorvel Rocks!",
+		"title": "My ##NAME_STUDLY##!",
 	}
 
 	// this is api request
@@ -24,10 +24,7 @@ func Welcome(T engines.EngineInterface) {
 
 	// render the template
 	response.View(
-		// this example below, we're telling the compiler
-		// to parse the base.go.html first, and then parse the welcome.go.html
-		// therefore the defined "body" should render accordingly
-		[]string{"base.go.html", "welcome.go.html"},
+		[]string{"base.go.html", "##NAME_LOWER##.go.html"},
 		data,
 	)
 }
