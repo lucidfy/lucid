@@ -1,8 +1,8 @@
 {{define "head"}}{{end}}
 
 {{define "body"}}
-<body class="bg-gray-800 flex h-screen mt-auto">
-  <div class="text-white m-auto">
+<body class="bg-gray-800 flex h-screen m-auto">
+  <div class="text-white m-auto w-6/12">
       {{ if $.success }}
           <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800" role="alert">
               {{ $.success }}
@@ -18,12 +18,17 @@
           <spa>{{ $.title }}</span>
         </div>
       </div>
+
       <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-        <div class="py-2 align-middle inline-block max-w-full sm:px-6 lg:px-8">
-          <div
-            class="p-5 bg-gray-100 shadow overflow-hidden border-b border-gray-200 sm:rounded-lg"
-          >
-            <form class="w-full" method="POST" action="/users/{{ $.record.ID }}/update">
+        <div class="py-2 align-middle max-w-full sm:px-6 lg:px-8">
+          <div class="p-5 bg-gray-100 shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+            <form class="w-full" method="POST"
+              {{ if $.isCreate }}
+                action="/users"
+              {{ else }}
+                action="/users/{{ $.record.ID }}/update"
+              {{ end }}
+            >
               <div class="flex flex-wrap -mx-3 mb-6">
                 <div class="w-1/2 md:w-full px-3 mb-6 md:mb-0">
                   <label
@@ -39,10 +44,8 @@
                     placeholder="John"
                     name="name"
                     value="{{ $.record.Name }}"
+                    {{ if $.isCreate }} required="required" {{ end }}
                   />
-                  {{/* <p class="text-red-500 text-xs italic">
-                    Please fill out this field.
-                  </p> */}}
                 </div>
                 <div class="w-1/2 md:w-full px-3 mb-6 md:mb-0">
                   <label
@@ -58,10 +61,29 @@
                     placeholder="john@doe.com"
                     name="email"
                     value="{{ $.record.Email }}"
+                    {{ if $.isCreate }} required="required" {{ end }}
                   />
-                  {{/* <p class="text-red-500 text-xs italic">
-                    Please fill out this field.
-                  </p> */}}
+                </div>
+                <div class="w-1/2 md:w-full px-3 mb-6 md:mb-0">
+                  <label
+                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                    for="grid-email"
+                  >
+                    Password
+                  </label>
+                  <input
+                    class="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                    id="grid-password"
+                    type="password"
+                    placeholder="*********"
+                    name="password"
+                    {{ if $.isCreate }} required="required" {{ end }}
+                  />
+                  {{ if not $.isCreate }}
+                  <p class="text-red-500 text-xs italic">
+                    Leave it blank if you don't want to update the password!
+                  </p>
+                  {{ end }}
                 </div>
                 {{ $.csrfField }}
                 <div class="w-1/2 md:w-full px-3 mb-6 md:mb-0 text-right">

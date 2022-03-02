@@ -19,7 +19,7 @@ var Updatables = []string{
 }
 
 type Model struct {
-	ID              uint           `gorm:"primarykey" json:"id"`
+	ID              uint           `gorm:"primarykey;auto_increment;not_null" json:"id"`
 	Name            string         `gorm:"column:name" json:"name"`
 	Email           string         `gorm:"column:email" json:"email"`
 	EmailVerifiedAt *time.Time     `gorm:"column:email_verified_at" json:"email_verified_at,omitempty"`

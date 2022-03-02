@@ -20,7 +20,7 @@ const SORT_TYPE = "desc"
 func Lists(T engines.EngineInterface) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	// w := engine.HttpResponseWriter
-	// r := engine.HttpRequest
+	r := engine.HttpRequest
 	req := engine.Request
 	res := engine.Response
 
@@ -53,7 +53,7 @@ func Lists(T engines.EngineInterface) *errors.AppError {
 			"data":           searchable,
 			"success":        req.GetFlash("success"),
 			"error":          req.GetFlash("error"),
-			csrf.TemplateTag: csrf.TemplateField(engine.HttpRequest),
+			csrf.TemplateTag: csrf.TemplateField(r),
 		},
 	)
 }

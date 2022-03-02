@@ -20,11 +20,15 @@ func Delete(T engines.EngineInterface) *errors.AppError {
 	status := http.StatusOK
 
 	id := req.Input("id", nil).(string)
-	if err := users.Exists(&id); err != nil {
-		return err
+	if appErr := users.Exists("id", &id); appErr != nil {
+		return appErr
 	}
 
-	users.Find(&id).Delete()
+	data, appErr := users.Find(&id)
+	if appErr != nil {
+		return appErr
+	}
+	data.Delete()
 
 	// for api based
 	if req.IsJson() && req.WantsJson() {
