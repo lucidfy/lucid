@@ -24,13 +24,18 @@
                 <i class="text-sm -mt-3">GORVEL Framework</i>
             </div>
 
-            <h1 class="text-5xl mb-5 inline-block">
-                {{ $.message }}
-            </h1>
-
-            <div class="rounded-md bg-white text-black text-sm p-5 font-normal">
-                {{ $.error }}
-            </div>
+            {{ if $.error }}
+                <h1 class="text-5xl mb-5">
+                    {{ $.message }}
+                </h1>
+                <div class="rounded-md bg-white text-black text-sm p-5 font-normal">
+                    {{ $.error }}
+                </div>
+            {{ else }}
+                <h1 class="text-5xl mb-5 text-center">
+                    {{ $.message }}
+                </h1>
+            {{ end }}
         </div>
     </body>
 </html>
