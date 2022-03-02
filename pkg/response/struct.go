@@ -3,11 +3,14 @@ package response
 import (
 	"bytes"
 	html "html/template"
+	"strings"
 	text "text/template"
 
 	"github.com/daison12006013/gorvel/pkg/facade/logger"
 	"github.com/daison12006013/gorvel/pkg/facade/path"
 )
+
+const DEFAULT_VIEW_EXT = ".go.html"
 
 type Response interface {
 	View(filepaths []string, data interface{})
@@ -17,6 +20,10 @@ type Response interface {
 // render the templates as string
 func Render(filepaths []string, data interface{}) (string, error) {
 	for idx, filepath := range filepaths {
+		if !strings.Contains(filepath, DEFAULT_VIEW_EXT) {
+			filepath = filepath + DEFAULT_VIEW_EXT
+		}
+
 		filepaths[idx] = path.Load().ViewPath(filepath)
 	}
 

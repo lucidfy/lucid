@@ -4,27 +4,27 @@ import (
 	"net/http"
 
 	"github.com/daison12006013/gorvel/pkg/engines"
+	"github.com/daison12006013/gorvel/pkg/errors"
 )
 
-func ##NAME_STUDLY##(T engines.EngineInterface) {
+func ##NAME_STUDLY##(T engines.EngineInterface) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	request := engine.Request
 	response := engine.Response
 
 	// prepare the data
 	data := map[string]interface{}{
-		"title": "My ##NAME_STUDLY##!",
+		"title": "My ##NAME_STUDLY## handler!",
 	}
 
 	// this is api request
 	if request.IsJson() && request.WantsJson() {
-		response.Json(data, http.StatusOK)
-		return
+		return response.Json(data, http.StatusOK)
 	}
 
 	// render the template
-	response.View(
-		[]string{"base.go.html", "##NAME_LOWER##.go.html"},
+	return response.View(
+		[]string{"base", "##NAME_LOWER##"},
 		data,
 	)
 }

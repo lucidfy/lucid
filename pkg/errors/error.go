@@ -6,6 +6,12 @@ import (
 	"github.com/daison12006013/gorvel/pkg/facade/logger"
 )
 
+type AppError struct {
+	Error   error
+	Message interface{}
+	Code    interface{}
+}
+
 func Handler(title string, e error) bool {
 	if e != nil {
 		// if we're on debugging mode

@@ -2,6 +2,7 @@ package users
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/daison12006013/gorvel/databases"
 	"github.com/daison12006013/gorvel/pkg/array"
@@ -35,9 +36,13 @@ func Lists(st *searchable.Table) error {
 	return nil
 }
 
-func Exists(id *string) (bool, error) {
+func Exists(id *string) *errors.AppError {
 	if id == nil {
-		return false, fmt.Errorf("id should not be null")
+		return &errors.AppError{
+			Error:   fmt.Errorf("id should not be null"),
+			Message: "Empty ID Provided",
+			Code:    http.StatusInternalServerError,
+		}
 	}
 
 	db := databases.Resolve()
@@ -47,7 +52,15 @@ func Exists(id *string) (bool, error) {
 
 	var found bool
 	db.Raw(stmt, args).Scan(&found)
-	return found, nil
+	if !found {
+		return &errors.AppError{
+			Error:   fmt.Errorf("(id: %s) record not found", *id),
+			Message: "Record not found",
+			Code:    http.StatusNotFound,
+		}
+	}
+
+	return nil
 }
 
 // ---

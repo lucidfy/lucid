@@ -3,9 +3,10 @@ package response
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 	text "text/template"
 
-	"github.com/daison12006013/gorvel/pkg/facade/logger"
+	"github.com/daison12006013/gorvel/pkg/errors"
 	"github.com/daison12006013/gorvel/pkg/facade/path"
 )
 
@@ -22,10 +23,14 @@ func Mux(w http.ResponseWriter, r *http.Request) MuxResponse {
 	return t
 }
 
-func (m MuxResponse) View(filepaths []string, data interface{}) {
-	m.ResponseWriter.WriteHeader(http.StatusOK)
+func (m MuxResponse) ViewWithStatus(filepaths []string, data interface{}, status *int) *errors.AppError {
+	m.ResponseWriter.WriteHeader(*status)
 
 	for idx, filepath := range filepaths {
+		if !strings.Contains(filepath, DEFAULT_VIEW_EXT) {
+			filepath = filepath + DEFAULT_VIEW_EXT
+		}
+
 		filepaths[idx] = path.Load().ViewPath(filepath)
 	}
 
@@ -37,11 +42,20 @@ func (m MuxResponse) View(filepaths []string, data interface{}) {
 
 	t, err := text.ParseFiles(filepaths...)
 	if err != nil {
-		logger.Fatal(err)
-		panic(err)
+		return &errors.AppError{
+			Error:   err,
+			Message: "Error rendering view",
+			Code:    http.StatusInternalServerError,
+		}
 	}
 
 	t.Execute(m.ResponseWriter, data)
+	return nil
+}
+
+func (m MuxResponse) View(filepaths []string, data interface{}) *errors.AppError {
+	httpOk := 200
+	return m.ViewWithStatus(filepaths, data, &httpOk)
 }
 
 func (m MuxResponse) constructDataFromHeader(data interface{}, val string, key string) interface{} {
@@ -54,8 +68,16 @@ func (m MuxResponse) constructDataFromHeader(data interface{}, val string, key s
 	return data
 }
 
-func (m MuxResponse) Json(data interface{}, status int) {
+func (m MuxResponse) Json(data interface{}, status int) *errors.AppError {
 	m.ResponseWriter.Header().Set("Content-Type", "application/json")
 	m.ResponseWriter.WriteHeader(status)
-	json.NewEncoder(m.ResponseWriter).Encode(data)
+	err := json.NewEncoder(m.ResponseWriter).Encode(data)
+	if err != nil {
+		return &errors.AppError{
+			Error:   err,
+			Message: "Error encoding json data",
+			Code:    http.StatusInternalServerError,
+		}
+	}
+	return nil
 }

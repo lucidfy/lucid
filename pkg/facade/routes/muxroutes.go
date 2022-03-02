@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/daison12006013/gorvel/app"
+	"github.com/daison12006013/gorvel/app/handlers"
 	"github.com/daison12006013/gorvel/pkg/engines"
 	"github.com/gorilla/mux"
 )
@@ -16,6 +17,8 @@ type MuxRoutes struct {
 func Mux() MuxRoutes {
 	mr := MuxRoutes{}
 	mr.Router = mux.NewRouter().StrictSlash(true)
+	mr.setUpDefaultErrors()
+
 	return mr
 }
 
@@ -52,19 +55,22 @@ func (mr MuxRoutes) Explain(base *[]Routing) interface{} {
 	return &routings
 }
 
-func (sub MuxRoutes) register(route Routing) {
+func (mr MuxRoutes) register(route Routing) {
 	handler := func(w http.ResponseWriter, r *http.Request) {
 		engine := engines.Mux(w, r)
-		route.Handler(engine)
+		e := route.Handler(engine)
+		if e != nil {
+			handlers.HttpErrorHandler(engine, e)
+		}
 	}
 
-	sub.Router.HandleFunc(route.Path, handler).
+	mr.Router.HandleFunc(route.Path, handler).
 		Methods(getMethods(route.Method)...).
 		Queries(route.Queries...).
 		Name(route.Name)
 
 	for _, v := range route.Middlewares {
-		sub.routeUse(app.RouteMiddleware[v])
+		mr.routeUse(app.RouteMiddleware[v])
 	}
 }
 
@@ -72,4 +78,18 @@ func (mr MuxRoutes) routeUse(middlewares ...mux.MiddlewareFunc) {
 	for _, middleware := range middlewares {
 		mr.Router.Use(middleware)
 	}
+}
+
+// on this function, we setup the default 404 and 405 error page
+// this will go thru under the app/handlers/error.go
+func (mr MuxRoutes) setUpDefaultErrors() {
+	mr.Router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		engine := engines.Mux(w, r)
+		handlers.PageNotFound(engine)
+	})
+
+	mr.Router.MethodNotAllowedHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		engine := engines.Mux(w, r)
+		handlers.MethodNotAllowed(engine)
+	})
 }

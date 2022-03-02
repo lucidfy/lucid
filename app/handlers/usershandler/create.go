@@ -4,25 +4,30 @@ import (
 	"net/http"
 
 	"github.com/daison12006013/gorvel/pkg/engines"
+	"github.com/daison12006013/gorvel/pkg/errors"
 )
 
-func Create(T engines.EngineInterface) {
+func Create(T engines.EngineInterface) *errors.AppError {
 	engine := T.(engines.MuxEngine)
-	// request := engine.Request
-	response := engine.Response
+	// w := engine.HttpResponseWriter
+	// r := engine.HttpRequest
+	// req := engine.Request
+	res := engine.Response
 
 	data := map[string]interface{}{"title": "Create Form"}
 
-	response.View(
-		[]string{"base.go.html", "users/create.go.html"},
+	return res.View(
+		[]string{"base", "users/create"},
 		data,
 	)
 }
 
-func Store(T engines.EngineInterface) {
+func Store(T engines.EngineInterface) *errors.AppError {
 	engine := T.(engines.MuxEngine)
-	// request := engine.Request
-	response := engine.Response
+	// w := engine.HttpResponseWriter
+	// r := engine.HttpRequest
+	// req := engine.Request
+	res := engine.Response
 
 	// prepare message and status
 	message := "Successfully Created!"
@@ -31,7 +36,7 @@ func Store(T engines.EngineInterface) {
 	// * TODO
 
 	// prepare the data
-	response.Json(map[string]interface{}{
+	return res.Json(map[string]interface{}{
 		"message": message,
 	}, status)
 }

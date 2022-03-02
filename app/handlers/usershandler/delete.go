@@ -5,37 +5,37 @@ import (
 
 	"github.com/daison12006013/gorvel/app/models/users"
 	"github.com/daison12006013/gorvel/pkg/engines"
+	"github.com/daison12006013/gorvel/pkg/errors"
 )
 
-func Delete(T engines.EngineInterface) {
+func Delete(T engines.EngineInterface) *errors.AppError {
 	engine := T.(engines.MuxEngine)
-	request := engine.Request
-	response := engine.Response
+	// w := engine.HttpResponseWriter
+	// r := engine.HttpRequest
+	req := engine.Request
+	res := engine.Response
 
 	// prepare message and status
 	message := "Successfully Deleted!"
 	status := http.StatusOK
 
-	id := request.Input("id", nil).(string)
-
-	exists, _ := users.Exists(&id)
-	if exists {
-		users.Find(&id).Delete()
-	} else {
-		message = "Record not found!"
-		status = http.StatusNotFound
+	id := req.Input("id", nil).(string)
+	if err := users.Exists(&id); err != nil {
+		return err
 	}
 
+	users.Find(&id).Delete()
+
 	// for api based
-	if request.IsJson() && request.WantsJson() {
-		response.Json(map[string]interface{}{
+	if req.IsJson() && req.WantsJson() {
+		return res.Json(map[string]interface{}{
 			"ok":      true,
 			"message": message,
 		}, status)
-		return
 	}
 
 	// for form based, just redirect
-	request.SetFlash("success", message)
-	request.RedirectPrevious()
+	req.SetFlash("success", message)
+	req.RedirectPrevious()
+	return nil
 }

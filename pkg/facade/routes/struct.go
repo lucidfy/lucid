@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/daison12006013/gorvel/pkg/engines"
+	"github.com/daison12006013/gorvel/pkg/errors"
 )
 
 // interface
@@ -15,11 +16,16 @@ type RouteInterface interface {
 
 // structs
 
+// type AppError struct {
+// 	Error   error
+// 	Message interface{}
+// 	Code    interface{}
+// }
 type Middlewares []string
 type Queries []string
 type Method []string
 type Resources map[string]Handler
-type Handler func(engines.EngineInterface)
+type Handler func(engines.EngineInterface) *errors.AppError
 type Routing struct {
 	Name        string
 	Path        string

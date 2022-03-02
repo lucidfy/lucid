@@ -17,43 +17,42 @@ const PER_PAGE = "5"
 const SORT_COLUMN = "id"
 const SORT_TYPE = "desc"
 
-func Lists(T engines.EngineInterface) {
+func Lists(T engines.EngineInterface) *errors.AppError {
 	engine := T.(engines.MuxEngine)
-	request := engine.Request
-	response := engine.Response
+	// w := engine.HttpResponseWriter
+	// r := engine.HttpRequest
+	req := engine.Request
+	res := engine.Response
 
 	// prepare the searchable structure
-	searchable, e := prepare(request)
-	if errors.Handler("error preparing searchable table", e) {
-		engine.HttpResponseWriter.WriteHeader(http.StatusInternalServerError)
-		return
+	searchable, err := prepare(req)
+	if errors.Handler("error preparing searchable table", err) {
+		return &errors.AppError{Error: err, Message: "error preparing searchable table", Code: http.StatusInternalServerError}
 	}
 
 	// fetch the searchable
-	err := users.Lists(searchable)
+	err = users.Lists(searchable)
 	if errors.Handler("error fetching users list", err) {
-		engine.HttpResponseWriter.WriteHeader(http.StatusInternalServerError)
-		return
+		return &errors.AppError{Error: err, Message: "error fetching users list", Code: http.StatusInternalServerError}
 	}
 
 	// here, we determine if the requestor wants a json response
-	if request.IsJson() && request.WantsJson() {
-		response.Json(searchable.Paginate.ToArray(), http.StatusOK)
-		return
+	if req.IsJson() && req.WantsJson() {
+		return res.Json(searchable.Paginate.ToArray(), http.StatusOK)
 	}
 
 	// or else, provide an html response instead.
-	response.View(
+	return res.View(
 		[]string{
-			"base.go.html",
-			"users/lists.go.html",
-			"users/_table.go.html",
+			"base",
+			"users/lists",
+			"users/_table",
 		},
 		map[string]interface{}{
 			"title":          "Users List",
 			"data":           searchable,
-			"success":        request.GetFlash("success"),
-			"error":          request.GetFlash("error"),
+			"success":        req.GetFlash("success"),
+			"error":          req.GetFlash("error"),
 			csrf.TemplateTag: csrf.TemplateField(engine.HttpRequest),
 		},
 	)
