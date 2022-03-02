@@ -11,7 +11,7 @@ import (
 	"github.com/daison12006013/gorvel/pkg/response"
 )
 
-var defaultView string = "pkg/pagination/tailwind.go.html"
+const DefaultView = "pkg/pagination/tailwind.go.html"
 
 func Construct(items interface{}, total int, perPage int, currentPage int) *Paginate {
 	p := Paginate{
@@ -39,7 +39,7 @@ func (p *Paginate) Links() string {
 
 func (p *Paginate) Render(view *string /*, data array*/) string {
 	if view == nil {
-		dv := defaultView
+		dv := DefaultView
 		view = &dv
 	}
 
