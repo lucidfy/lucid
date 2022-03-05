@@ -34,7 +34,7 @@ $> bash ./serve
   - [x] Resources (index,create,store,show,edit,update,destroy)
   - [x] Form Request Validation
   - [ ] Request Facade
-    - [x] req.Validator()
+    - [x] Validator()
     - [x] CurrentUrl()
     - [x] FullUrl()
     - [x] PreviousUrl()
@@ -54,9 +54,9 @@ $> bash ./serve
     - [x] IsMultipart()
     - [x] WantsJson()
   - [ ] Response Facade
-    - [x] res.Json()
-    - [x] res.View()
-    - [x] res.ViewWithStatus()
+    - [x] Json()
+    - [x] View()
+    - [x] ViewWithStatus()
 - [ ] Console Commands
   - [x] route:defined
   - [x] route:registered
