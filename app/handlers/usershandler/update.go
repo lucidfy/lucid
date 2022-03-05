@@ -35,9 +35,10 @@ func Show(T engines.EngineInterface) *errors.AppError {
 
 	// by default we use "show" then check if the
 	// url path contains /edit , therefore use "edit"
+	isShow := true
 	viewFile := "show"
 	if strings.Contains(r.URL.Path, "/edit") {
-		viewFile = "edit"
+		isShow = false
 	}
 
 	return res.View(
@@ -46,9 +47,11 @@ func Show(T engines.EngineInterface) *errors.AppError {
 			"title":          record.Name + "'s Profile",
 			"previousUrl":    req.PreviousUrl(),
 			"record":         record,
-			"success":        req.GetFlash("success"),
-			"error":          req.GetFlash("error"),
+			"isShow":         isShow,
 			csrf.TemplateTag: csrf.TemplateField(r),
+
+			"success": req.GetFlash("success"),
+			"error":   req.GetFlash("error"),
 		},
 	)
 }

@@ -9,15 +9,18 @@
           </div>
       {{ end }}
 
-      {{ $length := len $.fails }} {{ if gt $length 0 }}
-        <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
-          Validation Error!
-          <ul class="list-disc pl-5">
-          {{ range $k, $v := $.fails }}
-            <li>{{ $v }}</li>
-          {{ end }}
-          </ul>
-        </div>
+
+      {{ if $.fails }}
+        {{ $length := len $.fails }} {{ if gt $length 0 }}
+          <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
+            Validation Error!
+            <ul class="list-disc pl-5">
+            {{ range $k, $v := $.fails }}
+              <li>{{ $v }}</li>
+            {{ end }}
+            </ul>
+          </div>
+        {{ end }}
       {{ end }}
 
       <div class="flex justify-between mb-3">
@@ -61,6 +64,10 @@
                     {{ else }}
                       value="{{ $.record.Name }}"
                     {{ end }}
+
+                    {{ if $.isShow }}
+                      disabled="disabled"
+                    {{ end }}
                   />
                 </div>
                 <div class="w-1/2 md:w-full px-3 mb-6 md:mb-0">
@@ -83,8 +90,14 @@
                     {{ else }}
                       value="{{ $.record.Email }}"
                     {{ end }}
+
+                    {{ if $.isShow }}
+                      disabled="disabled"
+                    {{ end }}
                   />
                 </div>
+
+                {{ if not $.isShow }}
                 <div class="w-1/2 md:w-full px-3 mb-6 md:mb-0">
                   <label
                     class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
@@ -102,24 +115,45 @@
                     {{ if $.isCreate }}
                       required="required"
                     {{ end }}
+
+                    {{ if $.isShow }}
+                      disabled="disabled"
+                    {{ end }}
                   />
-                  {{ if not $.isCreate }}
+                  {{ if and (not $.isCreate) (not $.isShow) }}
                   <p class="text-red-500 text-xs italic">
                     Leave it blank if you don't want to update the password!
                   </p>
                   {{ end }}
                 </div>
-                {{ $.csrfField }}
-                <div class="w-1/2 md:w-full px-3 mb-6 md:mb-0 text-right">
-                  <button class="
-                      uppercase text-xs
-                      bg-gray-800 hover:bg-white
-                      text-white hover:text-gray-700
-                      font-light
-                      py-3 px-6
-                      border border-gray-700 hover:border
-                      rounded" type="submit">Save</button>
-                </div>
+                {{ end }}
+
+                {{ if $.isShow }}
+                  <div class="w-1/2 md:w-full px-3 mb-6 mt-5 md:mb-0 text-center">
+                    <a href="/users/{{ $.record.ID }}/edit" class="
+                        uppercase text-xs
+                        bg-gray-800 hover:bg-white
+                        text-white hover:text-gray-700
+                        font-light
+                        py-3 px-6
+                        border border-gray-700 hover:border
+                        rounded
+                        ">Edit</a>
+                  </div>
+                {{ else }}
+                  {{ $.csrfField }}
+                  <div class="w-1/2 md:w-full px-3 mb-6 md:mb-0 text-right">
+                    <button class="
+                        uppercase text-xs
+                        bg-gray-800 hover:bg-white
+                        text-white hover:text-gray-700
+                        font-light
+                        py-3 px-6
+                        border border-gray-700 hover:border
+                        rounded" type="submit">Save</button>
+                  </div>
+                {{ end }}
+
               </div>
             </form>
           </div>

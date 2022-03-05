@@ -44,12 +44,20 @@ func (m MuxResponse) ViewWithStatus(filepaths []string, data interface{}, status
 	if err != nil {
 		return &errors.AppError{
 			Error:   err,
-			Message: "Error rendering view",
+			Message: "Error parsing files",
 			Code:    http.StatusInternalServerError,
 		}
 	}
 
-	t.Execute(m.ResponseWriter, data)
+	err = t.Execute(m.ResponseWriter, data)
+	if err != nil {
+		return &errors.AppError{
+			Error:   err,
+			Message: "Error executing template",
+			Code:    http.StatusInternalServerError,
+		}
+	}
+
 	return nil
 }
 
