@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/daison12006013/gorvel/app/models/users"
+	"github.com/daison12006013/gorvel/app/validations"
 	"github.com/daison12006013/gorvel/pkg/engines"
 	"github.com/daison12006013/gorvel/pkg/errors"
 	"github.com/gorilla/csrf"
@@ -20,9 +21,14 @@ func Create(T engines.EngineInterface) *errors.AppError {
 		"title":          "Create Form",
 		"record":         &users.Model{},
 		"isCreate":       true,
-		"success":        req.GetFlash("success"),
-		"error":          req.GetFlash("error"),
 		csrf.TemplateTag: csrf.TemplateField(r),
+
+		// to retrieve the flashes from Store() or somewhere
+		// that redirects back to Create()
+		"success": req.GetFlash("success"),
+		"error":   req.GetFlash("error"),
+		"fails":   req.GetFlashMap("fails"),
+		"inputs":  req.GetFlashMap("inputs"),
 	}
 
 	return res.View(
@@ -37,6 +43,15 @@ func Store(T engines.EngineInterface) *errors.AppError {
 	// r := engine.HttpRequest
 	req := engine.Request
 	res := engine.Response
+
+	// validate the inputs
+	validator := req.Validator(validations.UserValidateCreate())
+	if validator != nil {
+		req.SetFlashMap("fails", validator.ValidationError)
+		req.SetFlashMap("inputs", req.All())
+		req.RedirectPrevious()
+		return nil
+	}
 
 	message := "Successfully Created!"
 	status := http.StatusOK

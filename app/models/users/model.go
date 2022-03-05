@@ -9,6 +9,7 @@ import (
 	"github.com/daison12006013/gorvel/pkg/errors"
 	"github.com/daison12006013/gorvel/pkg/facade/crypt"
 	"github.com/daison12006013/gorvel/pkg/paginate/searchable"
+	"github.com/golang-module/carbon"
 
 	sq "github.com/Masterminds/squirrel"
 )
@@ -40,8 +41,8 @@ func Lists(st *searchable.Table) error {
 func Exists(column string, value *string) *errors.AppError {
 	if value == nil {
 		return &errors.AppError{
-			Error:   fmt.Errorf("value should not be null"),
-			Message: "Empty value provided",
+			Error:   fmt.Errorf("app.models.users.model@Exists: Value should not be null"),
+			Message: "Value should not be null",
 			Code:    http.StatusInternalServerError,
 		}
 	}
@@ -55,7 +56,7 @@ func Exists(column string, value *string) *errors.AppError {
 	db.Raw(stmt, args).Scan(&found)
 	if !found {
 		return &errors.AppError{
-			Error:   fmt.Errorf("(%s: %s) record not found", column, *value),
+			Error:   fmt.Errorf("app.models.users.model@Exists: (%s: %s) record not found", column, *value),
 			Message: "Record not found",
 			Code:    http.StatusNotFound,
 		}
@@ -64,11 +65,13 @@ func Exists(column string, value *string) *errors.AppError {
 	return nil
 }
 
-func Create(inputs map[string]interface{}) (*Finder, *errors.AppError) {
+func Create(i interface{}) (*Finder, *errors.AppError) {
 	db := databases.Resolve()
 
 	// here, we call the sanitizer function
-	inputs, appErr := sanitize(inputs)
+	i, appErr := sanitize(i)
+	inputs := i.(map[string]interface{})
+
 	if appErr != nil {
 		return nil, appErr
 	}
@@ -76,20 +79,25 @@ func Create(inputs map[string]interface{}) (*Finder, *errors.AppError) {
 	// here, we validate if the email existence is present
 	// we don't wan't to flood our database just by throwing
 	// an error of duplicate entry check.
-	record := new(Model)
+	record := &Model{}
 	email := inputs["email"].(string)
 
 	// finding the record should be null
 	if exists := Exists("email", &email); exists == nil {
 		return nil, &errors.AppError{
-			Error:   fmt.Errorf("email %s already exists", email),
+			Error:   fmt.Errorf("app.models.users.model@Create: email %s already exists", email),
 			Message: fmt.Sprintf("Email %s already exist", email),
 			Code:    http.StatusInternalServerError,
 		}
 	}
 
+	// pre-fill the created_at and updated_at
+	now := carbon.Now().ToDateTimeString()
+	inputs["created_at"] = now
+	inputs["updated_at"] = now
+
 	// create the record, then check if there are error
-	err := db.Model(record).Create(inputs).Error
+	err := db.Model(&record).Create(inputs).Error
 	if err != nil {
 		return nil, &errors.AppError{
 			Error:   err,
@@ -124,11 +132,13 @@ func Find(id *string) (*Finder, *errors.AppError) {
 	return &Finder{Model: record}, nil
 }
 
-func (f *Finder) Updates(inputs map[string]interface{}) *errors.AppError {
+func (f *Finder) Updates(i interface{}) *errors.AppError {
 	db := databases.Resolve()
 
 	// here, we call the sanitizer function
-	inputs, appErr := sanitize(inputs)
+	i, appErr := sanitize(i)
+	inputs := i.(map[string]interface{})
+
 	if appErr != nil {
 		return appErr
 	}
@@ -144,7 +154,9 @@ func (f *Finder) Delete() bool {
 	return true
 }
 
-func sanitize(inputs map[string]interface{}) (map[string]interface{}, *errors.AppError) {
+func sanitize(i interface{}) (interface{}, *errors.AppError) {
+	inputs := i.(map[string]interface{})
+
 	// only filter updatable fields!
 	for k := range inputs {
 		if array.In(k, Updatables) < 0 {
@@ -161,7 +173,7 @@ func sanitize(inputs map[string]interface{}) (map[string]interface{}, *errors.Ap
 			inputs["password"] = enc
 			if err != nil {
 				return inputs, &errors.AppError{
-					Error:   fmt.Errorf("crypt.Encrypt(): throws an error %s", err),
+					Error:   fmt.Errorf("app.models.users.model@sanitize: crypt.Encrypt(): throws an error %s", err),
 					Message: "Encrypting password seems not possible",
 					Code:    http.StatusInternalServerError,
 				}

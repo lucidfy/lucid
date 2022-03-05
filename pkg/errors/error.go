@@ -7,9 +7,10 @@ import (
 )
 
 type AppError struct {
-	Error   error
-	Message interface{}
-	Code    interface{}
+	Error           error
+	Message         interface{}
+	Code            interface{}
+	ValidationError interface{}
 }
 
 func Handler(title string, e error) bool {

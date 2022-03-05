@@ -9,6 +9,17 @@
           </div>
       {{ end }}
 
+      {{ $length := len $.fails }} {{ if gt $length 0 }}
+        <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
+          Validation Error!
+          <ul class="list-disc pl-5">
+          {{ range $k, $v := $.fails }}
+            <li>{{ $v }}</li>
+          {{ end }}
+          </ul>
+        </div>
+      {{ end }}
+
       <div class="flex justify-between mb-3">
         <div class="text-xs inline-block my-auto">
           <span class="border-dotted border-gray-400 border-b"><a href="/">Home</a></span>
@@ -43,8 +54,13 @@
                     type="text"
                     placeholder="John"
                     name="name"
-                    value="{{ $.record.Name }}"
-                    {{ if $.isCreate }} required="required" {{ end }}
+
+                    {{ if $.isCreate }}
+                      required="required"
+                      value='{{ if $.inputs.name }}{{ $.inputs.name }}{{ end }}'
+                    {{ else }}
+                      value="{{ $.record.Name }}"
+                    {{ end }}
                   />
                 </div>
                 <div class="w-1/2 md:w-full px-3 mb-6 md:mb-0">
@@ -60,8 +76,13 @@
                     type="text"
                     placeholder="john@doe.com"
                     name="email"
-                    value="{{ $.record.Email }}"
-                    {{ if $.isCreate }} required="required" {{ end }}
+
+                    {{ if $.isCreate }}
+                      required="required"
+                      value='{{ if $.inputs.email }}{{ $.inputs.email }}{{ end }}'
+                    {{ else }}
+                      value="{{ $.record.Email }}"
+                    {{ end }}
                   />
                 </div>
                 <div class="w-1/2 md:w-full px-3 mb-6 md:mb-0">
@@ -77,7 +98,10 @@
                     type="password"
                     placeholder="*********"
                     name="password"
-                    {{ if $.isCreate }} required="required" {{ end }}
+
+                    {{ if $.isCreate }}
+                      required="required"
+                    {{ end }}
                   />
                   {{ if not $.isCreate }}
                   <p class="text-red-500 text-xs italic">

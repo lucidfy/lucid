@@ -9,8 +9,10 @@ import (
 
 func ##NAME_STUDLY##(T engines.EngineInterface) *errors.AppError {
 	engine := T.(engines.MuxEngine)
-	request := engine.Request
-	response := engine.Response
+	// w := engine.HttpResponseWriter
+	// r := engine.HttpRequest
+	req := engine.Request
+	res := engine.Response
 
 	// prepare the data
 	data := map[string]interface{}{

@@ -1,12 +1,18 @@
 package request
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/http"
 	"strings"
+	"sync"
 	"time"
 
+	"github.com/daison12006013/gorvel/pkg/errors"
 	"github.com/daison12006013/gorvel/pkg/facade/session"
 	"github.com/daison12006013/gorvel/pkg/facade/urls"
+	"github.com/daison12006013/gorvel/pkg/rules"
+	"github.com/daison12006013/gorvel/pkg/rules/must"
 	"github.com/gorilla/mux"
 )
 
@@ -72,10 +78,31 @@ func (t MuxRequest) GetFlash(name string) *string {
 	return value
 }
 
+// Set a flash map
+// make sure the values you're providing is set as map[string]interface{}
+// therefore, we can stringify it into json format
+func (t MuxRequest) SetFlashMap(name string, values interface{}) {
+	j, err := json.Marshal(values.(map[string]interface{}))
+	if err != nil {
+		panic(err)
+	}
+	t.SetFlash(name, string(j))
+}
+
+// Get the flash map, this pulls from SetFlashMap
+func (t MuxRequest) GetFlashMap(name string) *map[string]interface{} {
+	ret := map[string]interface{}{}
+	flash := t.GetFlash(name)
+	if flash != nil {
+		json.Unmarshal([]byte(*t.GetFlash(name)), &ret)
+	}
+	return &ret
+}
+
 // Request  -------------------------------------------------
 
 // This returns all avaiable queries from
-func (t MuxRequest) All() map[string]interface{} {
+func (t MuxRequest) All() interface{} {
 	params := map[string]interface{}{}
 
 	// via form inputs
@@ -103,7 +130,7 @@ func (t MuxRequest) All() map[string]interface{} {
 // This returns the specific value from the provided key
 func (t MuxRequest) Get(k string) interface{} {
 	// check the queries if exists
-	val, ok := t.All()[k]
+	val, ok := t.All().(map[string]interface{})[k]
 	if ok {
 		return val
 	}
@@ -151,4 +178,49 @@ func (t MuxRequest) IsMultipart() bool {
 
 func (t MuxRequest) WantsJson() bool {
 	return t.HasAccept("json")
+}
+
+// --- Validator
+
+func (t MuxRequest) Validator(setOfRules *must.SetOfRules) *errors.AppError {
+	var errsChan = make(chan map[string]string)
+
+	var wg sync.WaitGroup
+
+	for inputField, inputRules := range *setOfRules {
+		for _, inputRule := range inputRules {
+			inputValue := t.Get(inputField).(string)
+			wg.Add(1)
+			go rules.Validate(
+				inputField,
+				inputValue,
+				inputRule,
+				errsChan,
+				&wg,
+			)
+		}
+	}
+
+	go func() {
+		wg.Wait()
+		close(errsChan)
+	}()
+
+	validationErrors := map[string]interface{}{}
+	for val := range errsChan {
+		for k, v := range val {
+			validationErrors[k] = v
+		}
+	}
+
+	if len(validationErrors) > 0 {
+		return &errors.AppError{
+			Error:           fmt.Errorf("pkg.facade.request.muxrequest@Validator: Request validation error"),
+			Message:         "Request validation error",
+			Code:            http.StatusUnprocessableEntity,
+			ValidationError: validationErrors,
+		}
+	}
+
+	return nil
 }

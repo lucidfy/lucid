@@ -29,6 +29,34 @@ $> bash ./serve
 ## Checklist
 
 - [x] Route
+- [ ] Handlers
+  - [x] Single
+  - [x] Resources (index,create,store,show,edit,update,destroy)
+  - [x] Form Request Validation
+  - [ ] Request Facade
+    - [x] req.Validator()
+    - [x] CurrentUrl()
+    - [x] FullUrl()
+    - [x] PreviousUrl()
+    - [x] RedirectPrevious()
+    - [x] SetFlash()
+    - [x] GetFlash()
+    - [x] SetFlashMap()
+    - [x] GetFlashMap()
+    - [x] All()
+    - [x] Get()
+    - [x] GetFirst()
+    - [x] Input()
+    - [x] HasContentType()
+    - [x] HasAccept()
+    - [x] IsForm()
+    - [x] IsJson()
+    - [x] IsMultipart()
+    - [x] WantsJson()
+  - [ ] Response Facade
+    - [x] res.Json()
+    - [x] res.View()
+    - [x] res.ViewWithStatus()
 - [ ] Console Commands
   - [x] route:defined
   - [x] route:registered
