@@ -78,7 +78,7 @@ func (t MuxRequest) GetFlash(name string) *string {
 	return value
 }
 
-// Set a flash map
+// SetFlashMap Set a flash map
 // make sure the values you're providing is set as map[string]interface{}
 // therefore, we can stringify it into json format
 func (t MuxRequest) SetFlashMap(name string, values interface{}) {
@@ -89,7 +89,7 @@ func (t MuxRequest) SetFlashMap(name string, values interface{}) {
 	t.SetFlash(name, string(j))
 }
 
-// Get the flash map, this pulls from SetFlashMap
+// GetFlashMap Get the flash map, this pulls from SetFlashMap
 func (t MuxRequest) GetFlashMap(name string) *map[string]interface{} {
 	ret := map[string]interface{}{}
 	flash := t.GetFlash(name)
@@ -101,7 +101,7 @@ func (t MuxRequest) GetFlashMap(name string) *map[string]interface{} {
 
 // Request  -------------------------------------------------
 
-// This returns all avaiable queries from
+// All This returns all available queries from
 func (t MuxRequest) All() interface{} {
 	params := map[string]interface{}{}
 
@@ -127,7 +127,7 @@ func (t MuxRequest) All() interface{} {
 	return params
 }
 
-// This returns the specific value from the provided key
+// Get This returns the specific value from the provided key
 func (t MuxRequest) Get(k string) interface{} {
 	// check the queries if exists
 	val, ok := t.All().(map[string]interface{})[k]
@@ -145,12 +145,12 @@ func (t MuxRequest) GetFirst(k string, dfault interface{}) interface{} {
 	return val
 }
 
-// Proxy method to Input(...)
+// Input Proxy method to Input(...)
 func (t MuxRequest) Input(k string, dfault interface{}) interface{} {
 	return t.GetFirst(k, dfault)
 }
 
-// Check if the string exists in the content type
+// HasContentType Check if the string exists in the content type
 func (t MuxRequest) HasContentType(substr string) bool {
 	contentType := t.HttpRequest.Header.Get("Content-Type")
 	return strings.Contains(contentType, substr)
@@ -161,17 +161,17 @@ func (t MuxRequest) HasAccept(substr string) bool {
 	return strings.Contains(accept, substr)
 }
 
-// Check if the request is form
+// IsForm Check if the request is form
 func (t MuxRequest) IsForm() bool {
 	return t.HasContentType("application/x-www-form-urlencoded")
 }
 
-// Check if the request is json
+// IsJson Check if the request is json
 func (t MuxRequest) IsJson() bool {
 	return t.HasContentType("json")
 }
 
-// Check if the request is multipart
+// IsMultipart Check if the request is multipart
 func (t MuxRequest) IsMultipart() bool {
 	return t.HasContentType("multipart")
 }
