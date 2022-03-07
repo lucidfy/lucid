@@ -224,3 +224,15 @@ func (t MuxRequest) Validator(setOfRules *must.SetOfRules) *errors.AppError {
 
 	return nil
 }
+
+// GetIp returns the client IP address
+func (t MuxRequest) GetIp() string {
+	ip := t.HttpRequest.Header.Get("X-Forwarded-For")
+	if len(ip) == 0 {
+		ip = t.HttpRequest.Header.Get("X-Real-Ip")
+	}
+	if len(ip) == 0 {
+		ip = t.HttpRequest.RemoteAddr
+	}
+	return ip
+}

@@ -19,4 +19,5 @@ type Request interface {
 	IsJson() bool
 	IsMultipart() bool
 	WantsJson() bool
+	GetIp() string
 }
