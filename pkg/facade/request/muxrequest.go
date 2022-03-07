@@ -78,7 +78,7 @@ func (t MuxRequest) GetFlash(name string) *string {
 	return value
 }
 
-// SetFlashMap Set a flash map
+// SetFlashMap sets a session flash based on json format
 // make sure the values you're providing is set as map[string]interface{}
 // therefore, we can stringify it into json format
 func (t MuxRequest) SetFlashMap(name string, values interface{}) {
@@ -89,7 +89,8 @@ func (t MuxRequest) SetFlashMap(name string, values interface{}) {
 	t.SetFlash(name, string(j))
 }
 
-// GetFlashMap Get the flash map, this pulls from SetFlashMap
+// GetFlashMap this pulls a session flash from SetFlashMap, in which
+// it will reverse the json into a map
 func (t MuxRequest) GetFlashMap(name string) *map[string]interface{} {
 	ret := map[string]interface{}{}
 	flash := t.GetFlash(name)
@@ -101,7 +102,7 @@ func (t MuxRequest) GetFlashMap(name string) *map[string]interface{} {
 
 // Request  -------------------------------------------------
 
-// All This returns all available queries from
+// All returns available http queries
 func (t MuxRequest) All() interface{} {
 	params := map[string]interface{}{}
 
@@ -127,7 +128,7 @@ func (t MuxRequest) All() interface{} {
 	return params
 }
 
-// Get This returns the specific value from the provided key
+// Get returns the specific value from the provided key
 func (t MuxRequest) Get(k string) interface{} {
 	// check the queries if exists
 	val, ok := t.All().(map[string]interface{})[k]
@@ -137,6 +138,7 @@ func (t MuxRequest) Get(k string) interface{} {
 	return nil
 }
 
+// GetFirst returns the specifc value provided with default value
 func (t MuxRequest) GetFirst(k string, dfault interface{}) interface{} {
 	val := t.Get(k)
 	if val == nil {
@@ -145,12 +147,12 @@ func (t MuxRequest) GetFirst(k string, dfault interface{}) interface{} {
 	return val
 }
 
-// Input Proxy method to Input(...)
+// Input ist meant as proxy for GetFirst(...)
 func (t MuxRequest) Input(k string, dfault interface{}) interface{} {
 	return t.GetFirst(k, dfault)
 }
 
-// HasContentType Check if the string exists in the content type
+// HasContentType checks if the string exists in the header
 func (t MuxRequest) HasContentType(substr string) bool {
 	contentType := t.HttpRequest.Header.Get("Content-Type")
 	return strings.Contains(contentType, substr)
@@ -161,17 +163,17 @@ func (t MuxRequest) HasAccept(substr string) bool {
 	return strings.Contains(accept, substr)
 }
 
-// IsForm Check if the request is form
+// IsForm checks if the request is an http form
 func (t MuxRequest) IsForm() bool {
 	return t.HasContentType("application/x-www-form-urlencoded")
 }
 
-// IsJson Check if the request is json
+// IsJson checks if the content type contains json
 func (t MuxRequest) IsJson() bool {
 	return t.HasContentType("json")
 }
 
-// IsMultipart Check if the request is multipart
+// IsMultipart checks if the content type contains multipart
 func (t MuxRequest) IsMultipart() bool {
 	return t.HasContentType("multipart")
 }
@@ -226,6 +228,9 @@ func (t MuxRequest) Validator(setOfRules *must.SetOfRules) *errors.AppError {
 }
 
 // GetIp returns the client IP address
+// it resolves first from "x-forwarded-for"
+// or else it goes check if "x-real-ip" exists
+// or else we pull based on the remoteaddr under net/http
 func (t MuxRequest) GetIp() string {
 	ip := t.HttpRequest.Header.Get("X-Forwarded-For")
 	if len(ip) == 0 {

@@ -1,6 +1,9 @@
 package request
 
-import "net/url"
+import (
+	"github.com/daison12006013/gorvel/pkg/errors"
+	"github.com/daison12006013/gorvel/pkg/rules/must"
+)
 
 type Request interface {
 	CurrentUrl() string
@@ -9,15 +12,18 @@ type Request interface {
 	RedirectPrevious()
 	SetFlash(name string, value string)
 	GetFlash(name string) *string
-	All() url.Values
-	Get(k string) []string
-	GetFirst(k string, dfault *string) *string
-	Input(k string, dfault string) string
+	SetFlashMap(name string, values interface{})
+	GetFlashMap(name string) *map[string]interface{}
+	All() interface{}
+	Get(k string) interface{}
+	GetFirst(k string, dfault interface{}) interface{}
+	Input(k string, dfault interface{}) interface{}
 	HasContentType(substr string) bool
 	HasAccept(substr string) bool
 	IsForm() bool
 	IsJson() bool
 	IsMultipart() bool
 	WantsJson() bool
+	Validator(setOfRules *must.SetOfRules) *errors.AppError
 	GetIp() string
 }

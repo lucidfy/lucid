@@ -6,6 +6,7 @@ import (
 	"strings"
 	text "text/template"
 
+	"github.com/daison12006013/gorvel/pkg/errors"
 	"github.com/daison12006013/gorvel/pkg/facade/logger"
 	"github.com/daison12006013/gorvel/pkg/facade/path"
 )
@@ -13,8 +14,10 @@ import (
 const DEFAULT_VIEW_EXT = ".go.html"
 
 type Response interface {
-	View(filepaths []string, data interface{})
-	Json(data interface{}, status int)
+	ViewWithStatus(filepaths []string, data interface{}, status *int) *errors.AppError
+	View(filepaths []string, data interface{}) *errors.AppError
+	constructDataFromHeader(data interface{}, val string, key string) interface{}
+	Json(data interface{}, status int) *errors.AppError
 }
 
 // render the templates as string
