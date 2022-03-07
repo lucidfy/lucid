@@ -53,6 +53,7 @@ $> bash ./serve
     - [x] IsJson()
     - [x] IsMultipart()
     - [x] WantsJson()
+    - [x] GetIp()
   - [ ] Response Facade
     - [x] Json()
     - [x] View()

@@ -8,15 +8,17 @@ import (
 )
 
 func Welcome(T engines.EngineInterface) *errors.AppError {
+
 	engine := T.(engines.MuxEngine)
 	// w := engine.HttpResponseWriter
 	// r := engine.HttpRequest
 	req := engine.Request
 	res := engine.Response
 
+	ip := req.GetIp()
 	// prepare the data
 	data := map[string]interface{}{
-		"title": "Gorvel Rocks!",
+		"title": "Gorvel Rocks! " + ip,
 	}
 
 	// this is api request
