@@ -20,16 +20,16 @@ type MuxEngine struct {
 }
 
 func Mux(w http.ResponseWriter, r *http.Request) *MuxEngine {
-	res := *response.Mux(w, r)
+	res := response.Mux(w, r)
 	url := urls.Mux(w, r)
 	ses := session.Mux(w, r)
-	req := *request.Mux(w, r, url, ses)
+	req := request.Mux(w, r, url, ses)
 
 	eg := MuxEngine{
 		ResponseWriter: w,
 		HttpRequest:    r,
-		Response:       res,
-		Request:        req,
+		Response:       *res,
+		Request:        *req,
 		Session:        *ses,
 		Url:            *url,
 	}
