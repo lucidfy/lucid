@@ -36,39 +36,41 @@ $> bash ./serve
 
 ## TODO's
 
-- [x] Route
-- [ ] Handlers
+- [x] Routing
+- [x] Middlewares
+- [x] CSRF Protection
+- [x] Handlers (a.k.a "Controllers")
   - [x] Single
   - [x] Resources (index,create,store,show,edit,update,destroy)
   - [x] Form Request Validation
-  - [ ] Url Facade
-    - [x] CurrentUrl()
-    - [x] FullUrl()
-    - [x] PreviousUrl()
-    - [x] RedirectPrevious()
-  - [ ] Session Facade
-    - [x] SetFlash()
-    - [x] GetFlash()
-    - [x] SetFlashMap()
-    - [x] GetFlashMap()
-  - [ ] Request Facade
-    - [x] Validator()
-    - [x] All()
-    - [x] Get()
-    - [x] GetFirst()
-    - [x] Input()
-    - [x] HasContentType()
-    - [x] HasAccept()
-    - [x] IsForm()
-    - [x] IsJson()
-    - [x] IsMultipart()
-    - [x] WantsJson()
-    - [x] GetIp()
-  - [ ] Response Facade
-    - [x] Json()
-    - [x] View()
-    - [x] ViewWithStatus()
-- [ ] Console Commands
+- [ ] Request
+  - [x] Validator()
+  - [x] All()
+  - [x] Get()
+  - [x] GetFirst()
+  - [x] Input()
+  - [x] HasContentType()
+  - [x] HasAccept()
+  - [x] IsForm()
+  - [x] IsJson()
+  - [x] IsMultipart()
+  - [x] WantsJson()
+  - [x] GetIp()
+- [ ] URL
+  - [x] CurrentUrl()
+  - [x] FullUrl()
+  - [x] PreviousUrl()
+  - [x] RedirectPrevious()
+- [ ] Response
+  - [x] Json()
+  - [x] View()
+  - [x] ViewWithStatus()
+- [ ] Session
+  - [x] SetFlash()
+  - [x] GetFlash()
+  - [x] SetFlashMap()
+  - [x] GetFlashMap()
+- [ ] Console
   - [x] route:defined
   - [x] route:registered
   - [ ] make:resource
