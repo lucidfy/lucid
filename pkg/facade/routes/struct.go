@@ -16,11 +16,6 @@ type RouteInterface interface {
 
 // structs
 
-// type AppError struct {
-// 	Error   error
-// 	Message interface{}
-// 	Code    interface{}
-// }
 type Middlewares []string
 type Queries []string
 type Method []string
@@ -35,6 +30,7 @@ type Routing struct {
 	Resources   map[string]Handler
 	Middlewares []string
 	Static      string
+	Markdown    string
 }
 
 // helpers
