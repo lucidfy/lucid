@@ -27,4 +27,9 @@ var Routes = &[]r.Routing{
 		},
 		Middlewares: r.Middlewares{"auth"},
 	},
+	{
+		Path:   "/docs",
+		Name:   "docs",
+		Static: "resources/docs",
+	},
 }

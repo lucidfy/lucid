@@ -34,6 +34,7 @@ type Routing struct {
 	Handler     Handler
 	Resources   map[string]Handler
 	Middlewares []string
+	Static      string
 }
 
 // helpers

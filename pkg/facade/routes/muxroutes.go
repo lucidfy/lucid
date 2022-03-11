@@ -44,18 +44,29 @@ func (mr MuxRoutes) Register(base *[]Routing) interface{} {
 func (mr MuxRoutes) Explain(base *[]Routing) interface{} {
 	routings := []Routing{}
 	for _, route := range *base {
-		if len(route.Resources) > 0 {
+		if len(route.Resources) != 0 {
 			routings = append(routings, resources(route)...)
 		}
 
-		if route.Handler != nil {
+		if route.Handler != nil || len(route.Static) != 0 {
 			routings = append(routings, route)
 		}
 	}
+
 	return &routings
 }
 
 func (mr MuxRoutes) register(route Routing) {
+	// serve static
+	if len(route.Static) != 0 {
+		serve := http.FileServer(http.Dir(route.Static))
+		mr.Router.
+			PathPrefix(route.Path).
+			Handler(http.StripPrefix(route.Path, serve))
+		return
+	}
+
+	// serving handler based
 	handler := func(w http.ResponseWriter, r *http.Request) {
 		engine := *engines.Mux(w, r)
 		e := route.Handler(engine)
@@ -84,12 +95,12 @@ func (mr MuxRoutes) routeUse(middlewares ...mux.MiddlewareFunc) {
 // this will go thru under the app/handlers/error.go
 func (mr MuxRoutes) setUpDefaultErrors() {
 	mr.Router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		engine := engines.Mux(w, r)
+		engine := *engines.Mux(w, r)
 		handlers.PageNotFound(engine)
 	})
 
 	mr.Router.MethodNotAllowedHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		engine := engines.Mux(w, r)
+		engine := *engines.Mux(w, r)
 		handlers.MethodNotAllowed(engine)
 	})
 }

@@ -4,7 +4,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/daison12006013/gorvel/pkg/errors"
 	"github.com/daison12006013/gorvel/pkg/facade/routes"
 	"github.com/gorilla/mux"
 	"github.com/jedib0t/go-pretty/v6/table"
@@ -66,23 +65,23 @@ func registered(r *[]routes.Routing) []Registered {
 		}
 
 		pathregexp, err := route.GetPathRegexp()
-		if errors.Handler("GetPathRegexp", err) {
-			return nil
+		if err != nil {
+			pathregexp = ""
 		}
 
 		queries, err := route.GetQueriesTemplates()
-		if errors.Handler("GetQueriesTemplates", err) {
-			return nil
+		if err != nil {
+			queries = []string{}
 		}
 
 		queriesregexp, err := route.GetQueriesRegexp()
-		if errors.Handler("GetQueriesRegexp", err) {
-			return nil
+		if err != nil {
+			queries = []string{}
 		}
 
 		methods, err := route.GetMethods()
-		if errors.Handler("GetMethods", err) {
-			return nil
+		if err != nil {
+			methods = []string{"?"}
 		}
 
 		routings = append(routings, Registered{
