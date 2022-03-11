@@ -8,29 +8,35 @@ import (
 	"github.com/daison12006013/gorvel/pkg/errors"
 )
 
-func Delete(T engines.EngineInterface) *errors.AppError {
+func Delete(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	// w := engine.HttpResponseWriter
 	// r := engine.HttpRequest
 	req := engine.Request
 	res := engine.Response
+	ses := engine.Session
+	url := engine.Url
 
-	// prepare message and status
+	//> prepare message and status
 	message := "Successfully Deleted!"
 	status := http.StatusOK
 
+	//> validate "id" if exists
 	id := req.Input("id", nil).(string)
-	if appErr := users.Exists("id", &id); appErr != nil {
-		return appErr
+	if err := users.Exists("id", &id); err != nil {
+		return err
 	}
 
-	data, appErr := users.Find(&id)
-	if appErr != nil {
-		return appErr
+	//> now get the data
+	data, err := users.Find(&id)
+	if err != nil {
+		return err
 	}
+
+	//> and delete the data
 	data.Delete()
 
-	// for api based
+	//> response: for api based
 	if req.IsJson() && req.WantsJson() {
 		return res.Json(map[string]interface{}{
 			"ok":      true,
@@ -38,8 +44,8 @@ func Delete(T engines.EngineInterface) *errors.AppError {
 		}, status)
 	}
 
-	// for form based, just redirect
-	req.SetFlash("success", message)
-	req.RedirectPrevious()
+	//> response: for form based, just redirect
+	ses.SetFlash("success", message)
+	url.RedirectPrevious()
 	return nil
 }

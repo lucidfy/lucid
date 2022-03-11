@@ -5,15 +5,11 @@ import (
 	"github.com/daison12006013/gorvel/pkg/rules/must"
 )
 
-type Request interface {
+type RequestContract interface {
 	CurrentUrl() string
 	FullUrl() string
 	PreviousUrl() string
 	RedirectPrevious()
-	SetFlash(name string, value string)
-	GetFlash(name string) *string
-	SetFlashMap(name string, values interface{})
-	GetFlashMap(name string) *map[string]interface{}
 	All() interface{}
 	Get(k string) interface{}
 	GetFirst(k string, dfault interface{}) interface{}

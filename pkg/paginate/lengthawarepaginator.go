@@ -8,7 +8,7 @@ import (
 
 	"github.com/daison12006013/gorvel/pkg/errors"
 	"github.com/daison12006013/gorvel/pkg/facade/logger"
-	"github.com/daison12006013/gorvel/pkg/response"
+	"github.com/daison12006013/gorvel/pkg/facade/response"
 )
 
 const DefaultView = "pkg/pagination/tailwind.go.html"

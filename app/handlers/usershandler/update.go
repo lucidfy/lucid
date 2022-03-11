@@ -11,12 +11,14 @@ import (
 	"github.com/gorilla/csrf"
 )
 
-func Show(T engines.EngineInterface) *errors.AppError {
+func Show(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	// w := engine.HttpResponseWriter
 	r := engine.HttpRequest
 	req := engine.Request
 	res := engine.Response
+	ses := engine.Session
+	url := engine.Url
 
 	id := req.Input("id", nil).(string)
 	if appErr := users.Exists("id", &id); appErr != nil {
@@ -29,39 +31,44 @@ func Show(T engines.EngineInterface) *errors.AppError {
 	}
 
 	record := data.Model
+
+	//> for api based
 	if req.IsJson() && req.WantsJson() {
 		return res.Json(record, http.StatusOK)
 	}
 
-	// by default we use "show" then check if the
-	// url path contains /edit , therefore use "edit"
+	//> determine which template to be provided
 	isShow := true
 	viewFile := "show"
 	if strings.Contains(r.URL.Path, "/edit") {
 		isShow = false
+		// viewFile = "edit"
 	}
 
+	//> for form based, show the "viewFile"
 	return res.View(
 		[]string{"base", fmt.Sprintf("users/%s", viewFile)},
 		map[string]interface{}{
 			"title":          record.Name + "'s Profile",
-			"previousUrl":    req.PreviousUrl(),
+			"previousUrl":    url.PreviousUrl(),
 			"record":         record,
 			"isShow":         isShow,
 			csrf.TemplateTag: csrf.TemplateField(r),
 
-			"success": req.GetFlash("success"),
-			"error":   req.GetFlash("error"),
+			"success": ses.GetFlash("success"),
+			"error":   ses.GetFlash("error"),
 		},
 	)
 }
 
-func Update(T engines.EngineInterface) *errors.AppError {
+func Update(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	// w := engine.HttpResponseWriter
 	// r := engine.HttpRequest
 	req := engine.Request
 	res := engine.Response
+	ses := engine.Session
+	url := engine.Url
 
 	message := "Successfully Updated!"
 	status := http.StatusOK
@@ -73,7 +80,7 @@ func Update(T engines.EngineInterface) *errors.AppError {
 	}
 	data.Updates(req.All())
 
-	// for api based
+	//> for api based
 	if req.IsJson() && req.WantsJson() {
 		return res.Json(map[string]interface{}{
 			"ok":      true,
@@ -81,8 +88,8 @@ func Update(T engines.EngineInterface) *errors.AppError {
 		}, status)
 	}
 
-	// for form based, just redirect
-	req.SetFlash("success", message)
-	req.RedirectPrevious()
+	//> for form based, just redirect
+	ses.SetFlash("success", message)
+	url.RedirectPrevious()
 	return nil
 }

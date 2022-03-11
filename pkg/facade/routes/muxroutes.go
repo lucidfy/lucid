@@ -57,7 +57,7 @@ func (mr MuxRoutes) Explain(base *[]Routing) interface{} {
 
 func (mr MuxRoutes) register(route Routing) {
 	handler := func(w http.ResponseWriter, r *http.Request) {
-		engine := engines.Mux(w, r)
+		engine := *engines.Mux(w, r)
 		e := route.Handler(engine)
 		if e != nil {
 			handlers.HttpErrorHandler(engine, e)

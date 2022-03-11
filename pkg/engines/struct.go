@@ -1,7 +1,8 @@
 package engines
 
-type EngineInterface interface {
-	ParsedRequest() interface{}
-	ParsedResponse() interface{}
-	ParsedSession() interface{}
+type EngineContract interface {
+	GetRequest() interface{}
+	GetResponse() interface{}
+	GetSession() interface{}
+	GetUrl() interface{}
 }

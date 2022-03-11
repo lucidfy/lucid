@@ -17,31 +17,32 @@ const PER_PAGE = "5"
 const SORT_COLUMN = "id"
 const SORT_TYPE = "desc"
 
-func Lists(T engines.EngineInterface) *errors.AppError {
+func Lists(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	// w := engine.HttpResponseWriter
 	r := engine.HttpRequest
 	req := engine.Request
 	res := engine.Response
+	ses := engine.Session
 
-	// prepare the searchable structure
+	//> prepare the searchable structure
 	searchable, err := prepare(req)
 	if errors.Handler("error preparing searchable table", err) {
 		return &errors.AppError{Error: err, Message: "error preparing searchable table", Code: http.StatusInternalServerError}
 	}
 
-	// fetch the searchable
+	//> fetch the searchable
 	err = users.Lists(searchable)
 	if errors.Handler("error fetching users list", err) {
 		return &errors.AppError{Error: err, Message: "error fetching users list", Code: http.StatusInternalServerError}
 	}
 
-	// here, we determine if the requestor wants a json response
+	//> here, we determine if the requestor wants a json response
 	if req.IsJson() && req.WantsJson() {
 		return res.Json(searchable.Paginate.ToArray(), http.StatusOK)
 	}
 
-	// or else, provide an html response instead.
+	//> or else, provide an html response instead.
 	return res.View(
 		[]string{
 			"base",
@@ -51,23 +52,23 @@ func Lists(T engines.EngineInterface) *errors.AppError {
 		map[string]interface{}{
 			"title":          "Users List",
 			"data":           searchable,
-			"success":        req.GetFlash("success"),
-			"error":          req.GetFlash("error"),
+			"success":        ses.GetFlash("success"),
+			"error":          ses.GetFlash("error"),
 			csrf.TemplateTag: csrf.TemplateField(r),
 		},
 	)
 }
 
 func prepare(request request.MuxRequest) (*searchable.Table, error) {
-	// get the current "page", literally the default of each current page should always be 1
+	//> get the current "page", literally the default of each current page should always be 1
 	currentPage, err := strconv.Atoi(request.Input("page", PAGE).(string))
 	if err != nil {
 		return nil, err
 	}
 
-	// get the "per-page", though the default will be relying to defaultPerPage
-	// then check if the per page reaches the cap of 20 records per page
-	// if ever someone tries to bypass the value, we over-write it to 20
+	//> get the "per-page", though the default will be relying to defaultPerPage
+	//> then check if the per page reaches the cap of 20 records per page
+	//> if ever someone tries to bypass the value, we over-write it to 20
 	perPage, err := strconv.Atoi(request.Input("per-page", PER_PAGE).(string))
 	if err != nil {
 		return nil, err
@@ -81,7 +82,7 @@ func prepare(request request.MuxRequest) (*searchable.Table, error) {
 
 	st.Paginate.CurrentPage = currentPage
 	st.Paginate.PerPage = perPage
-	st.Paginate.BaseUrl = request.FullUrl()
+	st.Paginate.BaseUrl = request.Url.FullUrl()
 
 	orderByCol := request.Input("sort-column", SORT_COLUMN).(string)
 	orderBySort := request.Input("sort-type", SORT_TYPE).(string)

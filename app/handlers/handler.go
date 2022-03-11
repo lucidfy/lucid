@@ -1,7 +1,7 @@
-// please avoid deleting this handler
-// this handler is meant to show a 404 and 405 page
-// if ever a user navigated into a wrong url page
-// nor submitting a wrong method into registered route
+//> please avoid deleting this handler
+//> this handler is meant to show a 404 and 405 page
+//> if ever a user navigated into a wrong url page
+//> nor submitting a wrong method into registered route
 package handlers
 
 import (
@@ -13,13 +13,19 @@ import (
 	"github.com/daison12006013/gorvel/pkg/errors"
 )
 
-func ModelBinding(T engines.EngineInterface) {
+func ModelBinding(T engines.EngineContract) {
 	// engine := T.(engines.MuxEngine)
+	// TODO
 }
 
-// on this method, once the engine detects a page not found
-// (404 Code) requests, it should divert back to this handler
-func PageNotFound(T engines.EngineInterface) {
+func ValidationBinding(T engines.EngineContract) {
+	// engine := T.(engines.MuxEngine)
+	// TODO
+}
+
+//> on this method, once the engine detects a page not found
+//> (404 Code) requests, it should divert back to this handler
+func PageNotFound(T engines.EngineContract) {
 	err := &errors.AppError{
 		Code:    http.StatusNotFound,
 		Message: "Page not found",
@@ -28,9 +34,9 @@ func PageNotFound(T engines.EngineInterface) {
 	HttpErrorHandler(T, err)
 }
 
-// on this method, once the engine detects a method not allowed
-// (405 Code) requests, it should divert back to this handler
-func MethodNotAllowed(T engines.EngineInterface) {
+//> on this method, once the engine detects a method not allowed
+//> (405 Code) requests, it should divert back to this handler
+func MethodNotAllowed(T engines.EngineContract) {
 	err := &errors.AppError{
 		Code:    http.StatusMethodNotAllowed,
 		Message: "Method not allowed",
@@ -39,18 +45,17 @@ func MethodNotAllowed(T engines.EngineInterface) {
 	HttpErrorHandler(T, err)
 }
 
-// on this method, we handle the any returned AppError across all handlers
-// once we received any errors.AppError, what we actually do is to print
-// a pretty neat html (or if the requestor wanted a json, we respond accordingly)
-func HttpErrorHandler(T engines.EngineInterface, appErr *errors.AppError) {
+//> on this method, we handle the any returned AppError across all handlers
+//> once we received any errors.AppError, what we actually do is to print
+//> a pretty neat html (or if the requestor wanted a json, we respond accordingly)
+func HttpErrorHandler(T engines.EngineContract, appErr *errors.AppError) {
 	engine := T.(engines.MuxEngine)
-
 	// w := engine.HttpResponseWriter
 	// r := engine.HttpRequest
 	req := engine.Request
 	res := engine.Response
 
-	// assign a default values here
+	//> assign a default message and code here
 	code := 500
 	message := "Something went wrong!"
 	if appErr.Code.(int) != 0 {
@@ -60,23 +65,23 @@ func HttpErrorHandler(T engines.EngineInterface, appErr *errors.AppError) {
 		message = appErr.Message.(string)
 	}
 
-	// initialize the data
+	//> initialize the data
 	data := map[string]interface{}{
 		"message": message,
 		"code":    code,
 	}
 
-	// don't provide the real error if the debug is not true!
+	//> don't provide the real error if the debug is not true!
 	if os.Getenv("APP_DEBUG") == "true" {
 		data["error"] = appErr.Error
 	}
 
-	// write a json format
+	//> write a json format
 	if req.IsJson() && req.WantsJson() {
 		res.Json(data, code)
 		return
 	}
 
-	// write html format
+	//> write html format
 	res.ViewWithStatus([]string{"pkg/error/default"}, data, &code)
 }

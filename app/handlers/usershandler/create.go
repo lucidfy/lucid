@@ -10,12 +10,13 @@ import (
 	"github.com/gorilla/csrf"
 )
 
-func Create(T engines.EngineInterface) *errors.AppError {
+func Create(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	// w := engine.HttpResponseWriter
 	r := engine.HttpRequest
-	req := engine.Request
+	// req := engine.Request
 	res := engine.Response
+	ses := engine.Session
 
 	data := map[string]interface{}{
 		"title":          "Create Form",
@@ -23,12 +24,12 @@ func Create(T engines.EngineInterface) *errors.AppError {
 		"isCreate":       true,
 		csrf.TemplateTag: csrf.TemplateField(r),
 
-		// to retrieve the flashes from Store() or somewhere
-		// that redirects back to Create()
-		"success": req.GetFlash("success"),
-		"error":   req.GetFlash("error"),
-		"fails":   req.GetFlashMap("fails"),
-		"inputs":  req.GetFlashMap("inputs"),
+		//> to retrieve the flashes from Store() or somewhere
+		//> that redirects back to Create()
+		"success": ses.GetFlash("success"),
+		"error":   ses.GetFlash("error"),
+		"fails":   ses.GetFlashMap("fails"),
+		"inputs":  ses.GetFlashMap("inputs"),
 	}
 
 	return res.View(
@@ -37,31 +38,35 @@ func Create(T engines.EngineInterface) *errors.AppError {
 	)
 }
 
-func Store(T engines.EngineInterface) *errors.AppError {
+func Store(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	// w := engine.HttpResponseWriter
 	// r := engine.HttpRequest
 	req := engine.Request
 	res := engine.Response
+	ses := engine.Session
+	url := engine.Url
 
-	// validate the inputs
+	//> validate the inputs
 	validator := req.Validator(validations.UserValidateCreate())
 	if validator != nil {
-		req.SetFlashMap("fails", validator.ValidationError)
-		req.SetFlashMap("inputs", req.All())
-		req.RedirectPrevious()
+		ses.SetFlashMap("fails", validator.ValidationError)
+		ses.SetFlashMap("inputs", req.All())
+		url.RedirectPrevious()
 		return nil
 	}
 
+	//> prepare message and status
 	message := "Successfully Created!"
 	status := http.StatusOK
 
+	//> create user based on all request inputs
 	data, appErr := users.Create(req.All())
 	if appErr != nil {
 		return appErr
 	}
 
-	// for api based
+	//> for api based
 	if req.IsJson() && req.WantsJson() {
 		return res.Json(map[string]interface{}{
 			"ok":      true,
@@ -70,8 +75,8 @@ func Store(T engines.EngineInterface) *errors.AppError {
 		}, status)
 	}
 
-	// for form based, just redirect
-	req.SetFlash("success", message)
-	req.RedirectPrevious()
+	//> for form based, just redirect
+	ses.SetFlash("success", message)
+	url.RedirectPrevious()
 	return nil
 }

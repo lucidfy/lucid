@@ -1,8 +1,10 @@
 package session
 
 import (
+	"encoding/json"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gorilla/securecookie"
 )
@@ -21,11 +23,12 @@ func Mux(w http.ResponseWriter, r *http.Request) *MuxSession {
 		return nil
 	}
 
-	return &MuxSession{
+	s := MuxSession{
 		SecuredCookie:  securecookie.New([]byte(gorvelSession.Value), nil),
 		ResponseWriter: w,
 		HttpRequest:    r,
 	}
+	return &s
 }
 
 func (s *MuxSession) Set(name string, value string) (bool, error) {
@@ -51,4 +54,43 @@ func (s *MuxSession) Get(name string) (*string, error) {
 		}
 	}
 	return nil, err
+}
+
+func (s *MuxSession) SetFlash(name string, value string) {
+	name = "flash-" + name
+	s.Set(name, value)
+}
+
+func (s *MuxSession) GetFlash(name string) *string {
+	name = "flash-" + name
+	value, err := s.Get(name)
+	if (err != nil && err == http.ErrNoCookie) || value == nil {
+		return nil
+	}
+	// delete the cookie by expiring it immediately!
+	deleteCookie := &http.Cookie{Name: name, MaxAge: -1, Expires: time.Unix(1, 0), Path: "/"}
+	http.SetCookie(s.ResponseWriter, deleteCookie)
+	return value
+}
+
+// SetFlashMap sets a session flash based on json format
+// make sure the values you're providing is set as map[string]interface{}
+// therefore, we can stringify it into json format
+func (s *MuxSession) SetFlashMap(name string, values interface{}) {
+	j, err := json.Marshal(values.(map[string]interface{}))
+	if err != nil {
+		panic(err)
+	}
+	s.SetFlash(name, string(j))
+}
+
+// GetFlashMap this pulls a session flash from SetFlashMap, in which
+// it will reverse the json into a map
+func (s *MuxSession) GetFlashMap(name string) *map[string]interface{} {
+	ret := map[string]interface{}{}
+	flash := s.GetFlash(name)
+	if flash != nil {
+		json.Unmarshal([]byte(*s.GetFlash(name)), &ret)
+	}
+	return &ret
 }

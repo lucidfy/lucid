@@ -15,15 +15,15 @@ type MuxResponse struct {
 	HttpRequest    *http.Request
 }
 
-func Mux(w http.ResponseWriter, r *http.Request) MuxResponse {
-	t := MuxResponse{
+func Mux(w http.ResponseWriter, r *http.Request) *MuxResponse {
+	m := MuxResponse{
 		ResponseWriter: w,
 		HttpRequest:    r,
 	}
-	return t
+	return &m
 }
 
-func (m MuxResponse) ViewWithStatus(filepaths []string, data interface{}, status *int) *errors.AppError {
+func (m *MuxResponse) ViewWithStatus(filepaths []string, data interface{}, status *int) *errors.AppError {
 	m.ResponseWriter.WriteHeader(*status)
 
 	for idx, filepath := range filepaths {
@@ -61,22 +61,12 @@ func (m MuxResponse) ViewWithStatus(filepaths []string, data interface{}, status
 	return nil
 }
 
-func (m MuxResponse) View(filepaths []string, data interface{}) *errors.AppError {
+func (m *MuxResponse) View(filepaths []string, data interface{}) *errors.AppError {
 	httpOk := 200
 	return m.ViewWithStatus(filepaths, data, &httpOk)
 }
 
-func (m MuxResponse) constructDataFromHeader(data interface{}, val string, key string) interface{} {
-	if len(val) > 0 {
-		if m, ok := (data).(map[string]interface{}); ok {
-			m[key] = val
-			data = m
-		}
-	}
-	return data
-}
-
-func (m MuxResponse) Json(data interface{}, status int) *errors.AppError {
+func (m *MuxResponse) Json(data interface{}, status int) *errors.AppError {
 	m.ResponseWriter.Header().Set("Content-Type", "application/json")
 	m.ResponseWriter.WriteHeader(status)
 	err := json.NewEncoder(m.ResponseWriter).Encode(data)
@@ -88,4 +78,14 @@ func (m MuxResponse) Json(data interface{}, status int) *errors.AppError {
 		}
 	}
 	return nil
+}
+
+func (m *MuxResponse) constructDataFromHeader(data interface{}, val string, key string) interface{} {
+	if len(val) > 0 {
+		if m, ok := (data).(map[string]interface{}); ok {
+			m[key] = val
+			data = m
+		}
+	}
+	return data
 }

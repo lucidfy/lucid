@@ -25,7 +25,7 @@ type Middlewares []string
 type Queries []string
 type Method []string
 type Resources map[string]Handler
-type Handler func(engines.EngineInterface) *errors.AppError
+type Handler func(engines.EngineContract) *errors.AppError
 type Routing struct {
 	Name        string
 	Path        string

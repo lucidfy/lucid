@@ -4,6 +4,13 @@ import (
 	"os"
 )
 
+type UrlContract interface {
+	CurrentUrl() string
+	FullUrl() string
+	PreviousUrl() string
+	RedirectPrevious()
+}
+
 func GetAddr() string {
 	var port string
 	if len(os.Getenv("PORT")) > 0 {

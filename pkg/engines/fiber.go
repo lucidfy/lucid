@@ -1,42 +1,37 @@
+// TODO: replace this with proper fiber implementation!
 package engines
 
-import (
-	"net/http"
-
-	"github.com/daison12006013/gorvel/pkg/facade/request"
-	"github.com/daison12006013/gorvel/pkg/facade/session"
-	"github.com/daison12006013/gorvel/pkg/response"
-)
-
-// TODO: replace this with proper fiber implementation!
-
 type FiberEngine struct {
-	HttpResponseWriter http.ResponseWriter
-	HttpRequest        *http.Request
-
-	Response response.MuxResponse
-	Request  request.MuxRequest
+	HttpResponseWriter interface{}
+	HttpRequest        interface{}
+	Response           interface{}
+	Request            interface{}
+	Session            interface{}
+	Url                interface{}
 }
 
 // ---
 
-func Fiber(w http.ResponseWriter, r *http.Request) FiberEngine {
+func Fiber(w interface{}, r interface{}) FiberEngine {
 	return FiberEngine{
-		HttpResponseWriter: w,
-		HttpRequest:        r,
-		Response:           response.Mux(w, r),
-		Request:            request.Mux(w, r),
+		HttpResponseWriter: nil,
+		HttpRequest:        nil,
+		Response:           nil,
+		Request:            nil,
+		Session:            nil,
+		Url:                nil,
 	}
 }
 
-func (m FiberEngine) ParsedResponse() interface{} {
-	return m.Response
+func (f FiberEngine) GetRequest() interface{} {
+	return f.Request
 }
-
-func (m FiberEngine) ParsedRequest() interface{} {
-	return m.Request
+func (f FiberEngine) GetResponse() interface{} {
+	return f.Response
 }
-
-func (m FiberEngine) ParsedSession() interface{} {
-	return session.Mux(m.HttpResponseWriter, m.HttpRequest)
+func (f FiberEngine) GetSession() interface{} {
+	return f.Session
+}
+func (f FiberEngine) GetUrl() interface{} {
+	return f.Url
 }

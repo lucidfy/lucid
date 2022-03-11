@@ -7,7 +7,7 @@ import (
 	"github.com/daison12006013/gorvel/pkg/errors"
 )
 
-func ##NAME_STUDLY##(T engines.EngineInterface) *errors.AppError {
+func ##NAME_STUDLY##(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	// w := engine.HttpResponseWriter
 	// r := engine.HttpRequest
