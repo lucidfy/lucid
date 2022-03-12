@@ -28,6 +28,8 @@ github.com/gobuffalo/packr v1.30.1/go.mod h1:ljMyFO2EcrnzsHsN99cvbq055Y9OhRrIavi
 github.com/gobuffalo/packr/v2 v2.5.1/go.mod h1:8f9c96ITobJlPzI44jj+4tHnEKNt0xXWSVlXRN9X1Iw=
 github.com/golang-module/carbon v1.5.5 h1:/cv1ZguAe/jsiVsvQl/OZB1DO/trrfiMgAv/IXQ0lqo=
 github.com/golang-module/carbon v1.5.5/go.mod h1:M/TDTYPp3qWtW68u49dLDJOyGmls6L6BXdo/pyvkMaU=
+github.com/gomarkdown/markdown v0.0.0-20220310201231-552c6011c0b8 h1:YVvt637ygnOO9qjLBVmPOvrUmCz/i8YECSu/8UlOQW0=
+github.com/gomarkdown/markdown v0.0.0-20220310201231-552c6011c0b8/go.mod h1:JDGcbDT52eL4fju3sZ4TeHGsQwhG9nbDV21aMyhwPoA=
 github.com/gorilla/csrf v1.7.1 h1:Ir3o2c1/Uzj6FBxMlAUB6SivgVMy1ONXwYgXn+/aHPE=
 github.com/gorilla/csrf v1.7.1/go.mod h1:+a/4tCmqhG6/w4oafeAZ9pEa3/NZOWYVbD9fV0FwIQA=
 github.com/gorilla/mux v1.8.0 h1:i40aqfkR1h2SlN9hojwV5ZA91wcXFOvkdNIeFDP5koI=

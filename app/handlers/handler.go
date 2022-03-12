@@ -13,16 +13,6 @@ import (
 	"github.com/daison12006013/gorvel/pkg/errors"
 )
 
-func ModelBinding(T engines.EngineContract) {
-	// engine := T.(engines.MuxEngine)
-	// TODO
-}
-
-func ValidationBinding(T engines.EngineContract) {
-	// engine := T.(engines.MuxEngine)
-	// TODO
-}
-
 //> on this method, once the engine detects a page not found
 //> (404 Code) requests, it should divert back to this handler
 func PageNotFound(T engines.EngineContract) {
@@ -58,10 +48,10 @@ func HttpErrorHandler(T engines.EngineContract, appErr *errors.AppError) {
 	//> assign a default message and code here
 	code := 500
 	message := "Something went wrong!"
-	if appErr.Code.(int) != 0 {
+	if appErr.Code != nil && appErr.Code.(int) != 0 {
 		code = appErr.Code.(int)
 	}
-	if len(appErr.Message.(string)) > 0 {
+	if appErr.Message != nil && len(appErr.Message.(string)) > 0 {
 		message = appErr.Message.(string)
 	}
 

@@ -14,6 +14,13 @@ var Routes = &[]r.Routing{
 		Handler: handlers.Welcome,
 	},
 	{
+		Path:    "/docs",
+		Prefix:  true,
+		Name:    "docs",
+		Method:  r.Method{"GET"},
+		Handler: handlers.Docs,
+	},
+	{
 		Path: "/users",
 		Name: "users",
 		Resources: r.Resources{
@@ -27,11 +34,6 @@ var Routes = &[]r.Routing{
 		},
 		Middlewares: r.Middlewares{"auth"},
 	},
-	// {
-	// 	Path:     "/docs",
-	// 	Name:     "docs",
-	// 	Markdown: "resources/docs",
-	// },
 	{
 		Path:   "/static",
 		Name:   "static",

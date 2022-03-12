@@ -75,10 +75,17 @@ func (mr MuxRoutes) register(route Routing) {
 		}
 	}
 
-	mr.Router.HandleFunc(route.Path, handler).
-		Methods(getMethods(route.Method)...).
-		Queries(route.Queries...).
-		Name(route.Name)
+	if route.Prefix {
+		mr.Router.PathPrefix(route.Path).HandlerFunc(handler).
+			Methods(getMethods(route.Method)...).
+			Queries(route.Queries...).
+			Name(route.Name)
+	} else {
+		mr.Router.HandleFunc(route.Path, handler).
+			Methods(getMethods(route.Method)...).
+			Queries(route.Queries...).
+			Name(route.Name)
+	}
 
 	for _, v := range route.Middlewares {
 		mr.routeUse(app.RouteMiddleware[v])

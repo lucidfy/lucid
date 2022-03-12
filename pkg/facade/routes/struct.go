@@ -24,13 +24,13 @@ type Handler func(engines.EngineContract) *errors.AppError
 type Routing struct {
 	Name        string
 	Path        string
+	Prefix      bool
 	Method      []string
 	Queries     Queries
 	Handler     Handler
 	Resources   map[string]Handler
 	Middlewares []string
 	Static      string
-	Markdown    string
 }
 
 // helpers

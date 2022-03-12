@@ -21,9 +21,9 @@ type MuxEngine struct {
 
 func Mux(w http.ResponseWriter, r *http.Request) *MuxEngine {
 	res := response.Mux(w, r)
-	url := urls.Mux(w, r)
+	u := urls.Mux(w, r)
 	ses := session.Mux(w, r)
-	req := request.Mux(w, r, url, ses)
+	req := request.Mux(w, r, u, ses)
 
 	eg := MuxEngine{
 		ResponseWriter: w,
@@ -31,7 +31,7 @@ func Mux(w http.ResponseWriter, r *http.Request) *MuxEngine {
 		Response:       *res,
 		Request:        *req,
 		Session:        *ses,
-		Url:            *url,
+		Url:            *u,
 	}
 
 	return &eg

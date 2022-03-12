@@ -7,6 +7,7 @@ require (
 	github.com/dchest/uniuri v0.0.0-20200228104902-7aecb25e1fe5
 	github.com/forgoer/openssl v1.1.1
 	github.com/golang-module/carbon v1.5.5
+	github.com/gomarkdown/markdown v0.0.0-20220310201231-552c6011c0b8
 	github.com/gorilla/csrf v1.7.1
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/securecookie v1.1.1
