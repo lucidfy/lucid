@@ -2,6 +2,7 @@ package session
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
 	"time"
@@ -19,12 +20,13 @@ func Mux(w http.ResponseWriter, r *http.Request) *MuxSession {
 	var sessionName string = os.Getenv("SESSION_NAME")
 
 	gorvelSession, err := r.Cookie(sessionName)
-	if err != nil && err == http.ErrNoCookie {
-		return nil
+	var securedCookie *securecookie.SecureCookie
+	if err == nil {
+		securedCookie = securecookie.New([]byte(gorvelSession.Value), nil)
 	}
 
 	s := MuxSession{
-		SecuredCookie:  securecookie.New([]byte(gorvelSession.Value), nil),
+		SecuredCookie:  securedCookie,
 		ResponseWriter: w,
 		HttpRequest:    r,
 	}
@@ -32,6 +34,10 @@ func Mux(w http.ResponseWriter, r *http.Request) *MuxSession {
 }
 
 func (s *MuxSession) Set(name string, value string) (bool, error) {
+	if s.SecuredCookie == nil {
+		return false, fmt.Errorf("SecuredCookie is empty")
+	}
+
 	encoded, err := s.SecuredCookie.Encode(name, value)
 	if err == nil {
 		cookie := &http.Cookie{Name: name, Value: encoded, Path: "/"}
@@ -44,6 +50,10 @@ func (s *MuxSession) Set(name string, value string) (bool, error) {
 func (s *MuxSession) Get(name string) (*string, error) {
 	if s.HttpRequest == nil {
 		return nil, nil
+	}
+
+	if s.SecuredCookie == nil {
+		return nil, fmt.Errorf("SecuredCookie is empty")
 	}
 
 	cookie, err := s.HttpRequest.Cookie(name)
