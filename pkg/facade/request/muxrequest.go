@@ -7,6 +7,8 @@ import (
 	"sync"
 
 	"github.com/daison12006013/gorvel/pkg/errors"
+	"github.com/daison12006013/gorvel/pkg/facade/session"
+	"github.com/daison12006013/gorvel/pkg/facade/urls"
 	"github.com/daison12006013/gorvel/pkg/rules"
 	"github.com/daison12006013/gorvel/pkg/rules/must"
 	"github.com/gorilla/mux"
@@ -15,12 +17,16 @@ import (
 type MuxRequest struct {
 	ResponseWriter http.ResponseWriter
 	HttpRequest    *http.Request
+	Url            *urls.MuxUrl
+	Session        *session.MuxSession
 }
 
-func Mux(w http.ResponseWriter, r *http.Request) *MuxRequest {
+func Mux(w http.ResponseWriter, r *http.Request, u *urls.MuxUrl, ses *session.MuxSession) *MuxRequest {
 	t := MuxRequest{
 		ResponseWriter: w,
 		HttpRequest:    r,
+		Url:            u,
+		Session:        ses,
 	}
 	return &t
 }
