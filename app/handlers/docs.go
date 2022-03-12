@@ -20,11 +20,11 @@ func Docs(T engines.EngineContract) *errors.AppError {
 	//> detect the url path, just that we replace any suffix that has /docs
 	// then we fetch the remaining file name
 	f := strings.Replace(r.URL.Path, "/docs", "", -1)
-	if len(f) == 0 {
+	title := strings.Trim(f, "/")
+	if len(title) == 0 {
+		title = "Gorvel"
 		f = "index"
 	}
-
-	title := strings.Trim(f, "/")
 
 	//> let's make sure the file contains .md format, or else append it
 	if !strings.Contains(f, ".md") {

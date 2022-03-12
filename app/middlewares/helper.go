@@ -7,7 +7,7 @@ import (
 )
 
 func IsJsonRequest(w http.ResponseWriter, r *http.Request) bool {
-	rp := request.Mux(w, r, nil, nil)
+	rp := request.Mux(w, r)
 
 	if rp.IsJson() && rp.WantsJson() {
 		return true

@@ -8,6 +8,7 @@ import (
 	"github.com/daison12006013/gorvel/pkg/engines"
 	"github.com/daison12006013/gorvel/pkg/errors"
 	"github.com/daison12006013/gorvel/pkg/facade/request"
+	"github.com/daison12006013/gorvel/pkg/facade/urls"
 	"github.com/daison12006013/gorvel/pkg/paginate/searchable"
 	"github.com/gorilla/csrf"
 )
@@ -24,9 +25,10 @@ func Lists(T engines.EngineContract) *errors.AppError {
 	req := engine.Request
 	res := engine.Response
 	ses := engine.Session
+	url := engine.Url
 
 	//> prepare the searchable structure
-	searchable, err := prepare(req)
+	searchable, err := prepare(req, url)
 	if errors.Handler("error preparing searchable table", err) {
 		return &errors.AppError{Error: err, Message: "error preparing searchable table", Code: http.StatusInternalServerError}
 	}
@@ -59,7 +61,7 @@ func Lists(T engines.EngineContract) *errors.AppError {
 	)
 }
 
-func prepare(request request.MuxRequest) (*searchable.Table, error) {
+func prepare(request request.MuxRequest, url urls.MuxUrl) (*searchable.Table, error) {
 	//> get the current "page", literally the default of each current page should always be 1
 	currentPage, err := strconv.Atoi(request.Input("page", PAGE).(string))
 	if err != nil {
@@ -82,7 +84,7 @@ func prepare(request request.MuxRequest) (*searchable.Table, error) {
 
 	st.Paginate.CurrentPage = currentPage
 	st.Paginate.PerPage = perPage
-	st.Paginate.BaseUrl = request.Url.FullUrl()
+	st.Paginate.BaseUrl = url.FullUrl()
 
 	orderByCol := request.Input("sort-column", SORT_COLUMN).(string)
 	orderBySort := request.Input("sort-type", SORT_TYPE).(string)
