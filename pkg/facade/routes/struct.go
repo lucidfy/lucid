@@ -65,7 +65,7 @@ func resources(route Routing) []Routing {
 			})
 		case "show":
 			routings = append(routings, Routing{
-				Path:        route.Path + "/{id}",
+				Path:        route.Path + "/{id:[0-9]+}",
 				Handler:     handler,
 				Method:      Method{"GET"},
 				Middlewares: route.Middlewares,
@@ -73,7 +73,7 @@ func resources(route Routing) []Routing {
 			})
 		case "edit":
 			routings = append(routings, Routing{
-				Path:        route.Path + "/{id}/edit",
+				Path:        route.Path + "/{id:[0-9]+}/edit",
 				Handler:     handler,
 				Method:      Method{"GET"},
 				Middlewares: route.Middlewares,
@@ -83,14 +83,14 @@ func resources(route Routing) []Routing {
 			routings = append(
 				routings,
 				Routing{
-					Path:        route.Path + "/{id}",
+					Path:        route.Path + "/{id:[0-9]+}",
 					Handler:     handler,
 					Method:      Method{"PUT"},
 					Middlewares: route.Middlewares,
 					Name:        route.Name + ".update",
 				},
 				Routing{
-					Path:        route.Path + "/{id}/update",
+					Path:        route.Path + "/{id:[0-9]+}/update",
 					Handler:     handler,
 					Method:      Method{"POST"},
 					Middlewares: route.Middlewares,
@@ -101,14 +101,14 @@ func resources(route Routing) []Routing {
 			routings = append(
 				routings,
 				Routing{
-					Path:        route.Path + "/{id}",
+					Path:        route.Path + "/{id:[0-9]+}",
 					Handler:     handler,
 					Method:      Method{"DELETE"},
 					Middlewares: route.Middlewares,
 					Name:        route.Name + ".destroy",
 				},
 				Routing{
-					Path:        route.Path + "/{id}/delete",
+					Path:        route.Path + "/{id:[0-9]+}/delete",
 					Handler:     handler,
 					Method:      Method{"POST"},
 					Middlewares: route.Middlewares,
