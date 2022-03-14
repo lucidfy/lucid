@@ -56,6 +56,7 @@ $> bash ./serve
   - [x] IsMultipart()
   - [x] WantsJson()
   - [x] GetIp()
+  - [x] GetUserAgent()
 - [ ] URL
   - [x] CurrentUrl()
   - [x] FullUrl()

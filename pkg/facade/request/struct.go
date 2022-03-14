@@ -22,4 +22,5 @@ type RequestContract interface {
 	WantsJson() bool
 	Validator(setOfRules *must.SetOfRules) *errors.AppError
 	GetIp() string
+	GetUserAgent() string
 }

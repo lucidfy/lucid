@@ -170,3 +170,8 @@ func (t *MuxRequest) GetIp() string {
 	}
 	return ip
 }
+
+// GetUserAgent returns the user agent
+func (t *MuxRequest) GetUserAgent() string {
+	return t.HttpRequest.Header.Get("User-Agent")
+}
