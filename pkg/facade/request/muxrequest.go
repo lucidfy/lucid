@@ -123,11 +123,11 @@ func (t *MuxRequest) Validator(setOfRules *must.SetOfRules) *errors.AppError {
 
 	for inputField, inputRules := range *setOfRules {
 		for _, inputRule := range inputRules {
-			inputValue := t.Get(inputField).(string)
+			inputValue := t.Get(inputField)
 			wg.Add(1)
 			go rules.Validate(
 				inputField,
-				inputValue,
+				fmt.Sprint(inputValue),
 				inputRule,
 				errsChan,
 				&wg,

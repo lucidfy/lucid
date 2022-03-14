@@ -7,7 +7,7 @@ import (
 	"github.com/gorilla/csrf"
 )
 
-// here, we determine if we should skip the csrf
+// CsrfShouldSkipMiddleware here, we determine if we should skip the csrf
 // mainly we skip if the condition inside IsJsonRequest(...)
 // returns true, basically if the request wanted a json response
 func CsrfShouldSkipMiddleware(next http.Handler) http.Handler {
@@ -19,7 +19,7 @@ func CsrfShouldSkipMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-// here, we initialize gorilla's csrf
+// CsrfProtectMiddleware here, we initialize gorilla's csrf
 // by default we set the csrf_auth_key too
 func CsrfProtectMiddleware(next http.Handler) http.Handler {
 	protect := csrf.Protect(
@@ -35,7 +35,7 @@ func CsrfProtectMiddleware(next http.Handler) http.Handler {
 	return protect(next)
 }
 
-// here, we pass the token as X-CSRF-Token via header
+// CsrfSetterMiddleware here, we pass the token as X-CSRF-Token via header
 func CsrfSetterMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		token := csrf.Token(r)
