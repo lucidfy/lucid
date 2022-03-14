@@ -5,8 +5,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// The application's global HTTP middleware stack.
-// These middleware are run during every request to your application.
+// Middleware The application's global HTTP middleware stack.
+// This middlewares are run during every request to your application.
 var Middleware = []mux.MiddlewareFunc{
 	middlewares.HttpAccessLogMiddleware,
 	middlewares.SessionPersistenceMiddleware,
@@ -15,8 +15,8 @@ var Middleware = []mux.MiddlewareFunc{
 	middlewares.CsrfSetterMiddleware,
 }
 
-// The application's route middleware.
-// These middleware may be assigned to groups or used individually.
+// RouteMiddleware The application's route middleware.
+// These middlewares may be assigned to group's or used individually.
 var RouteMiddleware = map[string]mux.MiddlewareFunc{
 	"auth": middlewares.AuthenticateMiddleware,
 }
