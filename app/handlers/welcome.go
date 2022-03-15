@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/daison12006013/gorvel/pkg/helpers"
+	"github.com/daison12006013/gorvel/pkg/storage"
 	"net/http"
 
 	"github.com/daison12006013/gorvel/pkg/engines"
@@ -41,7 +42,16 @@ func WelcomeForApi(T engines.EngineContract) *errors.AppError {
 	req := engine.Request
 	res := engine.Response
 
+	storage := storage.NewLocalStorage()
+
 	file, err := req.GetFileByName("file")
+	if err != nil {
+		return res.Json(helpers.MP{
+			"error": err.Error(),
+		}, http.StatusOK)
+	} // prepare the data
+
+	err = storage.Put(file.Filename, *file)
 	if err != nil {
 		return res.Json(helpers.MP{
 			"error": err.Error(),
