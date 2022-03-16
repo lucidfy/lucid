@@ -81,6 +81,13 @@ $> bash ./serve
     - [ ] C.R.U.D. Handlers
 - [x] Pagination
 - [x] ORM using gORM (by default)
+- [x] Storage
+  - [x] Get()
+  - [x] Put()
+  - [ ] Delete()
+  - [x] Exists()
+  - [x] Missing()
+  - [x] Size()
 
 ## Security Issues
 
