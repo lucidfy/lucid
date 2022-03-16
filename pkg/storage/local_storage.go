@@ -21,7 +21,8 @@ func (s *LocalStorage) Get(path string) (multipart.File, error) {
 	return os.Open(s.basePath + "/" + path)
 }
 
-func (s *LocalStorage) Put(path string, file multipart.FileHeader) error {
+func (s *LocalStorage) Put(path string, file *multipart.FileHeader) error {
+
 	src, err := file.Open()
 
 	if err != nil {

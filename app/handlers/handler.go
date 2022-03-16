@@ -1,4 +1,4 @@
-//> please avoid deleting this handler
+// Package handlers > please avoid deleting this handler
 //> this handler is meant to show a 404 and 405 page
 //> if ever a user navigated into a wrong url page
 //> nor submitting a wrong method into registered route
@@ -13,7 +13,7 @@ import (
 	"github.com/daison12006013/gorvel/pkg/errors"
 )
 
-//> on this method, once the engine detects a page not found
+// PageNotFound > on this method, once the engine detects a page not found
 //> (404 Code) requests, it should divert back to this handler
 func PageNotFound(T engines.EngineContract) {
 	err := &errors.AppError{
@@ -24,7 +24,7 @@ func PageNotFound(T engines.EngineContract) {
 	HttpErrorHandler(T, err)
 }
 
-//> on this method, once the engine detects a method not allowed
+// MethodNotAllowed > on this method, once the engine detects a method not allowed
 //> (405 Code) requests, it should divert back to this handler
 func MethodNotAllowed(T engines.EngineContract) {
 	err := &errors.AppError{
@@ -35,7 +35,7 @@ func MethodNotAllowed(T engines.EngineContract) {
 	HttpErrorHandler(T, err)
 }
 
-//> on this method, we handle the any returned AppError across all handlers
+// HttpErrorHandler > on this method, we handle the any returned AppError across all handlers
 //> once we received any errors.AppError, what we actually do is to print
 //> a pretty neat html (or if the requestor wanted a json, we respond accordingly)
 func HttpErrorHandler(T engines.EngineContract, appErr *errors.AppError) {

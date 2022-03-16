@@ -58,6 +58,7 @@ $> bash ./serve
   - [x] GetIp()
   - [x] GetUserAgent()
   - [x] GetFileByName()
+  - [x] GetFiles()
 - [ ] URL
   - [x] CurrentUrl()
   - [x] FullUrl()

@@ -11,6 +11,7 @@ type RequestContract interface {
 	FullUrl() string
 	PreviousUrl() string
 	RedirectPrevious()
+
 	All() interface{}
 	Get(k string) interface{}
 	GetFirst(k string, dfault interface{}) interface{}
@@ -25,4 +26,5 @@ type RequestContract interface {
 	GetIp() string
 	GetUserAgent() string
 	GetFileByName(name string) (*multipart.FileHeader, error)
+	GetFiles() (map[string][]*multipart.FileHeader, error)
 }

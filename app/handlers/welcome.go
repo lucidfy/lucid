@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"github.com/daison12006013/gorvel/pkg/helpers"
 	"github.com/daison12006013/gorvel/pkg/storage"
 	"net/http"
@@ -41,17 +42,25 @@ func WelcomeForApi(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	req := engine.Request
 	res := engine.Response
+	storage := storage.Store
 
-	storage := storage.NewLocalStorage()
-
-	file, err := req.GetFileByName("file")
+	files, err := req.GetFiles()
 	if err != nil {
 		return res.Json(helpers.MP{
 			"error": err.Error(),
 		}, http.StatusOK)
 	} // prepare the data
 
-	err = storage.Put(file.Filename, *file)
+	images := files["files"]
+
+	fmt.Println(len(images))
+	for _, image := range images {
+		err := storage.Put(image.Filename, image)
+		if err != nil {
+			return nil
+		}
+	}
+
 	if err != nil {
 		return res.Json(helpers.MP{
 			"error": err.Error(),
@@ -62,7 +71,7 @@ func WelcomeForApi(T engines.EngineContract) *errors.AppError {
 		"title":     "Gorvel Rocks! ",
 		"IpAddress": req.GetIp(),
 		"userAgent": req.GetUserAgent(),
-		"file":      file.Filename,
+		"file":      len(images),
 	}
 	return res.Json(data, http.StatusOK)
 
