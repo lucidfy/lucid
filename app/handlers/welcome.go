@@ -57,8 +57,12 @@ func WelcomeForApi(T engines.EngineContract) *errors.AppError {
 	for _, image := range images {
 		err := storage.Put(image.Filename, image)
 		if err != nil {
-			return nil
+			return &errors.AppError{Code: 400, Error: err}
 		}
+
+		go fmt.Println(storage.Size(image.Filename))
+		go fmt.Println("File Exist ", storage.Exists(image.Filename))
+		go fmt.Println("File MISSING ", storage.Missing(image.Filename))
 	}
 
 	if err != nil {
