@@ -14,6 +14,12 @@ var Routes = &[]r.Routing{
 		Handler: handlers.Welcome,
 	},
 	{
+		Path:    "/",
+		Name:    "welcome",
+		Method:  r.Method{"POST"},
+		Handler: handlers.WelcomeForApi,
+	},
+	{
 		Path:    "/docs",
 		Prefix:  true,
 		Name:    "docs",

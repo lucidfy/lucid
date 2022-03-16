@@ -2,6 +2,7 @@ package request
 
 import (
 	"fmt"
+	"mime/multipart"
 	"net/http"
 	"strings"
 	"sync"
@@ -15,18 +16,20 @@ import (
 )
 
 type MuxRequest struct {
-	ResponseWriter http.ResponseWriter
-	HttpRequest    *http.Request
-	Url            *urls.MuxUrl
-	Session        *session.MuxSession
+	ResponseWriter     http.ResponseWriter
+	HttpRequest        *http.Request
+	Url                *urls.MuxUrl
+	Session            *session.MuxSession
+	MaxMultipartMemory int64
 }
 
 func Mux(w http.ResponseWriter, r *http.Request, u *urls.MuxUrl, ses *session.MuxSession) *MuxRequest {
 	t := MuxRequest{
-		ResponseWriter: w,
-		HttpRequest:    r,
-		Url:            u,
-		Session:        ses,
+		ResponseWriter:     w,
+		HttpRequest:        r,
+		Url:                u,
+		Session:            ses,
+		MaxMultipartMemory: 32 << 20, // 32MB
 	}
 	return &t
 }
@@ -120,11 +123,11 @@ func (t *MuxRequest) Validator(setOfRules *must.SetOfRules) *errors.AppError {
 
 	for inputField, inputRules := range *setOfRules {
 		for _, inputRule := range inputRules {
-			inputValue := t.Get(inputField).(string)
+			inputValue := t.Get(inputField)
 			wg.Add(1)
 			go rules.Validate(
 				inputField,
-				inputValue,
+				fmt.Sprint(inputValue),
 				inputRule,
 				errsChan,
 				&wg,
@@ -169,4 +172,27 @@ func (t *MuxRequest) GetIp() string {
 		ip = t.HttpRequest.RemoteAddr
 	}
 	return ip
+}
+
+// GetUserAgent returns the user agent
+func (t *MuxRequest) GetUserAgent() string {
+	return t.HttpRequest.Header.Get("User-Agent")
+}
+
+// GetFileByName returns the first file for the provided form key.
+func (t *MuxRequest) GetFileByName(name string) (*multipart.FileHeader, error) {
+	if t.HttpRequest.MultipartForm == nil {
+		if err := t.HttpRequest.ParseMultipartForm(t.MaxMultipartMemory); err != nil {
+			return nil, err
+		}
+	}
+	f, fh, err := t.HttpRequest.FormFile(name)
+	if err != nil {
+		return nil, err
+	}
+	err = f.Close()
+	if err != nil {
+		return nil, err
+	}
+	return fh, err
 }

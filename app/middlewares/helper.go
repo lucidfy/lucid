@@ -6,10 +6,13 @@ import (
 	"github.com/daison12006013/gorvel/pkg/facade/request"
 )
 
+// IsJsonRequest check if request is json
+// Content-Type: application/json
+// Accept: application/json
 func IsJsonRequest(w http.ResponseWriter, r *http.Request) bool {
 	rp := request.Mux(w, r, nil, nil)
 
-	if rp.IsJson() && rp.WantsJson() {
+	if rp.IsJson() || rp.WantsJson() {
 		return true
 	}
 
