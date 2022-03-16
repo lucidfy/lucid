@@ -197,7 +197,7 @@ func (t *MuxRequest) GetFileByName(name string) (*multipart.FileHeader, error) {
 	return fh, err
 }
 
-// GetFiles  is the parsed multipart form, including file uploads.
+// GetFiles  is the parsed multipart form files
 func (t *MuxRequest) GetFiles() (map[string][]*multipart.FileHeader, error) {
 	err := t.HttpRequest.ParseMultipartForm(t.MaxMultipartMemory)
 	return t.HttpRequest.MultipartForm.File, err
