@@ -55,6 +55,8 @@ func FileStorage(T engines.EngineContract) *errors.AppError {
 		go logger.Info("Storage Size: ", storage.Size(image.Filename))
 		go logger.Info("File Exist: ", storage.Exists(image.Filename))
 		go logger.Info("File Missing: ", storage.Missing(image.Filename))
+
+		storage.Delete(image.Filename)
 	}
 
 	if err != nil {

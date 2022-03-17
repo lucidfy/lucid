@@ -5,7 +5,7 @@ import "mime/multipart"
 type Storage interface {
 	Get(path string) (multipart.File, error)
 	Put(path string, file *multipart.FileHeader) error
-	//Delete(path string)
+	Delete(path string) error
 
 	Exists(path string) bool
 	Missing(path string) bool
