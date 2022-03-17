@@ -2,6 +2,7 @@ package registrar
 
 import (
 	"github.com/daison12006013/gorvel/app/handlers"
+	"github.com/daison12006013/gorvel/app/handlers/samplehandler"
 	"github.com/daison12006013/gorvel/app/handlers/usershandler"
 	r "github.com/daison12006013/gorvel/pkg/facade/routes"
 )
@@ -12,12 +13,6 @@ var Routes = &[]r.Routing{
 		Name:    "welcome",
 		Method:  r.Method{"GET"},
 		Handler: handlers.Welcome,
-	},
-	{
-		Path:    "/",
-		Name:    "welcome",
-		Method:  r.Method{"POST"},
-		Handler: handlers.WelcomeForApi,
 	},
 	{
 		Path:    "/docs",
@@ -44,5 +39,17 @@ var Routes = &[]r.Routing{
 		Path:   "/static",
 		Name:   "static",
 		Static: "./resources/static",
+	},
+	{
+		Path:    "/samples/requests",
+		Name:    "",
+		Method:  r.Method{"GET", "POST"},
+		Handler: samplehandler.Requests,
+	},
+	{
+		Path:    "/samples/storage",
+		Name:    "",
+		Method:  r.Method{"POST"},
+		Handler: samplehandler.FileStorage,
 	},
 }
