@@ -53,6 +53,51 @@ func Docs(T engines.EngineContract) *errors.AppError {
 		map[string]interface{}{
 			"title": title,
 			"md":    string(asHtml),
+			"menus": menus(),
 		},
 	)
+}
+
+type MenuAttr struct {
+	Name string
+	URL  string
+}
+type MenuChildren struct {
+	HasChild bool
+	Children []MenuAttr
+}
+type Menu struct {
+	MenuAttr
+	MenuChildren
+}
+
+func menus() *[]Menu {
+	return &[]Menu{
+		{
+			MenuAttr{
+				Name: "Prologue",
+				URL:  "",
+			},
+			MenuChildren{
+				HasChild: true,
+				Children: []MenuAttr{
+					{
+						Name: "Contribution Guide",
+						URL:  "/docs/Contribution Guide",
+					},
+					{
+						Name: "Installation",
+						URL:  "/docs/Installation",
+					},
+				},
+			},
+		},
+		{
+			MenuAttr{
+				Name: "Flat",
+				URL:  "/docs/flat",
+			},
+			MenuChildren{},
+		},
+	}
 }
