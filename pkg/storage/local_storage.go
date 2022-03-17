@@ -65,3 +65,8 @@ func (s *LocalStorage) Size(path string) int64 {
 func (s *LocalStorage) Delete(path string) error {
 	return os.Remove(s.basePath + "/" + path)
 }
+
+// Path get file path
+func (s *LocalStorage) Path(path string) string {
+	return s.basePath + "/" + path
+}

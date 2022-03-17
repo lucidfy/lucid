@@ -10,6 +10,8 @@ type Storage interface {
 	Exists(path string) bool
 	Missing(path string) bool
 	Size(path string) int64
+
+	Path(path string) string
 }
 
 var Store Storage = NewLocalStorage()
