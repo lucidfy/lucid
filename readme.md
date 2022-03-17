@@ -14,22 +14,6 @@ Serving go requires a tedeous way of re-compiling codes, but there's a solution 
 $> go install github.com/cespare/reflex@latest
 ```
 
-## How to Contribute?
-
-I should assume you've successfully installed your go in your machine, to start working with this, you should fork a copy of `master` branch to your github, checkout under your `$GOPATH/src/` folder.
-
-If you want to quickly try Gorvel, please follow bellow source, make sure your port `8080` is open to serve your local http.
-
-```bash
-$> echo $GOPATH
-/Users/johndoe/go
-$> cd /Users/johndoe/go
-$> mkdir src/
-$> wget -c https://github.com/daison12006013/gorvel/archive/refs/heads/master.tar.gz -O - | tar -xz
-$> cd gorvel-master
-$> bash ./serve
-```
-
 ## Deploy as a Docker Container
 
 ... still in progress
