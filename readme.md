@@ -40,6 +40,8 @@ $> go install github.com/cespare/reflex@latest
   - [x] IsMultipart()
   - [x] WantsJson()
   - [x] GetIp()
+  - [x] GetUserAgent()
+  - [x] GetFileByName()
 - [ ] URL
   - [x] CurrentUrl()
   - [x] FullUrl()
