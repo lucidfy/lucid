@@ -33,7 +33,6 @@ func FileStorage(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	req := engine.Request
 	res := engine.Response
-	storage := storage.Store
 
 	files, err := req.GetFiles()
 
@@ -46,17 +45,19 @@ func FileStorage(T engines.EngineContract) *errors.AppError {
 	images := files["files"]
 	logger.Info("Image Length", len(images))
 
+	// initialize local storage
+	store := storage.NewLocalStorage()
+
 	for _, image := range images {
-		err := storage.Put(image.Filename, image)
+		err := store.Put(image.Filename, image)
 		if err != nil {
 			return &errors.AppError{Code: 400, Error: err}
 		}
 
-		go logger.Info("Storage Size: ", storage.Size(image.Filename))
-		go logger.Info("File Exist: ", storage.Exists(image.Filename))
-		go logger.Info("File Missing: ", storage.Missing(image.Filename))
-
-		storage.Delete(image.Filename)
+		go logger.Info("Storage Size: ", store.Size(image.Filename))
+		go logger.Info("File Exist: ", store.Exists(image.Filename))
+		go logger.Info("File Missing: ", store.Missing(image.Filename))
+		store.Delete(image.Filename)
 	}
 
 	if err != nil {

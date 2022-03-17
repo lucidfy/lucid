@@ -13,5 +13,3 @@ type Storage interface {
 
 	Path(path string) string
 }
-
-var Store Storage = NewLocalStorage()
