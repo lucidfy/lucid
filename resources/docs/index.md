@@ -1,1 +1,1 @@
-02. Getting Started/01. Installation.md
+02. Installation.md
