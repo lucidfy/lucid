@@ -9,7 +9,7 @@ import (
 	"github.com/daison12006013/gorvel/pkg/errors"
 	"github.com/daison12006013/gorvel/pkg/facade/path"
 	"github.com/gomarkdown/markdown"
-	"github.com/gomarkdown/markdown/html"
+	"github.com/gomarkdown/markdown/parser"
 )
 
 func Docs(T engines.EngineContract) *errors.AppError {
@@ -40,13 +40,12 @@ func Docs(T engines.EngineContract) *errors.AppError {
 		}
 	}
 
-	flags := html.CommonFlags | html.HrefTargetBlank
-	opts := html.RendererOptions{
-		Title: "A custom title",
-		Flags: flags,
-	}
-	renderer := html.NewRenderer(opts)
-	asHtml := markdown.ToHTML(md, nil, renderer)
+	ext := parser.CommonExtensions | parser.Attributes | parser.OrderedListStart | parser.SuperSubscript | parser.Mmark
+	asHtml := markdown.ToHTML(
+		md,
+		parser.NewWithExtensions(ext),
+		nil,
+	)
 
 	return res.View(
 		[]string{"base", "docs"},
@@ -85,6 +84,17 @@ func menus() *[]Menu {
 						Name: "Contribution Guide",
 						URL:  "/docs/Contribution Guide",
 					},
+				},
+			},
+		},
+		{
+			MenuAttr{
+				Name: "Getting Started",
+				URL:  "",
+			},
+			MenuChildren{
+				HasChild: true,
+				Children: []MenuAttr{
 					{
 						Name: "Installation",
 						URL:  "/docs/Installation",
@@ -94,8 +104,8 @@ func menus() *[]Menu {
 		},
 		{
 			MenuAttr{
-				Name: "Flat",
-				URL:  "/docs/flat",
+				Name: "Core Documentation",
+				URL:  "https://pkg.go.dev/github.com/daison12006013/gorvel",
 			},
 			MenuChildren{},
 		},
