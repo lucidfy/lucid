@@ -21,7 +21,8 @@ func (s *LocalStorage) Get(path string) (multipart.File, error) {
 	return os.Open(s.basePath + "/" + path)
 }
 
-func (s *LocalStorage) Put(path string, file multipart.FileHeader) error {
+func (s *LocalStorage) Put(path string, file *multipart.FileHeader) error {
+
 	src, err := file.Open()
 
 	if err != nil {
@@ -37,4 +38,25 @@ func (s *LocalStorage) Put(path string, file multipart.FileHeader) error {
 
 	_, err = io.Copy(out, src)
 	return err
+}
+
+// Exists check if file exists
+func (s *LocalStorage) Exists(path string) bool {
+	_, err := os.Stat(s.basePath + "/" + path)
+	return !os.IsNotExist(err)
+}
+
+// Missing check if file exists
+func (s *LocalStorage) Missing(path string) bool {
+	_, err := os.Stat(s.basePath + "/" + path)
+	return os.IsNotExist(err)
+}
+
+// Size get file size
+func (s *LocalStorage) Size(path string) int64 {
+	fileInfo, err := os.Stat(s.basePath + "/" + path)
+	if err != nil {
+		return 0
+	}
+	return fileInfo.Size()
 }

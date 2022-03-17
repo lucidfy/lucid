@@ -42,6 +42,7 @@ $> go install github.com/cespare/reflex@latest
   - [x] GetIp()
   - [x] GetUserAgent()
   - [x] GetFileByName()
+  - [x] GetFiles()
 - [ ] URL
   - [x] CurrentUrl()
   - [x] FullUrl()
@@ -64,6 +65,13 @@ $> go install github.com/cespare/reflex@latest
     - [ ] C.R.U.D. Handlers
 - [x] Pagination
 - [x] ORM using gORM (by default)
+- [x] Storage
+  - [x] Get()
+  - [x] Put()
+  - [ ] Delete()
+  - [x] Exists()
+  - [x] Missing()
+  - [x] Size()
 
 ## Security Issues
 

@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/daison12006013/gorvel/pkg/env"
 	"os/exec"
 	"runtime"
 
-	"github.com/daison12006013/gorvel/pkg/env"
 	"github.com/daison12006013/gorvel/pkg/facade/logger"
 	"github.com/daison12006013/gorvel/pkg/facade/urls"
 )
@@ -14,10 +14,10 @@ func main() {
 	env.LoadEnv()
 	url := urls.BaseUrl(nil)
 	logger.Info("Serving at " + url)
-	openbrowser(url)
+	openBrowser(url)
 }
 
-func openbrowser(url string) {
+func openBrowser(url string) {
 	var err error
 
 	switch runtime.GOOS {
