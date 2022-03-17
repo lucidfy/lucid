@@ -31,7 +31,7 @@ func Init() *App {
 	srv := &http.Server{
 		Addr: urls.GetAddr(),
 
-		// Good practice to set timeouts to avoid Slowloris attacks.
+		// Good practice to set timeouts to avoid Slow-loris attacks.
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 60,
