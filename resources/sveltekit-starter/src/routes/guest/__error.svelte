@@ -27,7 +27,7 @@
   </style>
 </svelte:head>
 
-<main class="bg-gray2-900 flex h-screen raleway m-auto">
+<main class="bg-orange-600 flex h-screen raleway m-auto">
   <div class="text-white m-auto font-thin w-10/12">
     <div class="text-center mb-5">
       <h1 class="text-8xl">

@@ -2,7 +2,7 @@
   <title>Welcome</title>
 </svelte:head>
 
-<main class="bg-gray2-900 flex h-screen raleway font-thin">
+<main class="bg-orange-600 flex h-screen raleway font-thin">
   <div class="text-white m-auto">
     <h1 class="text-8xl mb-5">
         Welcome to <a href="https://github.com/daison12006013/gorvel" class="font-light">Go</a>rvel!
