@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/daison12006013/gorvel/databases"
-	"github.com/daison12006013/gorvel/pkg/array"
 	"github.com/daison12006013/gorvel/pkg/errors"
 	"github.com/daison12006013/gorvel/pkg/facade/crypt"
+	"github.com/daison12006013/gorvel/pkg/functions/php"
 	"github.com/daison12006013/gorvel/pkg/paginate/searchable"
 	"github.com/golang-module/carbon"
 
@@ -159,7 +159,7 @@ func sanitize(i interface{}) (interface{}, *errors.AppError) {
 
 	// only filter updatable fields!
 	for k := range inputs {
-		if array.In(k, Updatables) < 0 {
+		if php.InArray(k, Updatables) < 0 {
 			delete(inputs, k)
 		}
 	}
