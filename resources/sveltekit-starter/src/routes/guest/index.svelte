@@ -1,5 +1,15 @@
+<script lang="ts">
+  export let welcome: {
+    title: string;
+    IpAddress: string;
+    userAgent: string;
+  }
+
+  console.log("Here's the data we received at gorvel endpoint", welcome)
+</script>
+
 <svelte:head>
-  <title>Welcome</title>
+  <title>{welcome.title}</title>
 </svelte:head>
 
 <main class="bg-orange-600 flex h-screen raleway font-thin">
