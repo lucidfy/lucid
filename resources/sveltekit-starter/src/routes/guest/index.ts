@@ -6,17 +6,13 @@ export const get: RequestHandler = async ({ locals }) => {
 
 	if (response.status === 404) {
 		return {
-			body: {
-				welcome: []
-			}
+			body: []
 		};
 	}
 
 	if (response.status === 200) {
 		return {
-			body: {
-				welcome: await response.json()
-			}
+			body: await response.json()
 		};
 	}
 

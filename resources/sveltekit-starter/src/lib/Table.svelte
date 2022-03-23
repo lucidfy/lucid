@@ -1,4 +1,6 @@
 <script>
+  import { fly } from "svelte/transition";
+
   export let title
   export let data
   export let csrfField
@@ -102,7 +104,7 @@
                     <div class="text-sm text-gray-500">{ record.updated_at }</div>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                    <a href="/users/{ record.id }" class="text-indigo-600 hover:text-indigo-900 px-2">View</a>
+                    <a in:fly={{ x: -200, duration: 500 }} href="/users/{ record.id }" class="text-indigo-600 hover:text-indigo-900 px-2">View</a>
                     <form class="px-2 inline-block" action="/users/{ record.id }/delete" method="POST">
                       {@html csrfField}
                       <button class="text-red-600 hover:text-red-900">Delete</button>
