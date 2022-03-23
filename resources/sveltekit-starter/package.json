@@ -32,7 +32,7 @@
     "autoprefixer": "^10.2.5",
     "postcss": "^8.2.15",
     "svelte-bootstrap-icons": "^1.8.0",
-    "tailwindcss": "^2.1.2"
+    "tailwindcss": "^3.0.23"
   },
   "type": "module",
   "dependencies": {

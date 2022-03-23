@@ -1,5 +1,12 @@
+<script lang="ts">
+  export let title: string
+  export let IpAddress: string
+  export let userAgent: string
+  console.log("Here's the data we received at gorvel endpoint", title, IpAddress, userAgent)
+</script>
+
 <svelte:head>
-  <title>Welcome</title>
+  <title>{title}</title>
 </svelte:head>
 
 <main class="bg-orange-600 flex h-screen raleway font-thin">
@@ -17,7 +24,8 @@
           font-light
           py-2 px-4
           border border-white-500 hover:border
-          rounded" href="/users">Sample Forms</a>
+          rounded" href="/users"
+          >Sample Forms</a>
     </div>
   </div>
 </main>

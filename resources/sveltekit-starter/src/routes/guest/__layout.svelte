@@ -13,6 +13,6 @@
   </style>
 </svelte:head>
 
-<section id="body" class="dark">
+<div id="body" class="dark">
   <slot />
-</section>
+</div>

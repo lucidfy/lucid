@@ -22,11 +22,11 @@ type Header struct {
 }
 
 type Table struct {
-	Paginate    paginate.Paginate
-	Headers     []Header
-	Params      map[string]string
-	OrderByCol  *string
-	OrderBySort *string
+	Paginate    paginate.Paginate `json:"paginate"`
+	Headers     []Header          `json:"headers"`
+	Params      map[string]string `json:"params"`
+	OrderByCol  *string           `json:"order_by_col"`
+	OrderBySort *string           `json:"order_by_sort"`
 }
 
 func (st *Table) QueryCount(table string) sq.SelectBuilder {
