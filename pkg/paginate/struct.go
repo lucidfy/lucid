@@ -9,6 +9,6 @@ type Paginate struct {
 	BaseUrl string      `json:"base_url"`
 	Items   interface{} `json:"items"`
 
-	OnEachSide int
-	Fragment   *string
+	OnEachSide int     `json:"on_each_side"`
+	Fragment   *string `json:"fragment"`
 }
