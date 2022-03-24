@@ -2,11 +2,9 @@ import { api } from '$src/routes/_api';
 import type { RequestHandler } from '@sveltejs/kit';
 
 export const get: RequestHandler = async ({ locals }) => {
-	// locals.userid comes from src/hooks.js
-	const response = await api('get', `users`);
+	const response = await api('get', 'users');
 
 	if (response.status === 404) {
-		// start with an empty array
 		return {
 			body: []
 		};

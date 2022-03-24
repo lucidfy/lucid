@@ -14,7 +14,7 @@ func Create(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	// w := engine.HttpResponseWriter
 	r := engine.HttpRequest
-	// req := engine.Request
+	req := engine.Request
 	res := engine.Response
 	ses := engine.Session
 
@@ -30,6 +30,10 @@ func Create(T engines.EngineContract) *errors.AppError {
 		"error":   ses.GetFlash("error"),
 		"fails":   ses.GetFlashMap("fails"),
 		"inputs":  ses.GetFlashMap("inputs"),
+	}
+
+	if req.IsJson() && req.WantsJson() {
+		return res.Json(data, http.StatusOK)
 	}
 
 	return res.View(
