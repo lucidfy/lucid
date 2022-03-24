@@ -32,11 +32,6 @@ func Show(T engines.EngineContract) *errors.AppError {
 
 	record := data.Model
 
-	//> for api based
-	if req.IsJson() && req.WantsJson() {
-		return res.Json(record, http.StatusOK)
-	}
-
 	//> determine which template to be provided
 	isShow := true
 	viewFile := "show"
@@ -45,19 +40,26 @@ func Show(T engines.EngineContract) *errors.AppError {
 		// viewFile = "edit"
 	}
 
+	respData := map[string]interface{}{
+		"title":          record.Name + "'s Profile",
+		"previousUrl":    url.PreviousUrl(),
+		"record":         record,
+		"isShow":         isShow,
+		csrf.TemplateTag: csrf.TemplateField(r),
+
+		"success": ses.GetFlash("success"),
+		"error":   ses.GetFlash("error"),
+	}
+
+	//> for api based
+	if req.IsJson() && req.WantsJson() {
+		return res.Json(respData, http.StatusOK)
+	}
+
 	//> for form based, show the "viewFile"
 	return res.View(
 		[]string{"base", fmt.Sprintf("users/%s", viewFile)},
-		map[string]interface{}{
-			"title":          record.Name + "'s Profile",
-			"previousUrl":    url.PreviousUrl(),
-			"record":         record,
-			"isShow":         isShow,
-			csrf.TemplateTag: csrf.TemplateField(r),
-
-			"success": ses.GetFlash("success"),
-			"error":   ses.GetFlash("error"),
-		},
+		respData,
 	)
 }
 

@@ -1,6 +1,6 @@
 <script lang="ts">
   import Gorvel from "$src/lib/guest/Gorvel.svelte";
-  import Form from "./_form.svelte";
+  import Form from "$src/routes/guest/users/_form.svelte";
 
   export let title: string
   export let success: string
