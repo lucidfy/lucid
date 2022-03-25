@@ -14,9 +14,11 @@
   export let csrfField: string
 </script>
 
-<Gorvel {title} {success} {error}>
+<Gorvel {title}>
   <Form
     {title}
+    {success}
+    {error}
     {fails}
     {inputs}
     {record}

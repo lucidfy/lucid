@@ -1,6 +1,9 @@
 <script lang="ts">
   export let title: string
-  export let fails: any
+  export let success: string
+  export let error: string
+
+  export let fails: Object
   export let inputs: { name: string; email: string; }
   export let record: { name: string; email: string; id: number; }
   export let isCreate: boolean
@@ -9,15 +12,33 @@
 </script>
 
 <div class="text-white m-auto w-6/12">
-  {#if fails && fails.length > 0}
+  {#if success}
+    <div
+      class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800"
+      role="alert"
+    >
+      {success}
+    </div>
+  {/if}
+
+  {#if error}
+    <div
+      class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800"
+      role="alert"
+    >
+      {error}
+    </div>
+  {/if}
+
+  {#if fails && Object.keys(fails).length > 0}
     <div
       class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800"
       role="alert"
     >
       Validation Error!
       <ul class="list-disc pl-5">
-        {#each fails as fail, i (i)}
-          <li>{fail}</li>
+        {#each  Object.keys(fails) as key, i (i)}
+          <li>{fails[key]}</li>
         {/each}
       </ul>
     </div>
@@ -39,7 +60,7 @@
         <form
           class="w-full"
           method="POST"
-          action={isCreate ? '/users' : `/users/${record.id}?_method=PUT`}
+          action={isCreate ? '/users/create' : `/users/${record.id}/edit`}
         >
           <div class="flex flex-wrap -mx-3 mb-6">
             <div class="w-1/2 md:w-full px-3 mb-6 md:mb-0">
