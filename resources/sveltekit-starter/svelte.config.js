@@ -6,7 +6,7 @@ import adapter from '@sveltejs/adapter-auto'
 let routeFolder = process.env.ROUTE_FOLDER
 
 if (routeFolder == undefined) {
-  routeFolder = 'admin'
+  routeFolder = 'guest'
 }
 
 /** @type {import('@sveltejs/kit').Config} */

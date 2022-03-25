@@ -1,6 +1,9 @@
 #!/bin/bash
-build_gorvel:
-	go build -o gopher.compiled ./cmd/gopher/main.go && \
-		  mv -f gopher.compiled ./.build/gopher
-	go build -o serve.compiled ./cmd/serve/main.go && \
-		  mv -f serve.compiled ./.build/serve
+.check_binaries:
+	./cmd/check-binaries.sh
+.build_go:
+	./cmd/build-go.sh
+.build_svelte:
+	./cmd/build-svelte.sh
+
+build: .check_binaries .build_go .build_svelte
