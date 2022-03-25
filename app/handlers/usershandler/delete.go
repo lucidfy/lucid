@@ -39,8 +39,7 @@ func Delete(T engines.EngineContract) *errors.AppError {
 	//> response: for api based
 	if req.IsJson() && req.WantsJson() {
 		return res.Json(map[string]interface{}{
-			"ok":      true,
-			"message": message,
+			"success": message,
 		}, status)
 	}
 

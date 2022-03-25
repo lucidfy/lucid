@@ -68,10 +68,11 @@ $> go install github.com/cespare/reflex@latest
 - [x] Storage
   - [x] Get()
   - [x] Put()
-  - [ ] Delete()
+  - [x] Delete()
   - [x] Exists()
   - [x] Missing()
   - [x] Size()
+  - [x] Path()
 
 ## Security Issues
 

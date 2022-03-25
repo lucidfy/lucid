@@ -1,20 +1,25 @@
 package main
 
 import (
+	"flag"
 	"fmt"
-	"github.com/daison12006013/gorvel/pkg/env"
 	"os/exec"
 	"runtime"
 
+	"github.com/daison12006013/gorvel/pkg/env"
 	"github.com/daison12006013/gorvel/pkg/facade/logger"
 	"github.com/daison12006013/gorvel/pkg/facade/urls"
 )
 
 func main() {
+	var u string
+
 	env.LoadEnv()
-	url := urls.BaseUrl(nil)
-	logger.Info("Serving at " + url)
-	openBrowser(url)
+	flag.StringVar(&u, "url", urls.BaseUrl(nil), "URL to Open")
+	flag.Parse()
+
+	logger.Info("Serving at " + u)
+	openBrowser(u)
 }
 
 func openBrowser(url string) {

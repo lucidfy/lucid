@@ -9,7 +9,7 @@ import (
 	"github.com/daison12006013/gorvel/pkg/errors"
 	"github.com/daison12006013/gorvel/pkg/facade/path"
 	"github.com/gomarkdown/markdown"
-	"github.com/gomarkdown/markdown/html"
+	"github.com/gomarkdown/markdown/parser"
 )
 
 func Docs(T engines.EngineContract) *errors.AppError {
@@ -40,19 +40,74 @@ func Docs(T engines.EngineContract) *errors.AppError {
 		}
 	}
 
-	flags := html.CommonFlags | html.HrefTargetBlank
-	opts := html.RendererOptions{
-		Title: "A custom title",
-		Flags: flags,
-	}
-	renderer := html.NewRenderer(opts)
-	asHtml := markdown.ToHTML(md, nil, renderer)
+	ext := parser.CommonExtensions | parser.Attributes | parser.OrderedListStart | parser.SuperSubscript | parser.Mmark
+	asHtml := markdown.ToHTML(
+		md,
+		parser.NewWithExtensions(ext),
+		nil,
+	)
 
 	return res.View(
 		[]string{"base", "docs"},
 		map[string]interface{}{
 			"title": title,
 			"md":    string(asHtml),
+			"menus": menus(),
 		},
 	)
+}
+
+type MenuAttr struct {
+	Name string
+	URL  string
+}
+type MenuChildren struct {
+	HasChild bool
+	Children []MenuAttr
+}
+type Menu struct {
+	MenuAttr
+	MenuChildren
+}
+
+func menus() *[]Menu {
+	return &[]Menu{
+		{
+			MenuAttr{
+				Name: "Prologue",
+				URL:  "",
+			},
+			MenuChildren{
+				HasChild: true,
+				Children: []MenuAttr{
+					{
+						Name: "Contribution Guide",
+						URL:  "/docs/Contribution Guide",
+					},
+				},
+			},
+		},
+		{
+			MenuAttr{
+				Name: "Getting Started",
+				URL:  "",
+			},
+			MenuChildren{
+				HasChild: true,
+				Children: []MenuAttr{
+					{
+						Name: "Installation",
+						URL:  "/docs/Installation",
+					},
+				},
+			},
+		},
+		{
+			MenuAttr{
+				Name: "Core Documentation",
+				URL:  "https://pkg.go.dev/github.com/daison12006013/gorvel",
+			},
+			MenuChildren{},
+		},
+	}
 }

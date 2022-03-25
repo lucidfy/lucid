@@ -14,7 +14,7 @@ func Create(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	// w := engine.HttpResponseWriter
 	r := engine.HttpRequest
-	// req := engine.Request
+	req := engine.Request
 	res := engine.Response
 	ses := engine.Session
 
@@ -30,6 +30,10 @@ func Create(T engines.EngineContract) *errors.AppError {
 		"error":   ses.GetFlash("error"),
 		"fails":   ses.GetFlashMap("fails"),
 		"inputs":  ses.GetFlashMap("inputs"),
+	}
+
+	if req.IsJson() && req.WantsJson() {
+		return res.Json(data, http.StatusOK)
 	}
 
 	return res.View(
@@ -50,6 +54,12 @@ func Store(T engines.EngineContract) *errors.AppError {
 	//> validate the inputs
 	validator := req.Validator(validations.UserValidateCreate())
 	if validator != nil {
+		if req.IsJson() && req.WantsJson() {
+			return res.Json(map[string]interface{}{
+				"fails": validator.ValidationError,
+			}, http.StatusUnauthorized)
+		}
+
 		ses.SetFlashMap("fails", validator.ValidationError)
 		ses.SetFlashMap("inputs", req.All())
 		url.RedirectPrevious()
@@ -69,8 +79,7 @@ func Store(T engines.EngineContract) *errors.AppError {
 	//> for api based
 	if req.IsJson() && req.WantsJson() {
 		return res.Json(map[string]interface{}{
-			"ok":      true,
-			"message": message,
+			"success": message,
 			"data":    data,
 		}, status)
 	}

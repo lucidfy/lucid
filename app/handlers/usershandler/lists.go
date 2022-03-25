@@ -39,9 +39,18 @@ func Lists(T engines.EngineContract) *errors.AppError {
 		return &errors.AppError{Error: err, Message: "error fetching users list", Code: http.StatusInternalServerError}
 	}
 
+	data := map[string]interface{}{
+		"title":          "Users List",
+		"data":           searchable,
+		"links":          searchable.Paginate.Links(),
+		"success":        ses.GetFlash("success"),
+		"error":          ses.GetFlash("error"),
+		csrf.TemplateTag: csrf.TemplateField(r),
+	}
+
 	//> here, we determine if the requestor wants a json response
 	if req.IsJson() && req.WantsJson() {
-		return res.Json(searchable.Paginate.ToArray(), http.StatusOK)
+		return res.Json(data, http.StatusOK)
 	}
 
 	//> or else, provide an html response instead.
@@ -51,13 +60,7 @@ func Lists(T engines.EngineContract) *errors.AppError {
 			"users/lists",
 			"users/_table",
 		},
-		map[string]interface{}{
-			"title":          "Users List",
-			"data":           searchable,
-			"success":        ses.GetFlash("success"),
-			"error":          ses.GetFlash("error"),
-			csrf.TemplateTag: csrf.TemplateField(r),
-		},
+		data,
 	)
 }
 

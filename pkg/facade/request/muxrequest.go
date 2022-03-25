@@ -1,7 +1,9 @@
 package request
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"strings"
@@ -21,6 +23,8 @@ type MuxRequest struct {
 	Url                *urls.MuxUrl
 	Session            *session.MuxSession
 	MaxMultipartMemory int64
+
+	ParsedParams map[string]interface{}
 }
 
 func Mux(w http.ResponseWriter, r *http.Request, u *urls.MuxUrl, ses *session.MuxSession) *MuxRequest {
@@ -36,26 +40,45 @@ func Mux(w http.ResponseWriter, r *http.Request, u *urls.MuxUrl, ses *session.Mu
 
 // All returns available http queries
 func (t *MuxRequest) All() interface{} {
+	// put a singleton, we don't need to parse
+	// the request over and over again.
+	if len(t.ParsedParams) > 0 {
+		return t.ParsedParams
+	}
+
 	params := map[string]interface{}{}
 
-	// via form inputs
-	for idx, val := range t.HttpRequest.Form {
-		if len(val) > 0 {
-			params[idx] = val[0]
-		}
-	}
-
-	// via query params
-	for idx, val := range t.HttpRequest.URL.Query() {
-		if len(val) > 0 {
-			params[idx] = val[0]
-		}
-	}
-
-	// via route params
+	// initialize inputs from route params
 	for idx, val := range mux.Vars(t.HttpRequest) {
 		params[idx] = val
 	}
+
+	if t.IsForm() { // via form inputs
+		for idx, val := range t.HttpRequest.Form {
+			if len(val) > 0 {
+				params[idx] = val[0]
+			}
+		}
+	} else if t.IsJson() { // via raw body
+		body, err := ioutil.ReadAll(t.HttpRequest.Body)
+		if err == nil {
+			jsonB := map[string]interface{}{}
+			json.Unmarshal(body, &jsonB)
+			for idx, val := range jsonB {
+				if len(val.(string)) > 0 {
+					params[idx] = val
+				}
+			}
+		}
+	} else { // else get the url queries
+		for idx, val := range t.HttpRequest.URL.Query() {
+			if len(val) > 0 {
+				params[idx] = val[0]
+			}
+		}
+	}
+
+	t.ParsedParams = params
 
 	return params
 }
