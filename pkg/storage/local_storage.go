@@ -67,6 +67,9 @@ func (s *LocalStorage) Delete(path string) error {
 }
 
 // Path get file path
-func (s *LocalStorage) Path(path string) string {
-	return s.basePath + "/" + path
+func (s *LocalStorage) Path(path string) (string, bool) {
+	if s.Missing(path) {
+		return "", false
+	}
+	return s.basePath + "/" + path, true
 }
