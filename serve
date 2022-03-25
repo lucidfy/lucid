@@ -1,2 +1,2 @@
 #!/bin/bash
-reflex -c ./serve$1.conf
+./cmd/reflex -c ./serve$1.conf
