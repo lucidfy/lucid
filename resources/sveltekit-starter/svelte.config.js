@@ -1,7 +1,7 @@
 import preprocess from 'svelte-preprocess'
 import { resolve } from 'path'
-import adapter from '@sveltejs/adapter-auto'
-// import adapter from '@sveltejs/adapter-vercel'
+// import adapter from '@sveltejs/adapter-auto'
+import adapter from '@sveltejs/adapter-node'
 
 let routeFolder = process.env.ROUTE_FOLDER
 
@@ -16,7 +16,7 @@ const config = {
   preprocess: preprocess(),
 
   kit: {
-    adapter: adapter(),
+    adapter: adapter({ out: '../../.build/sveltekit-build' }),
 
     // Override http methods in the Todo forms
     methodOverride: {

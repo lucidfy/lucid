@@ -1,9 +1,7 @@
 #!/bin/bash
-.check_binaries:
+build:
+	@echo "Check if go/npm/node exists"
 	./cmd/check-binaries.sh
-.build_go:
-	./cmd/build-go.sh
-.build_svelte:
-	./cmd/build-svelte.sh
 
-build: .check_binaries .build_go .build_svelte
+	@echo "Install github.com/cespare/reflex binary"
+	./cmd/install-reflex.sh
