@@ -1,0 +1,3 @@
+#!/bin/bash
+./cmd/build-go.sh
+./cmd/build-svelte.sh

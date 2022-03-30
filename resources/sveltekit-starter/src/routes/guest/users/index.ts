@@ -1,8 +1,9 @@
 import { api } from '$src/routes/_api';
 import type { RequestHandler } from '@sveltejs/kit';
 
-export const get: RequestHandler = async ({ locals }) => {
-	const response = await api('get', 'users');
+// Lists of users
+export const get: RequestHandler = async ({ locals, url }) => {
+	const response = await api('get', `users?pagination_url=${url.origin}${url.pathname}&${url.searchParams.toString()}`);
 
 	if (response.status === 404) {
 		return {
@@ -21,40 +22,35 @@ export const get: RequestHandler = async ({ locals }) => {
 	};
 };
 
-export const post: RequestHandler = async ({ request, locals }) => {
-	const form = await request.formData();
-
-	await api('post', `users/${locals.userid}`, {
-		text: form.get('text')
-	});
-
-	return {};
-};
-
-// If the user has JavaScript disabled, the URL will change to
-// include the method override unless we redirect back to /users
-const redirect = {
-	status: 303,
-	headers: {
-		location: '/users'
-	}
-};
-
-export const patch: RequestHandler = async ({ request, locals }) => {
-	const form = await request.formData();
-
-	await api('patch', `users/${locals.userid}/${form.get('uid')}`, {
-		text: form.has('text') ? form.get('text') : undefined,
-		done: form.has('done') ? !!form.get('done') : undefined
-	});
-
-	return redirect;
-};
-
+// Deleting a user
 export const del: RequestHandler = async ({ request, locals }) => {
 	const form = await request.formData();
+	const userId = form.has('id') ? form.get('id') : undefined
 
-	await api('delete', `users/${locals.userid}/${form.get('uid')}`);
+	if (userId == undefined) {
+		return {
+			body: {
+				error: "Unknown ID to be deleted!"
+			}
+		};
+	}
 
-	return redirect;
+	const response = await api('delete', `users/${userId}`);
+
+	if (response.status === 404) {
+		return {
+			body: []
+		};
+	}
+
+	if (response.status >= 200 && response.status < 300 || response.status === 401) {
+		return {
+			status: response.status,
+			body: await response.json()
+		};
+	}
+
+	return {
+		status: response.status
+	};
 };

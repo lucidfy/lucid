@@ -42,7 +42,7 @@ func Lists(T engines.EngineContract) *errors.AppError {
 	data := map[string]interface{}{
 		"title":          "Users List",
 		"data":           searchable,
-		"links":          searchable.Paginate.Links(),
+		"links_array":    searchable.Paginate.ToArray(),
 		"success":        ses.GetFlash("success"),
 		"error":          ses.GetFlash("error"),
 		csrf.TemplateTag: csrf.TemplateField(r),
@@ -87,7 +87,7 @@ func prepare(request request.MuxRequest, url urls.MuxUrl) (*searchable.Table, er
 
 	st.Paginate.CurrentPage = currentPage
 	st.Paginate.PerPage = perPage
-	st.Paginate.BaseUrl = url.FullUrl()
+	st.Paginate.BaseUrl = request.Input("pagination_url", url.FullUrl()).(string)
 
 	orderByCol := request.Input("sort-column", SORT_COLUMN).(string)
 	orderBySort := request.Input("sort-type", SORT_TYPE).(string)

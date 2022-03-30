@@ -81,6 +81,15 @@ func (p *Paginate) NextPageUrl() *string {
 
 func (p *Paginate) ToArray() map[string]interface{} {
 	return map[string]interface{}{
+		// use for pagination
+		"first_item":     p.FirstItem(),
+		"has_more_pages": p.HasMorePages(),
+		"has_pages":      p.HasPages(),
+		"last_item":      p.LastItem(),
+		"on_first_page":  p.OnFirstPage(),
+		"elements":       p.Elements(),
+
+		// default data
 		"current_page":   p.CurrentPage,
 		"data":           p.Items,
 		"first_page_url": p.Url(1),
