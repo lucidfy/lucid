@@ -1,12 +1,12 @@
 <script>
   import Table from '$src/lib/guest/Table.svelte'
   import Gorvel from '$src/lib/guest/Gorvel.svelte';
+  import Pagination from '$src/lib/guest/Pagination.svelte';
 
   export let title
-
   export let data
   export let csrfField
-  export let links
+  export let links_array
 </script>
 
 <Gorvel {title}>
@@ -14,5 +14,16 @@
     <Table {title} {data} {csrfField} />
   </div>
 
-  {@html links}
+  <Pagination
+    first_item={links_array.first_item}
+    has_more_pages={links_array.has_more_pages}
+    has_pages={links_array.has_pages}
+    last_item={links_array.last_item}
+    on_first_page={links_array.on_first_page}
+    current_page={links_array.current_page}
+    total={links_array.total}
+    elements={links_array.elements}
+    next_page_url={links_array.next_page_url}
+    prev_page_url={links_array.prev_page_url}
+  />
 </Gorvel>

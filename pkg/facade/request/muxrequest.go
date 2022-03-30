@@ -70,11 +70,12 @@ func (t *MuxRequest) All() interface{} {
 				}
 			}
 		}
-	} else { // else get the url queries
-		for idx, val := range t.HttpRequest.URL.Query() {
-			if len(val) > 0 {
-				params[idx] = val[0]
-			}
+	}
+
+	// get the url queries
+	for idx, val := range t.HttpRequest.URL.Query() {
+		if len(val) > 0 {
+			params[idx] = val[0]
 		}
 	}
 

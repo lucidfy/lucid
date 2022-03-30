@@ -1,6 +1,7 @@
 import { api } from '$src/routes/_api';
 import type { RequestHandler } from '@sveltejs/kit';
 
+// Getting the create details
 export const get: RequestHandler = async ({ locals }) => {
 	const response = await api('get', 'users/create');
 
@@ -21,7 +22,8 @@ export const get: RequestHandler = async ({ locals }) => {
 	};
 };
 
-export const post: RequestHandler = async ({ request, params }) => {
+// Creating a user
+export const post: RequestHandler = async ({ request }) => {
 	const form = await request.formData();
 
 	const response = await api('post', 'users', {

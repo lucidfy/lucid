@@ -105,8 +105,9 @@
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                     <a in:fly={{ x: -200, duration: 500 }} href="/users/{ record.id }" class="text-indigo-600 hover:text-indigo-900 px-2">View</a>
-                    <form class="px-2 inline-block" action="/users/{ record.id }/delete" method="POST">
+                    <form class="px-2 inline-block" action="/users?_method=DELETE" method="POST">
                       {@html csrfField}
+                      <input type="hidden" name="id" value="{record.id}">
                       <button class="text-red-600 hover:text-red-900">Delete</button>
                     </form>
                   </td>
