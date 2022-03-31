@@ -26,6 +26,16 @@
           border border-white-500 hover:border
           rounded" href="/users"
           >Sample Forms</a>
+
+      <a class="
+          uppercase text-xs
+          bg-transparent hover:bg-white
+          text-white hover:text-gray2-700
+          font-light
+          py-2 px-4
+          border border-white-500 hover:border
+          rounded" href="/login"
+          >Login</a>
     </div>
   </div>
 </main>

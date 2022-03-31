@@ -3,7 +3,7 @@ import type { RequestHandler } from '@sveltejs/kit';
 
 // Getting the create details
 export const get: RequestHandler = async ({ locals }) => {
-	const response = await api('get', 'users/create');
+	const response = await api({method: 'get', resource: 'users/create', event: {locals}});
 
 	if (response.status === 404) {
 		return {
@@ -23,13 +23,18 @@ export const get: RequestHandler = async ({ locals }) => {
 };
 
 // Creating a user
-export const post: RequestHandler = async ({ request }) => {
+export const post: RequestHandler = async ({ request, locals }) => {
 	const form = await request.formData();
 
-	const response = await api('post', 'users', {
-		'name': form.has('name') ? form.get('name') : undefined,
-		'email': form.has('email') ? form.get('email') : undefined,
-		'password': form.has('password') ? form.get('password') : undefined,
+	const response = await api({
+		method: 'post',
+		resource: 'users',
+		data: {
+			'name': form.has('name') ? form.get('name') : undefined,
+			'email': form.has('email') ? form.get('email') : undefined,
+			'password': form.has('password') ? form.get('password') : undefined,
+		},
+		event: {locals},
 	});
 
 	if (response.status === 404) {

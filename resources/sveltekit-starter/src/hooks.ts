@@ -1,23 +1,22 @@
 import cookie from 'cookie';
-import { v4 as uuid } from '@lukeed/uuid';
 import type { Handle } from '@sveltejs/kit';
 
+/** @type {import('@sveltejs/kit').Handle} */
 export const handle: Handle = async ({ event, resolve }) => {
 	const cookies = cookie.parse(event.request.headers.get('cookie') || '');
-	event.locals.userid = cookies.userid || uuid();
+	event.locals.gorvelsession = cookies.gorvel_session;
+
+	// set all requests to have the gorvel_session
+	if (event.locals.gorvelcookie) {
+		event.request.headers.set('gorvel_session', event.locals.gorvelcookie)
+	}
 
 	const response = await resolve(event);
 
-	if (!cookies.userid) {
-		// if this is the first time the user has visited this app,
-		// set a cookie so that we recognise them when they return
-		response.headers.set(
-			'set-cookie',
-			cookie.serialize('userid', event.locals.userid, {
-				path: '/',
-				httpOnly: true
-			})
-		);
+	// if the cookies.gorvel_session is empty, then
+	// set cookie based on what gorvelcookie provided
+	if (!cookies.gorvel_session && event.locals.gorvelcookie) {
+		response.headers.set('set-cookie', event.locals.gorvelcookie)
 	}
 
 	return response;

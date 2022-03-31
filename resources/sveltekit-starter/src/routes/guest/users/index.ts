@@ -2,8 +2,13 @@ import { api } from '$src/routes/_api';
 import type { RequestHandler } from '@sveltejs/kit';
 
 // Lists of users
-export const get: RequestHandler = async ({ locals, url }) => {
-	const response = await api('get', `users?pagination_url=${url.origin}${url.pathname}&${url.searchParams.toString()}`);
+export const get: RequestHandler = async (event) => {
+	const url = event.url
+	const response = await api({
+		method: 'get',
+		resource: `users?pagination_url=${url.origin}${url.pathname}&${url.searchParams.toString()}`,
+		event,
+	});
 
 	if (response.status === 404) {
 		return {
@@ -18,12 +23,13 @@ export const get: RequestHandler = async ({ locals, url }) => {
 	}
 
 	return {
-		status: response.status
+		status: response.status,
 	};
 };
 
 // Deleting a user
-export const del: RequestHandler = async ({ request, locals }) => {
+export const del: RequestHandler = async (event) => {
+	const request = event.request
 	const form = await request.formData();
 	const userId = form.has('id') ? form.get('id') : undefined
 
@@ -35,7 +41,11 @@ export const del: RequestHandler = async ({ request, locals }) => {
 		};
 	}
 
-	const response = await api('delete', `users/${userId}`);
+	const response = await api({
+		method: 'delete',
+		resource: `users/${userId}`,
+		event,
+	});
 
 	if (response.status === 404) {
 		return {

@@ -1,20 +1,23 @@
 <script>
   import Gorvel from '$src/lib/guest/Gorvel.svelte'
+  import { fly } from 'svelte/transition'
 
-  export let title = 'auth'
+  export let email = ""
+  export let password = ""
+
+  $: email
+  $: password
 </script>
 
-<Gorvel {title}>
+<Gorvel title="Login">
   <div class="h-screen flex raleway">
-    <div
-      class="flex w-1/2 bg-gradient-to-tr from-gray2-200 to-gray-200 i justify-around items-center"
-    >
+    <div transition:fly={{ x: -100, duration: 300 }} class="flex w-1/2 bg-gradient-to-tr from-gray2-200 to-gray-200 i justify-around items-center">
       <div>
         <h1 class="text-gray2-700 font-thin text-6xl tracking-widest">Gorvel</h1>
       </div>
     </div>
-    <div class="flex w-11/12 justify-center items-center bg-gray2-900">
-      <form class="w-6/12">
+    <div transition:fly={{ x: 100, duration: 300 }} class="flex w-11/12 justify-center items-center bg-gray2-900">
+      <form class="w-6/12" method="POST">
         <h1 class="text-2xl mb-1">Hello Again!</h1>
         <p class="text-sm font-normal text-gray-400 mb-7">Welcome Back</p>
         <div class="flex items-center border-2 py-2 px-3 rounded mb-4">
@@ -36,6 +39,7 @@
             class="pl-2 focus:outline-none border-none w-full bg-transparent"
             type="email"
             name="email"
+            value={email}
             placeholder="Email Address"
           />
         </div>
@@ -56,6 +60,7 @@
             class="pl-2 focus:outline-none border-none w-full bg-transparent"
             type="text"
             name="password"
+            value={password}
             placeholder="Password"
           />
         </div>
