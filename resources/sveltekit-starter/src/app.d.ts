@@ -4,7 +4,6 @@
 // for information about these interfaces
 declare namespace App {
 	interface Locals {
-		gorvelsession: string;
 		gorvelcookie: string;
 	}
 	// interface Platform {}
