@@ -9,7 +9,7 @@
 </svelte:head>
 
 <main class="bg-orange-600 flex h-screen mt-auto">
-  <div class="text-white m-auto w-4/5">
+  <div class="text-white m-auto w-full">
     <div in:fly={{ y: 200, duration: 500 }}>
       <slot />
     </div>
