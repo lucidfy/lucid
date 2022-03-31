@@ -1,17 +1,35 @@
+import type { RequestEvent } from "@sveltejs/kit/types/internal";
+
 const base = 'http://localhost:8080';
 
-export function api(method: string, resource?: string, data?: Record<string, unknown>) {
+interface ApiParams {
+	method: string;
+	event: RequestEvent<Record<string, string>>;
+	resource?: string;
+	data?: Record<string, unknown>;
+}
+
+export async function api(params: ApiParams) {
 	let fullurl = base
-	if (resource) {
-		fullurl = `${base}/${resource}`
+	if (params.resource) {
+		fullurl = `${base}/${params.resource}`
 	}
 
-	return fetch(fullurl, {
-		method,
+	const response = await fetch(fullurl, {
+		method: params.method,
 		headers: {
 			'content-type': 'application/json',
 			'accept': 'application/json',
 		},
-		body: data && JSON.stringify(data)
+		body: params.data && JSON.stringify(params.data)
 	});
+
+	// const cookies = cookie.parse(response.headers.get('set-cookie') || '');
+	// params.event.locals.gorvel_session = cookies.gorvel_session
+	// params.event.locals = {
+	// 	gorvel_session: cookies.gorvel_session,
+	// }
+	params.event.locals.gorvelcookie = response.headers.get('set-cookie')
+
+	return response;
 }
