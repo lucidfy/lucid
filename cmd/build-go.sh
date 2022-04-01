@@ -7,3 +7,6 @@ GOOS=darwin GOARCH=amd64 go build -o ./.build/gorvel-darwin ./cmd/serve/main.go
 
 # linux
 GOOS=linux GOARCH=amd64 go build -o ./.build/gorvel-linux ./cmd/serve/main.go
+
+# default
+go build -o ./.build/gorvel ./cmd/serve/main.go

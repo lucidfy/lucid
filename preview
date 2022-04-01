@@ -1,0 +1,2 @@
+#!/bin/bash
+reflex -c ./cmd/preview/preview$1.conf

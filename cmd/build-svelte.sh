@@ -7,3 +7,4 @@
     && npm run build \
 ) && \
 cp -Rf resources/sveltekit-starter/node_modules .build/sveltekit/
+cp -Rf resources/sveltekit-starter/package.json .build/sveltekit/
