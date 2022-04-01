@@ -1,8 +1,8 @@
 import { api } from '$src/routes/_api';
 import type { RequestHandler } from '@sveltejs/kit';
 
-export const get: RequestHandler = async ({ locals }) => {
-	const response = await api({method: 'get', event: {locals}});
+export const get: RequestHandler = async (event) => {
+	const response = await api({method: 'get', event});
 
 	if (response.status === 404) {
 		return {
