@@ -24,11 +24,6 @@ export async function api(params: ApiParams) {
 		body: params.data && JSON.stringify(params.data)
 	});
 
-	// const cookies = cookie.parse(response.headers.get('set-cookie') || '');
-	// params.event.locals.gorvel_session = cookies.gorvel_session
-	// params.event.locals = {
-	// 	gorvel_session: cookies.gorvel_session,
-	// }
 	params.event.locals.gorvelcookie = response.headers.get('set-cookie')
 
 	return response;
