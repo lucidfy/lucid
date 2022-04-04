@@ -1,7 +1,7 @@
-<script>
+<script lang="ts">
   import { fly } from 'svelte/transition'
 
-  export let title
+  export let title: String
 </script>
 
 <svelte:head>

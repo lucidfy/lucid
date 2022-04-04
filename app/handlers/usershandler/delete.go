@@ -28,7 +28,7 @@ func Delete(T engines.EngineContract) *errors.AppError {
 	}
 
 	//> now get the data
-	data, err := users.Find(&id)
+	data, err := users.Find(&id, nil)
 	if err != nil {
 		return err
 	}

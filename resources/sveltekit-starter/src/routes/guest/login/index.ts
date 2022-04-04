@@ -2,18 +2,20 @@ import { api } from '$src/routes/_api';
 import type { RequestHandler } from '@sveltejs/kit';
 
 // Creating a user
-export const post: RequestHandler = async ({ request, locals }) => {
-	const form = await request.formData();
+export const post: RequestHandler = async (event) => {
+	const form = await event.request.formData();
 
 	const response = await api({
         method: 'post',
-        resource: 'auth/login',
+        resource: 'auth/via-cookie',
         data: {
             'email': form.has('email') ? form.get('email') : undefined,
             'password': form.has('password') ? form.get('password') : undefined,
         },
-        event: {locals},
+        event,
     });
+
+	console.log('response', response)
 
 	if (response.status === 404) {
 		return {

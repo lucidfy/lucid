@@ -116,11 +116,15 @@ type Finder struct {
 	Model *Model
 }
 
-func Find(id *string) (*Finder, *errors.AppError) {
+func Find(id *string, col interface{}) (*Finder, *errors.AppError) {
 	db := databases.Resolve()
 	record := new(Model)
 
-	err := db.First(record, id).Error
+	if col == nil || col.(string) == "" {
+		col = "id"
+	}
+
+	err := db.First(record, col.(string)+"=?", id).Error
 	if err != nil {
 		return nil, &errors.AppError{
 			Error:   err,
