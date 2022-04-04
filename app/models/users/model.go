@@ -6,7 +6,7 @@ import (
 
 	"github.com/daison12006013/gorvel/databases"
 	"github.com/daison12006013/gorvel/pkg/errors"
-	"github.com/daison12006013/gorvel/pkg/facade/crypt"
+	"github.com/daison12006013/gorvel/pkg/facade/hash"
 	"github.com/daison12006013/gorvel/pkg/functions/php"
 	"github.com/daison12006013/gorvel/pkg/paginate/searchable"
 	"github.com/golang-module/carbon"
@@ -169,12 +169,12 @@ func sanitize(i interface{}) (interface{}, *errors.AppError) {
 	}
 
 	// here, we check if password is present
-	// then we need to encrypt the raw input as always
+	// then we need to hash the password
 	if pw, ok := inputs["password"]; ok {
 		password := pw.(string)
 		if len(password) > 0 {
-			enc, err := crypt.Encrypt(password)
-			inputs["password"] = enc
+			hashed, err := hash.Make(password)
+			inputs["password"] = hashed
 			if err != nil {
 				return inputs, &errors.AppError{
 					Error:   fmt.Errorf("app.models.users.model@sanitize: crypt.Encrypt(): throws an error %s", err),
