@@ -25,7 +25,7 @@ func Show(T engines.EngineContract) *errors.AppError {
 		return appErr
 	}
 
-	data, appErr := users.Find(&id)
+	data, appErr := users.Find(&id, nil)
 	if appErr != nil {
 		return appErr
 	}
@@ -76,7 +76,7 @@ func Update(T engines.EngineContract) *errors.AppError {
 	status := http.StatusOK
 
 	id := req.Input("id", nil).(string)
-	data, appErr := users.Find(&id)
+	data, appErr := users.Find(&id, nil)
 	if appErr != nil {
 		return appErr
 	}

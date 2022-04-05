@@ -58,7 +58,7 @@
           </svg>
           <input
             class="pl-2 focus:outline-none border-none w-full bg-transparent"
-            type="text"
+            type="password"
             name="password"
             value={password}
             placeholder="Password"
