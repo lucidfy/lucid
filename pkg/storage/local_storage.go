@@ -53,12 +53,12 @@ func (s *LocalStorage) Missing(path string) bool {
 }
 
 // Size get file size
-func (s *LocalStorage) Size(path string) int64 {
+func (s *LocalStorage) Size(path string) (int64, bool) {
 	fileInfo, err := os.Stat(s.basePath + "/" + path)
 	if err != nil {
-		return 0
+		return 0, false
 	}
-	return fileInfo.Size()
+	return fileInfo.Size(), true
 }
 
 // Delete file

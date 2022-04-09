@@ -9,7 +9,7 @@ type Storage interface {
 
 	Exists(path string) bool
 	Missing(path string) bool
-	Size(path string) int64
+	Size(path string) (int64, bool)
 
 	Path(path string) (string, bool)
 }
