@@ -1,10 +1,10 @@
 #!/bin/bash
 (
-    cd resources/views/svelte/ \
+    cd .svelte-kit/ \
     && rm -rf .svelte-kit/ \
     && npm install \
     && npm audit fix \
     && npm run build \
 ) && \
-cp -Rf resources/views/svelte/node_modules .build/sveltekit/
-cp -Rf resources/views/svelte/package.json .build/sveltekit/
+cp -Rf .svelte-kit/node_modules .build/sveltekit/
+cp -Rf .svelte-kit/package.json .build/sveltekit/
