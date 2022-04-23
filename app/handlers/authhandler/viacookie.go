@@ -7,13 +7,14 @@ import (
 	"github.com/daison12006013/gorvel/pkg/engines"
 	"github.com/daison12006013/gorvel/pkg/errors"
 	"github.com/daison12006013/gorvel/pkg/facade/hash"
-	"github.com/daison12006013/gorvel/pkg/helpers"
 )
 
 func ViaCookie(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	req := engine.Request
 	res := engine.Response
+	ses := engine.Session
+	url := engine.Url
 
 	email := req.Input("email", nil).(string)
 	password := req.Input("password", nil).(string)
@@ -31,21 +32,21 @@ func ViaCookie(T engines.EngineContract) *errors.AppError {
 
 	record := data.Model
 
-	helpers.DD(
-		"user found:",
-		record,
-		hash.Check(password, record.Password),
-	)
+	if hash.Check(password, record.Password) {
+		ses.Set("user", record.ID)
+	}
 
-	// data := helpers.MP{
-	// 	"req.All()":          req.All(),
-	// 	"req.IsForm()":       req.IsForm(),
-	// 	"req.IsJson()":       req.IsJson(),
-	// 	"req.IsMultipart()":  req.IsMultipart(),
-	// 	"req.WantsJson()":    req.WantsJson(),
-	// 	"req.GetIp()":        req.GetIp(),
-	// 	"req.GetUserAgent()": req.GetUserAgent(),
-	// }
+	message := "Successfully Created!"
+	status := http.StatusOK
 
-	return res.Json(data, http.StatusOK)
+	if req.WantsJson() && req.IsJson() {
+		return res.Json(map[string]interface{}{
+			"success": message,
+			"data":    record,
+		}, status)
+	}
+
+	ses.SetFlash("success", message)
+	url.RedirectPrevious()
+	return nil
 }

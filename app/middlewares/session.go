@@ -18,7 +18,7 @@ func SessionPersistenceMiddleware(next http.Handler) http.Handler {
 		if err != nil {
 			switch err {
 			case http.ErrNoCookie:
-				randomStr := crypt.GenerateRandomString(24)
+				sessionRandomPassword := crypt.GenerateRandomString(128)
 				lifetime, err := strconv.Atoi(os.Getenv("SESSION_LIFETIME"))
 				if errors.Handler("error on getting SESSION_LIFETIME", err) {
 					next.ServeHTTP(w, r)
@@ -27,7 +27,7 @@ func SessionPersistenceMiddleware(next http.Handler) http.Handler {
 
 				cookie := &http.Cookie{
 					Name:    sessionName,
-					Value:   randomStr,
+					Value:   sessionRandomPassword,
 					MaxAge:  lifetime,
 					Expires: carbon.Now().AddSeconds(lifetime).Time,
 					Path:    "/",

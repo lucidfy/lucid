@@ -33,7 +33,7 @@ func Mux(w http.ResponseWriter, r *http.Request) *MuxSession {
 	return &s
 }
 
-func (s *MuxSession) Set(name string, value string) (bool, error) {
+func (s *MuxSession) Set(name string, value interface{}) (bool, error) {
 	if s.SecuredCookie == nil {
 		return false, fmt.Errorf("SecuredCookie is empty")
 	}
@@ -47,7 +47,7 @@ func (s *MuxSession) Set(name string, value string) (bool, error) {
 	return false, err
 }
 
-func (s *MuxSession) Get(name string) (*string, error) {
+func (s *MuxSession) Get(name string) (interface{}, error) {
 	if s.HttpRequest == nil {
 		return nil, nil
 	}
@@ -71,7 +71,7 @@ func (s *MuxSession) SetFlash(name string, value string) {
 	s.Set(name, value)
 }
 
-func (s *MuxSession) GetFlash(name string) *string {
+func (s *MuxSession) GetFlash(name string) interface{} {
 	name = "flash-" + name
 	value, err := s.Get(name)
 	if (err != nil && err == http.ErrNoCookie) || value == nil {
@@ -100,7 +100,7 @@ func (s *MuxSession) GetFlashMap(name string) *map[string]interface{} {
 	ret := map[string]interface{}{}
 	flash := s.GetFlash(name)
 	if flash != nil {
-		json.Unmarshal([]byte(*s.GetFlash(name)), &ret)
+		json.Unmarshal([]byte(flash.(string)), &ret)
 	}
 	return &ret
 }

@@ -20,11 +20,12 @@ export async function api(params: ApiParams) {
 		headers: {
 			'content-type': 'application/json',
 			'accept': 'application/json',
+			'cookie': params.event.request.headers.get('cookie') || '',
 		},
 		body: params.data && JSON.stringify(params.data)
-	});
+	})
 
-	params.event.locals.gorvelcookie = response.headers.get('set-cookie')
+	params.event.locals.setcookie = response.headers.get('set-cookie')
 
 	return response;
 }

@@ -4,12 +4,13 @@ import type { RequestHandler } from '@sveltejs/kit';
 // Creating a user
 export const post: RequestHandler = async (event) => {
 	const form = await event.request.formData();
+	const email = form.has('email') ? form.get('email') : undefined
 
 	const response = await api({
         method: 'post',
         resource: 'auth/via-cookie',
         data: {
-            'email': form.has('email') ? form.get('email') : undefined,
+            email,
             'password': form.has('password') ? form.get('password') : undefined,
         },
         event,
@@ -26,7 +27,10 @@ export const post: RequestHandler = async (event) => {
 	if (response.status >= 200 && response.status < 300 || response.status === 401) {
 		return {
 			status: response.status,
-			body: await response.json()
+			body: {
+				email: email.toString(),
+				data: await response.json(),
+			}
 		};
 	}
 
