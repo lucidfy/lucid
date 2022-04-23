@@ -28,8 +28,8 @@ func Create(T engines.EngineContract) *errors.AppError {
 		//> that redirects back to Create()
 		"success": ses.GetFlash("success"),
 		"error":   ses.GetFlash("error"),
-		"fails":   ses.GetFlashMap("fails"),
-		"inputs":  ses.GetFlashMap("inputs"),
+		"fails":   ses.GetFlash("fails"),
+		"inputs":  ses.GetFlash("inputs"),
 	}
 
 	if req.IsJson() && req.WantsJson() {
@@ -60,8 +60,8 @@ func Store(T engines.EngineContract) *errors.AppError {
 			}, http.StatusUnauthorized)
 		}
 
-		ses.SetFlashMap("fails", validator.ValidationError)
-		ses.SetFlashMap("inputs", req.All())
+		ses.SetFlash("fails", validator.ValidationError)
+		ses.SetFlash("inputs", req.All())
 		url.RedirectPrevious()
 		return nil
 	}
