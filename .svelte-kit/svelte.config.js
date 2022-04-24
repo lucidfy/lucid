@@ -28,6 +28,12 @@ const config = {
     },
 
     vite: {
+      server: {
+	      hmr: {
+          port: 8081,
+          clientPort: 8331,
+        }
+      },
       resolve: {
         alias: {
           $src: resolve('./src'),

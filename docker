@@ -1,8 +1,10 @@
 #!/bin/sh
-# build image
+docker container rm -f gorvel-container
 docker image rm -f gorvel-img
+
 docker build -t gorvel-img .
 
-# build container
-docker container rm -f gorvel-container
-docker run -d -p 8333:8080 -p 8334:8081 --name gorvel-container gorvel-img
+# ports [host -> guest]:
+#    gorvel     8330 -> 8080
+#    sveltekit  8331 -> 8081
+docker run -d -p 8330:8080 -p 8331:8081 --name gorvel-container gorvel-img
