@@ -1,3 +1,3 @@
-#!/bin/bash
+#!/bin/sh
 ./cmd/build-go.sh
 ./cmd/build-svelte.sh
