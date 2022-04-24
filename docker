@@ -4,7 +4,10 @@ docker image rm -f gorvel-img
 
 docker build -t gorvel-img .
 
-# ports [host -> guest]:
-#    gorvel     8330 -> 8080
-#    sveltekit  8331 -> 8081
-docker run -d -p 8330:8080 -p 8331:8081 --name gorvel-container gorvel-img
+# | detach
+# | ports        [host -> guest]:
+#     gorvel     [8330 -> 8080]
+#     sveltekit  [8331 -> 8081]
+# | container name to "gorvel-container" from gorvel-img
+# | mount current folder to container's /app folder
+docker run -v $(PWD):/app -d -p 8330:8080 -p 8331:8081 --name gorvel-container gorvel-img

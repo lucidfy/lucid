@@ -6,7 +6,7 @@ RUN apk add --update build-base npm nodejs-current
 WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
-COPY . .
+ADD . .
 
 # install missing reflex, build go and svelte
 RUN sh cmd/install-reflex.sh
