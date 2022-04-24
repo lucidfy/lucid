@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 build:
 	@echo "Check if go/npm/node exists"
 	./cmd/check-binaries.sh

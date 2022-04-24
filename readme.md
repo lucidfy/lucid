@@ -14,9 +14,17 @@ Serving go requires a tedeous way of re-compiling codes, but there's a solution 
 $> go install github.com/cespare/reflex@latest
 ```
 
-## Deploy as a Docker Container
+## Run via Docker
 
-... still in progress
+Just run below shell file and it should create a docker image called `gorvel-img` and it make a container `gorvel-container`
+
+```bash
+./docker
+```
+
+The docker container will consume these ports 8080 for gorvel and 8081 for svelte-kit, however these ports were internal, it maps back to your host machine under these ports 8080 -> 8330, 8081 -> 8331.
+
+Therefore, try to open your browser and access http://localhost:8330 for gorvel and http://localhost:8331 for svelte-kit
 
 ## TODO's
 

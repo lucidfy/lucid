@@ -1,2 +1,2 @@
-#!/bin/bash
+#!/bin/sh
 reflex -c ./cmd/serve/serve$1.conf
