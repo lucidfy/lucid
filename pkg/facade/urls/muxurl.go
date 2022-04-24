@@ -1,6 +1,9 @@
 package urls
 
-import "net/http"
+import (
+	"net/http"
+	"strings"
+)
 
 type MuxUrl struct {
 	ResponseWriter http.ResponseWriter
@@ -19,6 +22,16 @@ func (u *MuxUrl) CurrentUrl() string {
 	h := u.HttpRequest.URL.Host
 	if len(h) > 0 {
 		return h
+	}
+
+	// if URL.Host is empty, let's try to pull from request Host
+	// then determine the scheme
+	if len(u.HttpRequest.Host) > 0 {
+		scheme := "http://"
+		if strings.Contains(strings.ToLower(u.HttpRequest.Proto), "https") {
+			scheme = "https://"
+		}
+		return scheme + u.HttpRequest.Host
 	}
 
 	//> if ever we can't resolve the Host from net/http, we can still base
