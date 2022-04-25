@@ -1,26 +1,19 @@
-# GORVEL (UNDER DEVELOPMENT...)
+# GORVEL
 
-Gorvel, yet another framework inspired with Laravel / Symfony structure, but written in Go!
+Inspired from Laravel / Symfony structure but written in Go!
+This project is still *under development*, there's no released tag yet!
 
-## Documentation
+## Installation via Docker
 
-... still in progress
+Just execute `./setup-docker` and it should build a container **gorvel-container**
 
-## Auto Compile
-
-Serving go requires a tedeous way of re-compiling codes, but there's a solution to automatically compile any `.go` files everytime you made changes. We're using reflex to hot reload our `cmd/serve.go`, here's how to install it.
-
-```bash
-$> go install github.com/cespare/reflex@latest
-```
-
-## Run via Docker
-
-Just execute `./setup-docker` and it should create a docker image called **gorvel-img** and it will build a container **gorvel-container**
-
-The docker container will consume these ports 8080 for gorvel and 8081 for svelte-kit, however these ports were internal, it forwards back to your docker host under these ports 8080 -> **8330**, 8081 -> **8331**. You can verify this by running `docker ps -a`
+The docker image consumes these ports 8080 for gorvel and 8081 for svelte-kit, however these ports were internal, it forward back to your docker host under these ports 8080 -> **8330**, 8081 -> **8331**. You can verify this by running `docker ps -a`
 
 Therefore, try to open your browser and access http://localhost:8330 for gorvel and http://localhost:8331 for svelte-kit
+
+## Security Concerns
+
+If you found any security concerns, please send a direct email to **daison12006013@gmail.com** the title of the email should have at least a word "Gorvel". Thank you!
 
 ## TODO's
 
@@ -77,7 +70,3 @@ Therefore, try to open your browser and access http://localhost:8330 for gorvel 
   - [x] Missing()
   - [x] Size()
   - [x] Path()
-
-## Security Issues
-
-Please sent a direct email to me for any vulnerable things you may find via: daison12006013@gmail.com
