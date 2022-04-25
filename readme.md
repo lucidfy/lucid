@@ -16,13 +16,9 @@ $> go install github.com/cespare/reflex@latest
 
 ## Run via Docker
 
-Just run below shell file and it should create a docker image called `gorvel-img` and it make a container `gorvel-container`
+Just execute `./setup-docker` and it should create a docker image called **gorvel-img** and it will build a container **gorvel-container**
 
-```bash
-./docker
-```
-
-The docker container will consume these ports 8080 for gorvel and 8081 for svelte-kit, however these ports were internal, it maps back to your host machine under these ports 8080 -> 8330, 8081 -> 8331.
+The docker container will consume these ports 8080 for gorvel and 8081 for svelte-kit, however these ports were internal, it forwards back to your docker host under these ports 8080 -> **8330**, 8081 -> **8331**. You can verify this by running `docker ps -a`
 
 Therefore, try to open your browser and access http://localhost:8330 for gorvel and http://localhost:8331 for svelte-kit
 

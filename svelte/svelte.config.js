@@ -16,7 +16,7 @@ const config = {
   preprocess: preprocess(),
 
   kit: {
-    adapter: adapter({ out: '../.build/sveltekit/build' }),
+    adapter: adapter({ out: '../.build/svelte-kit/build' }),
 
     // Override http methods in the Todo forms
     methodOverride: {
