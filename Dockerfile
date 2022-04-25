@@ -12,7 +12,6 @@ ADD . .
 RUN sh cmd/install-reflex.sh
 RUN sh cmd/check-binaries.sh
 RUN sh cmd/build-go.sh
-RUN sh cmd/build-svelte.sh
 
 EXPOSE 8080 8081
 
