@@ -98,9 +98,10 @@ func (s *MuxSession) SetFlashMap(name string, value interface{}) {
 // it will reverse the json into a map
 func (s *MuxSession) GetFlashMap(name string) *map[string]interface{} {
 	ret := &map[string]interface{}{}
-	flash := s.GetFlash(name).(*interface{})
+	flash := s.GetFlash(name)
 	if flash != nil {
-		json.Unmarshal([]byte((*flash).(string)), ret)
+		flashStr := (*flash.(*interface{})).(string)
+		json.Unmarshal([]byte(flashStr), ret)
 	}
 	return ret
 }
