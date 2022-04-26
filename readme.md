@@ -1,6 +1,6 @@
 # GORVEL
 
-Inspired from Laravel / Symfony structure but written in Go!
+Inspired by Laravel / Symfony structure but written in Go!
 This project is still *under development*, there's no released tag yet!
 
 ## Installation via Docker
