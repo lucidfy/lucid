@@ -1,6 +1,7 @@
 package session
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
@@ -80,4 +81,26 @@ func (s *MuxSession) GetFlash(name string) interface{} {
 	deleteCookie := &http.Cookie{Name: name, MaxAge: -1, Expires: time.Unix(1, 0), Path: "/"}
 	http.SetCookie(s.ResponseWriter, deleteCookie)
 	return value
+}
+
+// SetFlashMap sets a session flash based on json format
+// make sure the values you're providing is set as map[string]interface{}
+// therefore, we can stringify it into json format
+func (s *MuxSession) SetFlashMap(name string, value interface{}) {
+	j, err := json.Marshal(value)
+	if err != nil {
+		panic(err)
+	}
+	s.SetFlash(name, string(j))
+}
+
+// GetFlashMap this pulls a session flash from SetFlashMap, in which
+// it will reverse the json into a map
+func (s *MuxSession) GetFlashMap(name string) *map[string]interface{} {
+	ret := &map[string]interface{}{}
+	flash := s.GetFlash(name).(*interface{})
+	if flash != nil {
+		json.Unmarshal([]byte((*flash).(string)), ret)
+	}
+	return ret
 }
