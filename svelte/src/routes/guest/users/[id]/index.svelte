@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Gorvel from "$src/lib/guest/Gorvel.svelte";
+  import Lucid from "$src/lib/guest/Lucid.svelte";
   import Form from "$src/routes/guest/users/_form.svelte";
 
   export let title: string
@@ -14,7 +14,7 @@
   export let csrfField: string
 </script>
 
-<Gorvel {title}>
+<Lucid {title}>
   <Form
     {title}
     {success}
@@ -26,4 +26,4 @@
     {isShow}
     {csrfField}
   />
-</Gorvel>
+</Lucid>

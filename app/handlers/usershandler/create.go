@@ -3,10 +3,10 @@ package usershandler
 import (
 	"net/http"
 
-	"github.com/daison12006013/gorvel/app/models/users"
-	"github.com/daison12006013/gorvel/app/validations"
-	"github.com/daison12006013/gorvel/pkg/engines"
-	"github.com/daison12006013/gorvel/pkg/errors"
+	"github.com/daison12006013/lucid/app/models/users"
+	"github.com/daison12006013/lucid/app/validations"
+	"github.com/daison12006013/lucid/pkg/engines"
+	"github.com/daison12006013/lucid/pkg/errors"
 	"github.com/gorilla/csrf"
 )
 

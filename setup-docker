@@ -1,16 +1,16 @@
 #!/bin/sh
-docker pull daison12006013/gorvel
-docker container rm -f gorvel-container
+docker pull daison12006013/lucid
+docker container rm -f lucid-container
 # | detach
 # | ports        [host -> guest]:
-#     gorvel     [8330 -> 8080]
+#     lucid     [8330 -> 8080]
 #     sveltekit  [8331 -> 8081]
-# | container name to "gorvel-container" from daison12006013/gorvel image
+# | container name to "lucid-container" from daison12006013/lucid image
 # | mount current folder to container's /app folder
-docker run -v $(PWD):/app -d -p 8330:8080 -p 8331:8081 --name gorvel-container daison12006013/gorvel
+docker run -v $(PWD):/app -d -p 8330:8080 -p 8331:8081 --name lucid-container daison12006013/lucid
 
 # re-build again after mounting the folder to sync the files
-docker exec -it gorvel-container sh -c "sh ./cmd/install-reflex.sh && exit"
-docker exec -it gorvel-container sh -c "sh ./cmd/check-binaries.sh && exit"
-docker exec -it gorvel-container sh -c "sh ./cmd/build-go.sh && exit"
-docker exec -it gorvel-container sh -c "sh ./cmd/build-svelte.sh && exit"
+docker exec -it lucid-container sh -c "sh ./cmd/install-reflex.sh && exit"
+docker exec -it lucid-container sh -c "sh ./cmd/check-binaries.sh && exit"
+docker exec -it lucid-container sh -c "sh ./cmd/build-go.sh && exit"
+docker exec -it lucid-container sh -c "sh ./cmd/build-svelte.sh && exit"

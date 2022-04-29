@@ -1,11 +1,11 @@
 package registrar
 
 import (
-	"github.com/daison12006013/gorvel/app/handlers"
-	"github.com/daison12006013/gorvel/app/handlers/authhandler"
-	"github.com/daison12006013/gorvel/app/handlers/samplehandler"
-	"github.com/daison12006013/gorvel/app/handlers/usershandler"
-	r "github.com/daison12006013/gorvel/pkg/facade/routes"
+	"github.com/daison12006013/lucid/app/handlers"
+	"github.com/daison12006013/lucid/app/handlers/authhandler"
+	"github.com/daison12006013/lucid/app/handlers/samplehandler"
+	"github.com/daison12006013/lucid/app/handlers/usershandler"
+	r "github.com/daison12006013/lucid/pkg/facade/routes"
 )
 
 var Routes = &[]r.Routing{

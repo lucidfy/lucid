@@ -1,6 +1,6 @@
 package passwordresets
 
-import "github.com/daison12006013/gorvel/pkg/paginate"
+import "github.com/daison12006013/lucid/pkg/paginate"
 
 const Table = "password_resets"
 const PrimaryKey = "id"

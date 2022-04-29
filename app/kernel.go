@@ -1,7 +1,7 @@
 package app
 
 import (
-	"github.com/daison12006013/gorvel/app/middlewares"
+	"github.com/daison12006013/lucid/app/middlewares"
 	"github.com/gorilla/mux"
 )
 

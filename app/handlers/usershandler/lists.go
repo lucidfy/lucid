@@ -4,12 +4,12 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/daison12006013/gorvel/app/models/users"
-	"github.com/daison12006013/gorvel/pkg/engines"
-	"github.com/daison12006013/gorvel/pkg/errors"
-	"github.com/daison12006013/gorvel/pkg/facade/request"
-	"github.com/daison12006013/gorvel/pkg/facade/urls"
-	"github.com/daison12006013/gorvel/pkg/paginate/searchable"
+	"github.com/daison12006013/lucid/app/models/users"
+	"github.com/daison12006013/lucid/pkg/engines"
+	"github.com/daison12006013/lucid/pkg/errors"
+	"github.com/daison12006013/lucid/pkg/facade/request"
+	"github.com/daison12006013/lucid/pkg/facade/urls"
+	"github.com/daison12006013/lucid/pkg/paginate/searchable"
 	"github.com/gorilla/csrf"
 )
 

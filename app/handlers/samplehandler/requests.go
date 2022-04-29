@@ -3,11 +3,11 @@ package samplehandler
 import (
 	"net/http"
 
-	"github.com/daison12006013/gorvel/pkg/engines"
-	"github.com/daison12006013/gorvel/pkg/errors"
-	"github.com/daison12006013/gorvel/pkg/facade/logger"
-	"github.com/daison12006013/gorvel/pkg/helpers"
-	"github.com/daison12006013/gorvel/pkg/storage"
+	"github.com/daison12006013/lucid/pkg/engines"
+	"github.com/daison12006013/lucid/pkg/errors"
+	"github.com/daison12006013/lucid/pkg/facade/logger"
+	"github.com/daison12006013/lucid/pkg/helpers"
+	"github.com/daison12006013/lucid/pkg/storage"
 )
 
 func Requests(T engines.EngineContract) *errors.AppError {

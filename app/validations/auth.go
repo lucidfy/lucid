@@ -1,6 +1,6 @@
 package validations
 
-import "github.com/daison12006013/gorvel/pkg/rules/must"
+import "github.com/daison12006013/lucid/pkg/rules/must"
 
 func AuthValidateLogin() *must.SetOfRules {
 	return &must.SetOfRules{

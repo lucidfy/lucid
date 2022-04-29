@@ -5,8 +5,8 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/daison12006013/gorvel/pkg/errors"
-	"github.com/daison12006013/gorvel/pkg/facade/crypt"
+	"github.com/daison12006013/lucid/pkg/errors"
+	"github.com/daison12006013/lucid/pkg/facade/crypt"
 	"github.com/golang-module/carbon"
 )
 

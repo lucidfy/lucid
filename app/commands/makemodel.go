@@ -5,9 +5,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/daison12006013/gorvel/pkg/facade/logger"
-	"github.com/daison12006013/gorvel/pkg/facade/path"
-	"github.com/daison12006013/gorvel/pkg/functions/php"
+	"github.com/daison12006013/lucid/pkg/facade/logger"
+	"github.com/daison12006013/lucid/pkg/facade/path"
+	"github.com/daison12006013/lucid/pkg/functions/php"
 	cli "github.com/urfave/cli/v2"
 )
 

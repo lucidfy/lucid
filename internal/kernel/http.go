@@ -9,10 +9,10 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/daison12006013/gorvel/pkg/facade/logger"
-	"github.com/daison12006013/gorvel/pkg/facade/routes"
-	"github.com/daison12006013/gorvel/pkg/facade/urls"
-	"github.com/daison12006013/gorvel/registrar"
+	"github.com/daison12006013/lucid/pkg/facade/logger"
+	"github.com/daison12006013/lucid/pkg/facade/routes"
+	"github.com/daison12006013/lucid/pkg/facade/urls"
+	"github.com/daison12006013/lucid/registrar"
 	"github.com/gorilla/mux"
 )
 

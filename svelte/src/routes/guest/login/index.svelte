@@ -1,5 +1,5 @@
 <script>
-  import Gorvel from '$src/lib/guest/Gorvel.svelte'
+  import Lucid from '$src/lib/guest/Lucid.svelte'
   import { fly } from 'svelte/transition'
 
   export let email = ""
@@ -9,11 +9,11 @@
   $: password
 </script>
 
-<Gorvel title="Login">
+<Lucid title="Login">
   <div class="h-screen flex raleway">
     <div transition:fly={{ x: -100, duration: 300 }} class="flex w-1/2 bg-gradient-to-tr from-gray2-200 to-gray-200 i justify-around items-center">
       <div>
-        <h1 class="text-gray2-700 font-thin text-6xl tracking-widest">Gorvel</h1>
+        <h1 class="text-gray2-700 font-thin text-6xl tracking-widest">Lucid</h1>
       </div>
     </div>
     <div transition:fly={{ x: 100, duration: 300 }} class="flex w-11/12 justify-center items-center bg-gray2-900">
@@ -82,4 +82,4 @@
       </form>
     </div>
   </div>
-</Gorvel>
+</Lucid>

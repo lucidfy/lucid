@@ -1,0 +1,55 @@
+# TODO's {#\" class="text-4xl"}
+
+- [x] Routing
+- [x] Middlewares
+- [x] CSRF Protection
+- [x] Handlers (a.k.a "Controllers")
+  - [x] Single
+  - [x] Resources (index,create,store,show,edit,update,destroy)
+  - [x] Form Request Validation
+- [ ] Request
+  - [x] Validator()
+  - [x] All()
+  - [x] Get()
+  - [x] GetFirst()
+  - [x] Input()
+  - [x] HasContentType()
+  - [x] HasAccept()
+  - [x] IsForm()
+  - [x] IsJson()
+  - [x] IsMultipart()
+  - [x] WantsJson()
+  - [x] GetIp()
+  - [x] GetUserAgent()
+  - [x] GetFileByName()
+  - [x] GetFiles()
+- [ ] URL
+  - [x] CurrentUrl()
+  - [x] FullUrl()
+  - [x] PreviousUrl()
+  - [x] RedirectPrevious()
+- [ ] Response
+  - [x] Json()
+  - [x] View()
+  - [x] ViewWithStatus()
+- [ ] Session
+  - [x] SetFlash()
+  - [x] GetFlash()
+  - [x] SetFlashMap()
+  - [x] GetFlashMap()
+- [ ] Console
+  - [x] route:defined
+  - [x] route:registered
+  - [ ] make:resource
+    - [ ] Model
+    - [ ] C.R.U.D. Handlers
+- [x] Pagination
+- [x] ORM using gORM (by default)
+- [x] Storage
+  - [x] Get()
+  - [x] Put()
+  - [x] Delete()
+  - [x] Exists()
+  - [x] Missing()
+  - [x] Size()
+  - [x] Path()

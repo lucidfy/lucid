@@ -9,11 +9,11 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/daison12006013/gorvel/pkg/errors"
-	"github.com/daison12006013/gorvel/pkg/facade/session"
-	"github.com/daison12006013/gorvel/pkg/facade/urls"
-	"github.com/daison12006013/gorvel/pkg/rules"
-	"github.com/daison12006013/gorvel/pkg/rules/must"
+	"github.com/daison12006013/lucid/pkg/errors"
+	"github.com/daison12006013/lucid/pkg/facade/session"
+	"github.com/daison12006013/lucid/pkg/facade/urls"
+	"github.com/daison12006013/lucid/pkg/rules"
+	"github.com/daison12006013/lucid/pkg/rules/must"
 	"github.com/gorilla/mux"
 )
 

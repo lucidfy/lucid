@@ -3,9 +3,9 @@ package routes
 import (
 	"net/http"
 
-	"github.com/daison12006013/gorvel/app"
-	"github.com/daison12006013/gorvel/app/handlers"
-	"github.com/daison12006013/gorvel/pkg/engines"
+	"github.com/daison12006013/lucid/app"
+	"github.com/daison12006013/lucid/app/handlers"
+	"github.com/daison12006013/lucid/pkg/engines"
 	"github.com/gorilla/mux"
 )
 

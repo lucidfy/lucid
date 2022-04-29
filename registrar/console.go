@@ -1,7 +1,7 @@
 package registrar
 
 import (
-	"github.com/daison12006013/gorvel/app/commands"
+	"github.com/daison12006013/lucid/app/commands"
 	cli "github.com/urfave/cli/v2"
 )
 

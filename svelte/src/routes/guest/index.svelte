@@ -2,7 +2,7 @@
   export let title: string
   export let IpAddress: string
   export let userAgent: string
-  console.log("Here's the data we received at gorvel endpoint", title, IpAddress, userAgent)
+  console.log("Here's the data we received at lucid endpoint", title, IpAddress, userAgent)
 </script>
 
 <svelte:head>
@@ -12,7 +12,7 @@
 <main class="bg-orange-600 flex h-screen raleway font-thin">
   <div class="text-white m-auto">
     <h1 class="text-8xl mb-5">
-        Welcome to <a href="https://github.com/daison12006013/gorvel" class="font-light">Go</a>rvel!
+        Welcome to <a href="https://github.com/daison12006013/lucid" class="font-light">Go</a>rvel!
     </h1>
 
     <div class="text-center mt-5">

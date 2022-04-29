@@ -1,4 +1,4 @@
-module github.com/daison12006013/gorvel
+module github.com/daison12006013/lucid
 
 go 1.17
 

@@ -6,8 +6,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/daison12006013/gorvel/pkg/errors"
-	"github.com/daison12006013/gorvel/pkg/facade/path"
+	"github.com/daison12006013/lucid/pkg/errors"
+	"github.com/daison12006013/lucid/pkg/facade/path"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )

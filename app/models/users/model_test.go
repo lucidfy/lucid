@@ -3,8 +3,8 @@ package users
 import (
 	"testing"
 
-	"github.com/daison12006013/gorvel/pkg/env"
-	"github.com/daison12006013/gorvel/pkg/paginate/searchable"
+	"github.com/daison12006013/lucid/pkg/env"
+	"github.com/daison12006013/lucid/pkg/paginate/searchable"
 )
 
 func init() {

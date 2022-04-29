@@ -5,9 +5,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/daison12006013/gorvel/pkg/engines"
-	"github.com/daison12006013/gorvel/pkg/errors"
-	"github.com/daison12006013/gorvel/pkg/facade/path"
+	"github.com/daison12006013/lucid/pkg/engines"
+	"github.com/daison12006013/lucid/pkg/errors"
+	"github.com/daison12006013/lucid/pkg/facade/path"
 	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/parser"
 )
@@ -22,7 +22,7 @@ func Docs(T engines.EngineContract) *errors.AppError {
 	f := strings.Replace(r.URL.Path, "/docs", "", -1)
 	title := strings.Trim(f, "/")
 	if len(title) == 0 {
-		title = "Gorvel"
+		title = "Lucid"
 		f = "index"
 	}
 
@@ -105,7 +105,7 @@ func menus() *[]Menu {
 		{
 			MenuAttr{
 				Name: "Core Documentation",
-				URL:  "https://pkg.go.dev/github.com/daison12006013/gorvel",
+				URL:  "https://pkg.go.dev/github.com/daison12006013/lucid",
 			},
 			MenuChildren{},
 		},

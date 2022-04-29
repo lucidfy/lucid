@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/daison12006013/gorvel/databases"
-	"github.com/daison12006013/gorvel/pkg/errors"
-	"github.com/daison12006013/gorvel/pkg/facade/crypt"
-	"github.com/daison12006013/gorvel/pkg/functions/php"
-	"github.com/daison12006013/gorvel/pkg/paginate/searchable"
+	"github.com/daison12006013/lucid/databases"
+	"github.com/daison12006013/lucid/pkg/errors"
+	"github.com/daison12006013/lucid/pkg/facade/crypt"
+	"github.com/daison12006013/lucid/pkg/functions/php"
+	"github.com/daison12006013/lucid/pkg/paginate/searchable"
 	"github.com/golang-module/carbon"
 
 	sq "github.com/Masterminds/squirrel"

@@ -19,10 +19,10 @@ type MuxSession struct {
 func Mux(w http.ResponseWriter, r *http.Request) *MuxSession {
 	var sessionName string = os.Getenv("SESSION_NAME")
 
-	gorvelSession, err := r.Cookie(sessionName)
+	lucidSession, err := r.Cookie(sessionName)
 	var securedCookie *securecookie.SecureCookie
 	if err == nil {
-		securedCookie = securecookie.New([]byte(gorvelSession.Value), nil)
+		securedCookie = securecookie.New([]byte(lucidSession.Value), nil)
 	}
 
 	s := MuxSession{

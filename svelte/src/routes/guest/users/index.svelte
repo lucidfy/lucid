@@ -1,6 +1,6 @@
 <script>
   import Table from '$src/lib/guest/Table.svelte'
-  import Gorvel from '$src/lib/guest/Gorvel.svelte';
+  import Lucid from '$src/lib/guest/Lucid.svelte';
   import Pagination from '$src/lib/guest/Pagination.svelte';
 
   export let title
@@ -9,7 +9,7 @@
   export let links_array
 </script>
 
-<Gorvel {title}>
+<Lucid {title}>
   <div class="m-auto w-4/5">
     <div class="my-5 shadow-orange-800 shadow-lg">
       <Table {title} {data} {csrfField} />
@@ -28,4 +28,4 @@
       prev_page_url={links_array.prev_page_url}
     />
   </div>
-</Gorvel>
+</Lucid>

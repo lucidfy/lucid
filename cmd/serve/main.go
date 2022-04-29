@@ -4,8 +4,8 @@ import (
 	"flag"
 	"os"
 
-	"github.com/daison12006013/gorvel/internal/kernel"
-	"github.com/daison12006013/gorvel/pkg/env"
+	"github.com/daison12006013/lucid/internal/kernel"
+	"github.com/daison12006013/lucid/pkg/env"
 )
 
 func init() {
