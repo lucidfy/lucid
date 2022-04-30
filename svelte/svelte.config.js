@@ -25,6 +25,7 @@ const config = {
 
     files: {
       routes: `src/routes/${routeFolder}`,
+      hooks: `src/hooks/lucid.ts`,
     },
 
     vite: {

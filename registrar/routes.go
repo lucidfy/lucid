@@ -54,9 +54,11 @@ var Routes = &[]r.Routing{
 		Handler: handlers.Docs,
 	},
 	{
-		Path:    "/auth/via-cookie",
-		Name:    "auth-via-cookie",
-		Method:  r.Method{"POST"},
-		Handler: authhandler.ViaCookie,
+		Path: "/auth/login",
+		Name: "auth-login",
+		Resources: r.Resources{
+			"index": authhandler.User,
+			"store": authhandler.LoginAttempt,
+		},
 	},
 }

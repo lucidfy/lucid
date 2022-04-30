@@ -12,7 +12,7 @@
 <main class="bg-orange-600 flex h-screen raleway font-thin">
   <div class="text-white m-auto">
     <h1 class="text-8xl mb-5">
-        Welcome to <a href="https://github.com/daison12006013/lucid" class="font-light">Go</a>rvel!
+        Welcome to <a href="https://github.com/daison12006013/lucid" class="font-light">Lucid!</a>
     </h1>
 
     <div class="text-center mt-5">
@@ -34,7 +34,7 @@
           font-light
           py-2 px-4
           border border-white-500 hover:border
-          rounded" href="/login"
+          rounded" href="{import.meta.env.VITE_LOGIN_PATH}"
           >Login</a>
     </div>
   </div>

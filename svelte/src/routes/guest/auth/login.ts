@@ -8,15 +8,13 @@ export const post: RequestHandler = async (event) => {
 
 	const response = await api({
         method: 'post',
-        resource: 'auth/via-cookie',
+        resource: import.meta.env.VITE_LOGIN_PATH,
         data: {
             email,
             'password': form.has('password') ? form.get('password') : undefined,
         },
         event,
     });
-
-	console.log('response', response)
 
 	if (response.status === 404) {
 		return {
@@ -25,11 +23,12 @@ export const post: RequestHandler = async (event) => {
 	}
 
 	if (response.status >= 200 && response.status < 300 || response.status === 401) {
+		const data = await response.json()
 		return {
 			status: response.status,
 			body: {
 				email: email.toString(),
-				data: await response.json(),
+				data,
 			}
 		};
 	}

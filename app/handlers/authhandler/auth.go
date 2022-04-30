@@ -9,7 +9,13 @@ import (
 	"github.com/daison12006013/lucid/pkg/facade/hash"
 )
 
-func ViaCookie(T engines.EngineContract) *errors.AppError {
+func User(T engines.EngineContract) *errors.AppError {
+	engine := T.(engines.MuxEngine)
+	res := engine.Response
+	return res.Json(map[string]interface{}{}, http.StatusOK)
+}
+
+func LoginAttempt(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	req := engine.Request
 	res := engine.Response
@@ -36,7 +42,7 @@ func ViaCookie(T engines.EngineContract) *errors.AppError {
 		ses.Set("user", record.ID)
 	}
 
-	message := "Successfully Created!"
+	message := "Successfully Logged In!"
 	status := http.StatusOK
 
 	if req.WantsJson() && req.IsJson() {

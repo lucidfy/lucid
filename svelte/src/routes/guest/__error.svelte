@@ -33,7 +33,7 @@
       <h1 class="text-8xl">
         {code}
       </h1>
-      <i class="text-sm -mt-3">Lucid &amp; SvelteKit</i>
+      <i class="text-sm -mt-3">{import.meta.env.VITE_PROJECT_NAME} &amp; SvelteKit</i>
     </div>
 
     {#if error}
