@@ -6,8 +6,7 @@ import (
 
 func AuthenticateMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// engine := engines.Mux(w, r)
-		// ses := engine.Session
+		// ses := session.File(w, r)
 
 		// x, err := ses.Get("user")
 		// if err != nil {

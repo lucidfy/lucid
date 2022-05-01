@@ -8,6 +8,7 @@ import (
 	"github.com/daison12006013/lucid/pkg/engines"
 	"github.com/daison12006013/lucid/pkg/errors"
 	"github.com/daison12006013/lucid/pkg/facade/request"
+	"github.com/daison12006013/lucid/pkg/facade/session"
 	"github.com/daison12006013/lucid/pkg/facade/urls"
 	"github.com/daison12006013/lucid/pkg/paginate/searchable"
 	"github.com/gorilla/csrf"
@@ -20,11 +21,11 @@ const SORT_TYPE = "desc"
 
 func Lists(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
-	// w := engine.HttpResponseWriter
+	w := engine.ResponseWriter
 	r := engine.HttpRequest
+	ses := session.File(w, r)
 	req := engine.Request
 	res := engine.Response
-	ses := engine.Session
 	url := engine.Url
 
 	//> prepare the searchable structure

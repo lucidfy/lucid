@@ -8,16 +8,17 @@ import (
 	"github.com/daison12006013/lucid/app/models/users"
 	"github.com/daison12006013/lucid/pkg/engines"
 	"github.com/daison12006013/lucid/pkg/errors"
+	"github.com/daison12006013/lucid/pkg/facade/session"
 	"github.com/gorilla/csrf"
 )
 
 func Show(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
-	// w := engine.HttpResponseWriter
+	w := engine.ResponseWriter
 	r := engine.HttpRequest
+	ses := session.File(w, r)
 	req := engine.Request
 	res := engine.Response
-	ses := engine.Session
 	url := engine.Url
 
 	id := req.Input("id", nil).(string)
@@ -65,11 +66,11 @@ func Show(T engines.EngineContract) *errors.AppError {
 
 func Update(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
-	// w := engine.HttpResponseWriter
-	// r := engine.HttpRequest
+	w := engine.ResponseWriter
+	r := engine.HttpRequest
+	ses := session.File(w, r)
 	req := engine.Request
 	res := engine.Response
-	ses := engine.Session
 	url := engine.Url
 
 	message := "Successfully Updated!"

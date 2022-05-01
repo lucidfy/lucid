@@ -7,6 +7,7 @@ import (
 	"github.com/daison12006013/lucid/pkg/engines"
 	"github.com/daison12006013/lucid/pkg/errors"
 	"github.com/daison12006013/lucid/pkg/facade/hash"
+	"github.com/daison12006013/lucid/pkg/facade/session"
 )
 
 func User(T engines.EngineContract) *errors.AppError {
@@ -17,9 +18,11 @@ func User(T engines.EngineContract) *errors.AppError {
 
 func LoginAttempt(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
+	w := engine.ResponseWriter
+	r := engine.HttpRequest
+	ses := session.File(w, r)
 	req := engine.Request
 	res := engine.Response
-	ses := engine.Session
 	url := engine.Url
 
 	email := req.Input("email", nil).(string)

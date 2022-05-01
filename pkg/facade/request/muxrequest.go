@@ -10,7 +10,6 @@ import (
 	"sync"
 
 	"github.com/daison12006013/lucid/pkg/errors"
-	"github.com/daison12006013/lucid/pkg/facade/session"
 	"github.com/daison12006013/lucid/pkg/facade/urls"
 	"github.com/daison12006013/lucid/pkg/rules"
 	"github.com/daison12006013/lucid/pkg/rules/must"
@@ -21,18 +20,16 @@ type MuxRequest struct {
 	ResponseWriter     http.ResponseWriter
 	HttpRequest        *http.Request
 	Url                *urls.MuxUrl
-	Session            *session.MuxSession
 	MaxMultipartMemory int64
 
 	ParsedParams map[string]interface{}
 }
 
-func Mux(w http.ResponseWriter, r *http.Request, u *urls.MuxUrl, ses *session.MuxSession) *MuxRequest {
+func Mux(w http.ResponseWriter, r *http.Request, u *urls.MuxUrl) *MuxRequest {
 	t := MuxRequest{
 		ResponseWriter:     w,
 		HttpRequest:        r,
 		Url:                u,
-		Session:            ses,
 		MaxMultipartMemory: 32 << 20, // 32MB
 	}
 	return &t

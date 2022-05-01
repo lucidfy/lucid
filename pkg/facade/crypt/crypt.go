@@ -8,7 +8,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"os"
 	"strings"
 
@@ -20,7 +19,7 @@ import (
 // https://developpaper.com/go-implements-laravels-encrypt-and-decrypt-methods/
 
 //Encryption
-func Encrypt(value string) (string, error) {
+func Encrypt(value interface{}) (string, error) {
 	iv := make([]byte, 16)
 	_, err := rand.Read(iv)
 	if err != nil {
@@ -70,7 +69,7 @@ func Encrypt(value string) (string, error) {
 func Decrypt(value string) (string, error) {
 	//Base64 decryption
 	token, err := base64.StdEncoding.DecodeString(value)
-	fmt.Println("token---", string(token))
+	// fmt.Println("token---", string(token))
 	if err != nil {
 		return "", err
 	}
@@ -78,7 +77,7 @@ func Decrypt(value string) (string, error) {
 	//JSON deserialization
 	tokenJson := make(map[string]string)
 	err = json.Unmarshal(token, &tokenJson)
-	fmt.Println("tokenJson---", tokenJson)
+	// fmt.Println("tokenJson---", tokenJson)
 	if err != nil {
 		return "", err
 	}
@@ -110,7 +109,7 @@ func Decrypt(value string) (string, error) {
 	}
 	//AES decryption value
 	dst, err := openssl.AesCBCDecrypt(tokenValue, []byte(key), tokenIv, openssl.PKCS7_PADDING)
-	fmt.Println("dst", string(dst))
+	// fmt.Println("dst", string(dst))
 	if err != nil {
 		return "", err
 	}
@@ -126,7 +125,7 @@ func Decrypt(value string) (string, error) {
 //Compare the expected hash with the actual hash
 func checkMAC(message, msgMac, secret string) bool {
 	expectedMAC := computeHmacSha256(message, secret)
-	fmt.Println(expectedMAC, msgMac)
+	// fmt.Println(expectedMAC, msgMac)
 	return hmac.Equal([]byte(expectedMAC), []byte(msgMac))
 }
 

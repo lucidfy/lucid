@@ -3,9 +3,9 @@ package engines
 import (
 	"net/http"
 
+	"github.com/daison12006013/lucid/pkg/facade/cookie"
 	"github.com/daison12006013/lucid/pkg/facade/request"
 	"github.com/daison12006013/lucid/pkg/facade/response"
-	"github.com/daison12006013/lucid/pkg/facade/session"
 	"github.com/daison12006013/lucid/pkg/facade/urls"
 )
 
@@ -15,22 +15,22 @@ type MuxEngine struct {
 
 	Response response.MuxResponse
 	Request  request.MuxRequest
-	Session  session.MuxSession
+	Cookie   cookie.MuxCookie
 	Url      urls.MuxUrl
 }
 
 func Mux(w http.ResponseWriter, r *http.Request) *MuxEngine {
 	res := response.Mux(w, r)
 	url := urls.Mux(w, r)
-	ses := session.Mux(w, r)
-	req := request.Mux(w, r, url, ses)
+	coo := cookie.Mux(w, r)
+	req := request.Mux(w, r, url)
 
 	eg := MuxEngine{
 		ResponseWriter: w,
 		HttpRequest:    r,
 		Response:       *res,
 		Request:        *req,
-		Session:        *ses,
+		Cookie:         *coo,
 		Url:            *url,
 	}
 
@@ -45,8 +45,8 @@ func (m MuxEngine) GetRequest() interface{} {
 	return m.Request
 }
 
-func (m MuxEngine) GetSession() interface{} {
-	return m.Session
+func (m MuxEngine) GetCookie() interface{} {
+	return m.Cookie
 }
 
 func (m MuxEngine) GetUrl() interface{} {

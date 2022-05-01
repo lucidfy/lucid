@@ -7,6 +7,7 @@ import (
 )
 
 type PathStruct struct {
+	BASE_PATH        string
 	CONSOLE_PATH     string
 	HANDLERS_PATH    string
 	MIDDLEWARES_PATH string
@@ -20,6 +21,7 @@ type PathStruct struct {
 
 func Load() *PathStruct {
 	p := &PathStruct{
+		BASE_PATH:        PathTo(os.Getenv("BASE_PATH")),
 		CONSOLE_PATH:     PathTo(os.Getenv("CONSOLE_PATH")),
 		HANDLERS_PATH:    PathTo(os.Getenv("HANDLERS_PATH")),
 		MIDDLEWARES_PATH: PathTo(os.Getenv("MIDDLEWARES_PATH")),
@@ -33,6 +35,9 @@ func Load() *PathStruct {
 	return p
 }
 
+func (p *PathStruct) BasePath(str string) string {
+	return append(p.BASE_PATH, str)
+}
 func (p *PathStruct) ConsolePath(str string) string {
 	return append(p.CONSOLE_PATH, str)
 }

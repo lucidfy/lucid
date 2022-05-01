@@ -10,7 +10,6 @@ require (
 	github.com/gomarkdown/markdown v0.0.0-20220310201231-552c6011c0b8
 	github.com/gorilla/csrf v1.7.1
 	github.com/gorilla/mux v1.8.0
-	github.com/gorilla/securecookie v1.1.1
 	github.com/jedib0t/go-pretty/v6 v6.2.7
 	github.com/joho/godotenv v1.4.0
 	github.com/techoner/gophp v0.2.0
@@ -25,6 +24,7 @@ require (
 	github.com/gobuffalo/envy v1.7.0 // indirect
 	github.com/gobuffalo/packd v0.3.0 // indirect
 	github.com/gobuffalo/packr v1.30.1 // indirect
+	github.com/gorilla/securecookie v1.1.1 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.4 // indirect
 	github.com/lann/builder v0.0.0-20180802200727-47ae307949d0 // indirect
