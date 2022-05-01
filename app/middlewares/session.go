@@ -1,11 +1,11 @@
 package middlewares
 
 import (
+	"errors"
 	"net/http"
 	"os"
 
 	"github.com/daison12006013/lucid/pkg/facade/cookie"
-	"github.com/daison12006013/lucid/pkg/facade/crypt"
 )
 
 func SessionPersistenceMiddleware(next http.Handler) http.Handler {
@@ -14,11 +14,8 @@ func SessionPersistenceMiddleware(next http.Handler) http.Handler {
 		coo := cookie.Mux(w, r)
 		_, err := coo.Get(name)
 
-		if err != nil {
-			switch err {
-			case http.ErrNoCookie:
-				coo.Set(name, crypt.GenerateRandomString(20))
-			}
+		if err != nil && errors.Is(err, http.ErrNoCookie) {
+			coo.CreateSessionCookie()
 		}
 
 		next.ServeHTTP(w, r)

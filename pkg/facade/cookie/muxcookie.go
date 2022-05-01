@@ -23,6 +23,12 @@ func Mux(w http.ResponseWriter, r *http.Request) *MuxCookie {
 	return &s
 }
 
+func (s *MuxCookie) CreateSessionCookie() interface{} {
+	sessionKey := crypt.GenerateRandomString(20)
+	s.Set(os.Getenv("SESSION_NAME"), sessionKey)
+	return sessionKey
+}
+
 func (s *MuxCookie) Set(name string, value interface{}) (bool, error) {
 	encoded, err := crypt.Encrypt(value)
 	if err == nil {

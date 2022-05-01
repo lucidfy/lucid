@@ -18,8 +18,8 @@ func User(T engines.EngineContract) *errors.AppError {
 	res := engine.Response
 
 	userID, err := ses.Get("authenticated")
-	if err != nil {
-		res.Json(map[string]interface{}{}, http.StatusOK)
+	if userID != nil || err != nil {
+		return res.Json(map[string]interface{}{}, http.StatusOK)
 	}
 
 	data, appErr := users.Find(userID, nil)

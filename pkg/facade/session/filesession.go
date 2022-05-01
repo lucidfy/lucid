@@ -2,6 +2,7 @@ package session
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -19,9 +20,9 @@ type FileSession struct {
 }
 
 func File(w http.ResponseWriter, r *http.Request) *FileSession {
-	instance := cookie.Mux(w, r)
-	sessionKey, err := instance.Get(os.Getenv("SESSION_NAME"))
-	if err != nil {
+	coo := cookie.Mux(w, r)
+	sessionKey, err := coo.Get(os.Getenv("SESSION_NAME"))
+	if err != nil && errors.Is(err, http.ErrNoCookie) {
 		return &FileSession{}
 	}
 	s := FileSession{
@@ -54,6 +55,10 @@ func (s *FileSession) updateContent(content interface{}) error {
 }
 
 func (s *FileSession) Set(name string, value interface{}) (bool, error) {
+	if s.SessionKey == nil {
+		return false, fmt.Errorf("session [%s] does not exists", name)
+	}
+
 	filepath := s.initializeFile(s.getSessionFile())
 	content := *php.JsonDecode(string(*php.FileGetContents(filepath)))
 	content[name] = value
@@ -64,6 +69,10 @@ func (s *FileSession) Set(name string, value interface{}) (bool, error) {
 }
 
 func (s *FileSession) Get(name string) (interface{}, error) {
+	if s.SessionKey == nil {
+		return nil, fmt.Errorf("session [%s] does not exists", name)
+	}
+
 	filepath := s.initializeFile(s.getSessionFile())
 	content := *php.JsonDecode(string(*php.FileGetContents(filepath)))
 
@@ -75,6 +84,10 @@ func (s *FileSession) Get(name string) (interface{}, error) {
 }
 
 func (s *FileSession) Destroy(name string) (interface{}, error) {
+	if s.SessionKey == nil {
+		return nil, fmt.Errorf("session [%s] does not exists", name)
+	}
+
 	filepath := s.initializeFile(s.getSessionFile())
 	content := *php.JsonDecode(string(*php.FileGetContents(filepath)))
 	delete(content, name)
