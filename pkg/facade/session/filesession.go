@@ -2,6 +2,7 @@ package session
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
 
@@ -65,7 +66,12 @@ func (s *FileSession) Set(name string, value interface{}) (bool, error) {
 func (s *FileSession) Get(name string) (interface{}, error) {
 	filepath := s.initializeFile(s.getSessionFile())
 	content := *php.JsonDecode(string(*php.FileGetContents(filepath)))
-	return content[name], nil
+
+	if content[name] != nil {
+		return content[name], nil
+	}
+
+	return nil, fmt.Errorf("session [%s] does not exists", name)
 }
 
 func (s *FileSession) Destroy(name string) (interface{}, error) {

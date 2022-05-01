@@ -13,7 +13,7 @@ func init() {
 
 func TestFileGetContents(t *testing.T) {
 	content := FileGetContents(path.Load().BasePath("stubs/handler/handler.stub"))
-	if len(content.(string)) == 0 {
+	if len(string(*content)) == 0 {
 		t.Errorf("FileGetContents is not working!")
 	}
 }

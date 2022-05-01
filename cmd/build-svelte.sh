@@ -4,7 +4,7 @@ echo "Setting up svelte-kit!"
     cd svelte/ \
     && rm -rf .svelte-kit/ \
     && npm install \
-    && npm run build \
+    && LUCID_DOCKER_SETTING_UP=1 npm run build \
 )
 
 echo "Copying modules under .build/svelte-kit/"

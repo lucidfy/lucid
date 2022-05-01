@@ -22,9 +22,9 @@ type Model struct {
 	ID              uint           `gorm:"primarykey;auto_increment;not_null" json:"id"`
 	Name            string         `gorm:"column:name" json:"name"`
 	Email           string         `gorm:"column:email" json:"email"`
-	EmailVerifiedAt *time.Time     `gorm:"column:email_verified_at" json:"email_verified_at,omitempty"`
+	EmailVerifiedAt *time.Time     `gorm:"column:email_verified_at" json:"-"`
 	Password        string         `gorm:"column:password" json:"-"`
-	RememberToken   sql.NullString `gorm:"column:remember_token" json:"remember_token,omitempty"`
+	RememberToken   sql.NullString `gorm:"column:remember_token" json:"-"`
 	CreatedAt       time.Time      `gorm:"column:created_at" json:"created_at"`
 	UpdatedAt       time.Time      `gorm:"column:updated_at" json:"updated_at"`
 }

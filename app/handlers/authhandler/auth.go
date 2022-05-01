@@ -12,8 +12,24 @@ import (
 
 func User(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
+	w := engine.ResponseWriter
+	r := engine.HttpRequest
+	ses := session.File(w, r)
 	res := engine.Response
-	return res.Json(map[string]interface{}{}, http.StatusOK)
+
+	userID, err := ses.Get("authenticated")
+	if err != nil {
+		res.Json(map[string]interface{}{}, http.StatusOK)
+	}
+
+	data, appErr := users.Find(userID, nil)
+	if appErr != nil {
+		return appErr
+	}
+
+	return res.Json(map[string]interface{}{
+		"user": data.Model,
+	}, http.StatusOK)
 }
 
 func LoginAttempt(T engines.EngineContract) *errors.AppError {
@@ -42,7 +58,7 @@ func LoginAttempt(T engines.EngineContract) *errors.AppError {
 	record := data.Model
 
 	if hash.Check(password, record.Password) {
-		ses.Set("user", record.ID)
+		ses.Set("authenticated", record.ID)
 	}
 
 	message := "Successfully Logged In!"
