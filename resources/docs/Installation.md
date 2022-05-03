@@ -1,11 +1,9 @@
-# Installation {#\" class="text-4xl"}
+# Installation
 
 ## Manual Setup
 
-{.mt-5}
 I should assume you've successfully installed your go in your machine, to start working with this, you should fork a copy of the `develop` branch your github.
 
-{.my-5}
 If you want to quickly try Lucid, please follow bellow source, make sure your port `8080` is open to serve your local http, or modify your lucid `.env` file.
 
 ```bash
@@ -19,7 +17,7 @@ $> go mod download
 $> bash ./serve
 ```
 
-## Docker Setup (Easiests!)
+## Docker Setup
 
 Make sure you have installed [Docker Desktop](https://www.docker.com/products/docker-desktop/), after that run `./setup-docker` under your lucid's root folder
 
