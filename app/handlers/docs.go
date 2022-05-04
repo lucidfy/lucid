@@ -40,11 +40,17 @@ func Docs(T engines.EngineContract) *errors.AppError {
 	}
 
 	ext := parser.CommonExtensions | parser.Attributes | parser.OrderedListStart | parser.SuperSubscript | parser.Mmark
-	asHtml := markdown.ToHTML(
-		*php.FileGetContents(string(d)),
-		parser.NewWithExtensions(ext),
-		nil,
-	)
+	var asHtml []byte
+
+	if req.Input("parse", 0) == "1" {
+		asHtml = markdown.ToHTML(
+			*php.FileGetContents(string(d)),
+			parser.NewWithExtensions(ext),
+			nil,
+		)
+	} else {
+		asHtml = *php.FileGetContents(string(d))
+	}
 
 	data := map[string]interface{}{
 		"title":   title,
