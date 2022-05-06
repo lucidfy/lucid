@@ -3,7 +3,7 @@ package errors
 import (
 	"os"
 
-	"github.com/daison12006013/lucid/pkg/facade/logger"
+	"github.com/lucidfy/lucid/pkg/facade/logger"
 )
 
 type AppError struct {

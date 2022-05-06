@@ -6,8 +6,8 @@ import (
 	"strings"
 	text "text/template"
 
-	"github.com/daison12006013/lucid/pkg/errors"
-	"github.com/daison12006013/lucid/pkg/facade/path"
+	"github.com/lucidfy/lucid/pkg/errors"
+	"github.com/lucidfy/lucid/pkg/facade/path"
 )
 
 type MuxResponse struct {

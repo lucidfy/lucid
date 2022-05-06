@@ -1,4 +1,4 @@
-module github.com/daison12006013/lucid
+module github.com/lucidfy/lucid
 
 go 1.17
 

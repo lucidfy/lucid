@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/daison12006013/lucid/databases"
-	"github.com/daison12006013/lucid/pkg/errors"
-	"github.com/daison12006013/lucid/pkg/facade/hash"
-	"github.com/daison12006013/lucid/pkg/functions/php"
-	"github.com/daison12006013/lucid/pkg/paginate/searchable"
 	"github.com/golang-module/carbon"
+	"github.com/lucidfy/lucid/databases"
+	"github.com/lucidfy/lucid/pkg/errors"
+	"github.com/lucidfy/lucid/pkg/facade/hash"
+	"github.com/lucidfy/lucid/pkg/functions/php"
+	"github.com/lucidfy/lucid/pkg/paginate/searchable"
 
 	sq "github.com/Masterminds/squirrel"
 )

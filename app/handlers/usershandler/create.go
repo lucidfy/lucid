@@ -3,12 +3,12 @@ package usershandler
 import (
 	"net/http"
 
-	"github.com/daison12006013/lucid/app/models/users"
-	"github.com/daison12006013/lucid/app/validations"
-	"github.com/daison12006013/lucid/pkg/engines"
-	"github.com/daison12006013/lucid/pkg/errors"
-	"github.com/daison12006013/lucid/pkg/facade/session"
 	"github.com/gorilla/csrf"
+	"github.com/lucidfy/lucid/app/models/users"
+	"github.com/lucidfy/lucid/app/validations"
+	"github.com/lucidfy/lucid/pkg/engines"
+	"github.com/lucidfy/lucid/pkg/errors"
+	"github.com/lucidfy/lucid/pkg/facade/session"
 )
 
 func Create(T engines.EngineContract) *errors.AppError {

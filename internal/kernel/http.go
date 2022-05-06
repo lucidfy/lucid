@@ -9,11 +9,11 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/daison12006013/lucid/pkg/facade/logger"
-	"github.com/daison12006013/lucid/pkg/facade/routes"
-	"github.com/daison12006013/lucid/pkg/facade/urls"
-	"github.com/daison12006013/lucid/registrar"
 	"github.com/gorilla/mux"
+	"github.com/lucidfy/lucid/pkg/facade/logger"
+	"github.com/lucidfy/lucid/pkg/facade/routes"
+	"github.com/lucidfy/lucid/pkg/facade/urls"
+	"github.com/lucidfy/lucid/registrar"
 )
 
 type App struct {

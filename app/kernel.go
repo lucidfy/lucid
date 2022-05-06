@@ -1,8 +1,8 @@
 package app
 
 import (
-	"github.com/daison12006013/lucid/app/middlewares"
 	"github.com/gorilla/mux"
+	"github.com/lucidfy/lucid/app/middlewares"
 )
 
 // Middleware The application's global HTTP middleware stack.

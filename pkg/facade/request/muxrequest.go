@@ -9,11 +9,11 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/daison12006013/lucid/pkg/errors"
-	"github.com/daison12006013/lucid/pkg/facade/urls"
-	"github.com/daison12006013/lucid/pkg/rules"
-	"github.com/daison12006013/lucid/pkg/rules/must"
 	"github.com/gorilla/mux"
+	"github.com/lucidfy/lucid/pkg/errors"
+	"github.com/lucidfy/lucid/pkg/facade/urls"
+	"github.com/lucidfy/lucid/pkg/rules"
+	"github.com/lucidfy/lucid/pkg/rules/must"
 )
 
 type MuxRequest struct {

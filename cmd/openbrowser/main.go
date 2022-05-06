@@ -6,9 +6,9 @@ import (
 	"os/exec"
 	"runtime"
 
-	"github.com/daison12006013/lucid/pkg/env"
-	"github.com/daison12006013/lucid/pkg/facade/logger"
-	"github.com/daison12006013/lucid/pkg/facade/urls"
+	"github.com/lucidfy/lucid/pkg/env"
+	"github.com/lucidfy/lucid/pkg/facade/logger"
+	"github.com/lucidfy/lucid/pkg/facade/urls"
 )
 
 func main() {

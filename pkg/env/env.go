@@ -3,8 +3,8 @@ package env
 import (
 	"os"
 
-	"github.com/daison12006013/lucid/pkg/facade/path"
 	"github.com/joho/godotenv"
+	"github.com/lucidfy/lucid/pkg/facade/path"
 )
 
 func LoadEnv() {

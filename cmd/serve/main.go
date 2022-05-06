@@ -4,8 +4,8 @@ import (
 	"flag"
 	"os"
 
-	"github.com/daison12006013/lucid/internal/kernel"
-	"github.com/daison12006013/lucid/pkg/env"
+	"github.com/lucidfy/lucid/internal/kernel"
+	"github.com/lucidfy/lucid/pkg/env"
 )
 
 func init() {

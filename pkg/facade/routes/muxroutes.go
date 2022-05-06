@@ -3,10 +3,10 @@ package routes
 import (
 	"net/http"
 
-	"github.com/daison12006013/lucid/app"
-	"github.com/daison12006013/lucid/app/handlers"
-	"github.com/daison12006013/lucid/pkg/engines"
 	"github.com/gorilla/mux"
+	"github.com/lucidfy/lucid/app"
+	"github.com/lucidfy/lucid/app/handlers"
+	"github.com/lucidfy/lucid/pkg/engines"
 )
 
 type MuxRoutes struct {

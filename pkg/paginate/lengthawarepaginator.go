@@ -6,9 +6,9 @@ import (
 	"reflect"
 	"strconv"
 
-	"github.com/daison12006013/lucid/pkg/errors"
-	"github.com/daison12006013/lucid/pkg/facade/logger"
-	"github.com/daison12006013/lucid/pkg/facade/response"
+	"github.com/lucidfy/lucid/pkg/errors"
+	"github.com/lucidfy/lucid/pkg/facade/logger"
+	"github.com/lucidfy/lucid/pkg/facade/response"
 )
 
 const DefaultView = "pkg/pagination/tailwind.go.html"

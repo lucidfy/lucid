@@ -1,6 +1,6 @@
 package validations
 
-import "github.com/daison12006013/lucid/pkg/rules/must"
+import "github.com/lucidfy/lucid/pkg/rules/must"
 
 func UserValidateCreate() *must.SetOfRules {
 	return &must.SetOfRules{

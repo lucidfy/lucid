@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/daison12006013/lucid/pkg/paginate"
+	"github.com/lucidfy/lucid/pkg/paginate"
 )
 
 type Input struct {

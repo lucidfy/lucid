@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/daison12006013/lucid/pkg/facade/path"
+	"github.com/lucidfy/lucid/pkg/facade/path"
 )
 
 // determine if the file logging is enabled

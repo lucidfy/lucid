@@ -5,7 +5,7 @@ import (
 	"mime/multipart"
 	"os"
 
-	"github.com/daison12006013/lucid/pkg/facade/path"
+	"github.com/lucidfy/lucid/pkg/facade/path"
 )
 
 type LocalStorage struct {

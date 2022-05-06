@@ -3,7 +3,7 @@ package rules
 import (
 	"sync"
 
-	"github.com/daison12006013/lucid/pkg/rules/must"
+	"github.com/lucidfy/lucid/pkg/rules/must"
 )
 
 func Validate(

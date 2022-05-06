@@ -3,9 +3,9 @@ package kernel
 import (
 	"os"
 
-	"github.com/daison12006013/lucid/pkg/env"
-	"github.com/daison12006013/lucid/pkg/errors"
-	"github.com/daison12006013/lucid/registrar"
+	"github.com/lucidfy/lucid/pkg/env"
+	"github.com/lucidfy/lucid/pkg/errors"
+	"github.com/lucidfy/lucid/registrar"
 	cli "github.com/urfave/cli/v2"
 )
 

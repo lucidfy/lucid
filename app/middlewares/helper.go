@@ -3,7 +3,7 @@ package middlewares
 import (
 	"net/http"
 
-	"github.com/daison12006013/lucid/pkg/facade/request"
+	"github.com/lucidfy/lucid/pkg/facade/request"
 )
 
 // IsJsonRequest check if request is json

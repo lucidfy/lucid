@@ -4,9 +4,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/daison12006013/lucid/pkg/facade/routes"
 	"github.com/gorilla/mux"
 	"github.com/jedib0t/go-pretty/v6/table"
+	"github.com/lucidfy/lucid/pkg/facade/routes"
 	cli "github.com/urfave/cli/v2"
 )
 

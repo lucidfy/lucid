@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/daison12006013/lucid/pkg/facade/cookie"
+	"github.com/lucidfy/lucid/pkg/facade/cookie"
 )
 
 func SessionPersistenceMiddleware(next http.Handler) http.Handler {

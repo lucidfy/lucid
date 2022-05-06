@@ -4,12 +4,12 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/daison12006013/lucid/pkg/engines"
-	"github.com/daison12006013/lucid/pkg/errors"
-	"github.com/daison12006013/lucid/pkg/facade/path"
-	"github.com/daison12006013/lucid/pkg/functions/php"
 	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/parser"
+	"github.com/lucidfy/lucid/pkg/engines"
+	"github.com/lucidfy/lucid/pkg/errors"
+	"github.com/lucidfy/lucid/pkg/facade/path"
+	"github.com/lucidfy/lucid/pkg/functions/php"
 )
 
 func Docs(T engines.EngineContract) *errors.AppError {

@@ -3,8 +3,8 @@ package request
 import (
 	"mime/multipart"
 
-	"github.com/daison12006013/lucid/pkg/errors"
-	"github.com/daison12006013/lucid/pkg/rules/must"
+	"github.com/lucidfy/lucid/pkg/errors"
+	"github.com/lucidfy/lucid/pkg/rules/must"
 )
 
 type RequestContract interface {
