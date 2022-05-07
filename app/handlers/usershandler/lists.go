@@ -50,7 +50,7 @@ func Lists(T engines.EngineContract) *errors.AppError {
 	}
 
 	//> here, we determine if the requestor wants a json response
-	if req.IsJson() && req.WantsJson() {
+	if req.WantsJson() {
 		return res.Json(data, http.StatusOK)
 	}
 

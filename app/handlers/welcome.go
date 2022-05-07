@@ -22,7 +22,7 @@ func Welcome(T engines.EngineContract) *errors.AppError {
 	}
 
 	// this is api request
-	if req.IsJson() && req.WantsJson() {
+	if req.WantsJson() {
 		return res.Json(data, http.StatusOK)
 	}
 	// render the template

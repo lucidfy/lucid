@@ -1,5 +1,11 @@
 # Routing
 
+- [Structure](#structure)
+- [Route Resource](#route-resource)
+- [Route Middlewares](#route-middlewares)
+
+---
+
 Lucid's routing structure is simple, as if you're just writing a json schema.
 
 ## Structure
@@ -79,7 +85,7 @@ To learn more about the core behind this, please read [Core -> Routing Resource]
 
 ## Route Middlewares
 
-Middleware is used to intercept the url request before it goes to our handler
+Middleware is used to intercept the http request before it goes to a handler
 
 ```go
 {
@@ -89,7 +95,7 @@ Middleware is used to intercept the url request before it goes to our handler
 }
 ```
 
-As an example above, we're injecting the `auth`, this string is stored inside `app/kernel.go` and hooked under `middlewares.AuthenticateMiddleware`
+As an example above, we're passing the `auth`, this string is stored inside `app/kernel.go` and hooked under `middlewares.AuthenticateMiddleware`
 
 ```go
 var RouteMiddleware = map[string]mux.MiddlewareFunc{
@@ -97,4 +103,4 @@ var RouteMiddleware = map[string]mux.MiddlewareFunc{
 }
 ```
 
-> `Note:` for more info on how a middleware works [Middlewares](/middleware)
+> `Note:` for more info on how to write a [Middlewares](/middleware)

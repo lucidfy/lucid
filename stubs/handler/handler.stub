@@ -11,21 +11,22 @@ func ##NAME_STUDLY##(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	// w := engine.HttpResponseWriter
 	// r := engine.HttpRequest
+	// url := engine.Url
 	req := engine.Request
 	res := engine.Response
 
 	// prepare the data
 	data := map[string]interface{}{
-		"title": "My ##NAME_STUDLY## handler!",
+		"title": "##NAME_STUDLY## handler!",
 	}
 
 	// this is api request
-	if request.IsJson() && request.WantsJson() {
+	if req.WantsJson() {
 		return response.Json(data, http.StatusOK)
 	}
 
 	// render the template
-	return response.View(
+	return res.View(
 		[]string{"base", "##NAME_LOWER##"},
 		data,
 	)

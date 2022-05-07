@@ -1,11 +1,19 @@
 # Installation
 
-## Manual
+- [# Host Machine](#-host-machine)
+  - [# Lucid "GO"](#-lucid-go)
+  - [# Lucid "SvelteKit"](#-lucid-sveltekit)
+- [# Via Docker](#-via-docker)
 
-### Lucid "GO"
+---
 
-I should assume you've successfully installed your go in your machine, to start working with this, you should fork a copy of the `develop` branch your github.
+{#-host-machine}
+## [#](#-host-machine) Host Machine
 
+{#-lucid-go}
+### [#](#-lucid-go) Lucid "GO"
+
+I should assume you've successfully [installed your go](https://go.dev/dl/) in your machine, to start working with this, you should fork a copy of the `develop` branch your github.
 If you want to quickly try Lucid, please follow bellow source, make sure your port `8080` is open to serve your local http, or modify your lucid `.env` file.
 
 ```bash
@@ -15,15 +23,24 @@ If you want to quickly try Lucid, please follow bellow source, make sure your po
 >  bash ./serve
 ```
 
-### Lucid "SvelteKit"
+{#-lucid-sveltekit}
+### [#](#-lucid-sveltekit) Lucid "SvelteKit"
 
+```bash
+>  wget -c https://github.com/lucidfy/ui/archive/refs/heads/develop.tar.gz -O - | tar -xz
+>  cd ui-develop/
+>  npm install
+>  ./make guest dev -- --host=0.0.0.0 --port=8080
+```
 
+After executing above, it should automatically open a browser pointing to localhost:8080
 
-## Docker Setup with Svelte
+---
 
-Make sure you have installed [Docker Desktop](https://www.docker.com/products/docker-desktop/) in your machine
+{#-via-docker}
+## [#](#-via-docker) Via Docker
 
-Then we need to download the [lucidfy/setup](https://github.com/lucidfy/setup)
+Make sure you have installed [Docker Desktop](https://www.docker.com/products/docker-desktop/) in your machine, then download the [lucidfy/setup](https://github.com/lucidfy/setup)
 
 ```bash
  >  wget -c https://github.com/lucidfy/setup/archive/refs/heads/develop.tar.gz -O - | tar -xz

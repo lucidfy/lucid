@@ -20,7 +20,7 @@ type FileSession struct {
 }
 
 func File(w http.ResponseWriter, r *http.Request) *FileSession {
-	coo := cookie.Mux(w, r)
+	coo := cookie.New(w, r)
 	sessionKey, err := coo.Get(os.Getenv("SESSION_NAME"))
 	if err != nil && errors.Is(err, http.ErrNoCookie) {
 		return &FileSession{}

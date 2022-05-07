@@ -1,5 +1,10 @@
 # Contribution Guide
 
+- [Folder Structure](#folder-structure)
+- [For Security Issues](#for-security-issues)
+
+---
+
 We welcome all developers to contribute to this project, this documentation will help us achieve to work on the same goal and standards.
 
 ## Folder Structure

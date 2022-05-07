@@ -67,7 +67,7 @@ func HttpErrorHandler(T engines.EngineContract, appErr *errors.AppError) {
 	}
 
 	//> write a json format
-	if req.IsJson() && req.WantsJson() {
+	if req.WantsJson() {
 		res.Json(data, code)
 		return
 	}

@@ -53,7 +53,7 @@ func Show(T engines.EngineContract) *errors.AppError {
 	}
 
 	//> for api based
-	if req.IsJson() && req.WantsJson() {
+	if req.WantsJson() {
 		return res.Json(respData, http.StatusOK)
 	}
 
@@ -84,7 +84,7 @@ func Update(T engines.EngineContract) *errors.AppError {
 	data.Updates(req.All())
 
 	//> for api based
-	if req.IsJson() && req.WantsJson() {
+	if req.WantsJson() {
 		return res.Json(map[string]interface{}{
 			"success": message,
 		}, status)

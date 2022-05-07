@@ -14,7 +14,7 @@ type MuxCookie struct {
 	HttpRequest    *http.Request
 }
 
-func Mux(w http.ResponseWriter, r *http.Request) *MuxCookie {
+func New(w http.ResponseWriter, r *http.Request) *MuxCookie {
 	s := MuxCookie{
 		ResponseWriter: w,
 		HttpRequest:    r,
