@@ -1,14 +1,16 @@
 # Routing
 
-- [Structure](#structure)
-- [Route Resource](#route-resource)
-- [Route Middlewares](#route-middlewares)
+- [# Structure](#-structure)
+- [# Route Resource](#-route-resource)
+- [# Route Middlewares](#-route-middlewares)
 
 ---
 
 Lucid's routing structure is simple, as if you're just writing a json schema.
 
-## Structure
+{#-structure}
+
+## [#](#-structure) Structure
 
 Routes are stored inside `registrar/routes.go` under a variable called `Routes`
 
@@ -16,12 +18,12 @@ Here is a simple way to write a route.
 
 ```go
 var Routes = &[]r.Routing{
-    {
-		Path:    "/",
-		Name:    "welcome",
-		Method:  r.Method{"GET"},
-		Handler: handlers.Welcome,
-    },
+  {
+    Path:    "/",
+    Name:    "welcome",
+    Method:  r.Method{"GET"},
+    Handler: handlers.Welcome,
+  },
 }
 ```
 
@@ -48,7 +50,9 @@ HTTP Method | CRUD Operation
 r.Method{"GET", "POST"},
 ```
 
-## Route Resource
+{#-route-resource}
+
+## [#](#-route-resource) Route Resource
 
 We're commonly building routes to serve a [C.R.U.D.](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete), such as **Users Management**, **Orders**, **Reports** and more!
 
@@ -58,13 +62,13 @@ We're commonly building routes to serve a [C.R.U.D.](https://en.wikipedia.org/wi
     Path: "/users",
     Name: "users",
     Resources: r.Resources{
-        "index":   usershandler.Lists,
-        "create":  usershandler.Create,
-        "store":   usershandler.Store,
-        "show":    usershandler.Show,
-        "edit":    usershandler.Show,
-        "update":  usershandler.Update,
-        "destroy": usershandler.Delete,
+        "index":   users_handler.Lists,
+        "create":  users_handler.Create,
+        "store":   users_handler.Store,
+        "show":    users_handler.Show,
+        "edit":    users_handler.Show,
+        "update":  users_handler.Update,
+        "destroy": users_handler.Delete,
     },
 },
 ```
@@ -83,7 +87,9 @@ destroy | `DELETE` /users/{id} | `POST` /users/{id}/delete
 
 To learn more about the core behind this, please read [Core -> Routing Resource](/core-routing-resource)
 
-## Route Middlewares
+{#-route-middlewares}
+
+## [#](#-route-middlewares) Route Middlewares
 
 Middleware is used to intercept the http request before it goes to a handler
 
@@ -99,7 +105,7 @@ As an example above, we're passing the `auth`, this string is stored inside `app
 
 ```go
 var RouteMiddleware = map[string]mux.MiddlewareFunc{
-	"auth": middlewares.AuthenticateMiddleware,
+ "auth": middlewares.AuthenticateMiddleware,
 }
 ```
 

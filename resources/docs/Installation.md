@@ -8,13 +8,16 @@
 ---
 
 {#-host-machine}
+
 ## [#](#-host-machine) Host Machine
 
 {#-lucid-go}
+
 ### [#](#-lucid-go) Lucid "GO"
 
-I should assume you've successfully [installed your go](https://go.dev/dl/) in your machine, to start working with this, you should fork a copy of the `develop` branch your github.
-If you want to quickly try Lucid, please follow bellow source, make sure your port `8080` is open to serve your local http, or modify your lucid `.env` file.
+I should assume you've successfully [installed your go](https://go.dev/dl/) in your machine.
+
+If you want to quickly try Lucid, please follow below source, make sure your port `8080` is open to serve your local http, or modify your lucid `.env` file.
 
 ```bash
 >  wget -c https://github.com/lucidfy/lucid/archive/refs/heads/develop.tar.gz -O - | tar -xz
@@ -24,6 +27,7 @@ If you want to quickly try Lucid, please follow bellow source, make sure your po
 ```
 
 {#-lucid-sveltekit}
+
 ### [#](#-lucid-sveltekit) Lucid "SvelteKit"
 
 ```bash
@@ -38,6 +42,7 @@ After executing above, it should automatically open a browser pointing to localh
 ---
 
 {#-via-docker}
+
 ## [#](#-via-docker) Via Docker
 
 Make sure you have installed [Docker Desktop](https://www.docker.com/products/docker-desktop/) in your machine, then download the [lucidfy/setup](https://github.com/lucidfy/setup)

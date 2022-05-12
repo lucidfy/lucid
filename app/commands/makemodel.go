@@ -5,21 +5,63 @@ import (
 	"os"
 	"strings"
 
-	"github.com/lucidfy/lucid/pkg/facade/logger"
 	"github.com/lucidfy/lucid/pkg/facade/path"
 	"github.com/lucidfy/lucid/pkg/functions/php"
 	cli "github.com/urfave/cli/v2"
 )
 
-func CraftModel(c *cli.Context) error {
+type CraftModelCommand struct {
+	Command *cli.Command
+}
+
+func CraftModel() *CraftModelCommand {
+	var cc CraftModelCommand
+	cc.Command = &cli.Command{
+		Name:    "make:model",
+		Aliases: []string{"m:m"},
+		Usage:   "Creates a model",
+		Action:  cc.Handle,
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:  "name",
+				Value: "",
+				Usage: `The package name (i.e: "profiles")`,
+			},
+			&cli.StringFlag{
+				Name:  "table",
+				Value: "",
+				Usage: `The name of your table (i.e: "user_profiles")`,
+			},
+		},
+	}
+	return &cc
+}
+
+func (cc *CraftModelCommand) Handle(c *cli.Context) error {
 	shortcut := c.Args().First()
+
 	name := c.String("name")
 	table := c.String("table")
-	if len(shortcut) != 0 {
+
+	if len(strings.Trim(shortcut, " ")) > 0 {
 		name = shortcut
 		table = shortcut
+	} else {
+		if len(name) == 0 {
+			fmt.Println("\nPlease provide the filename, for example: --name profiles")
+			return nil
+		}
+
+		if len(table) == 0 {
+			fmt.Println("\nPlease provide the table to use, for example: --table profiles")
+			return nil
+		}
 	}
 
+	return cc.Generate(name, table)
+}
+
+func (cc *CraftModelCommand) Generate(name string, table string) error {
 	files := map[string]string{
 		"model_test.go": "stubs/models/model_test.stub",
 		"model.go":      "stubs/models/model.stub",
@@ -31,8 +73,9 @@ func CraftModel(c *cli.Context) error {
 		//> then replace all the keys
 		stubContent, err := os.ReadFile(stub)
 		if err != nil {
-			panic(err)
+			return err
 		}
+
 		content := strings.Replace(string(stubContent), "##TABLE_NAME##", table, -1)
 		content = strings.Replace(content, "##PACKAGE_NAME##", table, -1)
 
@@ -44,20 +87,18 @@ func CraftModel(c *cli.Context) error {
 		)
 
 		if err != nil {
-			logger.Error("Mkdir Error ", err)
-			panic(err)
+			return err
 		}
 
 		//> create a file and write the content
 		err = php.FilePutContents(
 			path.Load().ModelsPath(name+"/"+orig),
 			content,
-			0775,
+			0755,
 		)
 
 		if err != nil {
-			logger.Error("FilePutContents Error ", err)
-			panic(err)
+			return err
 		}
 	}
 

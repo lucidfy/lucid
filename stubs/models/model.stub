@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/golang-module/carbon"
 	"github.com/lucidfy/lucid/databases"
 	"github.com/lucidfy/lucid/pkg/errors"
-	"github.com/lucidfy/lucid/pkg/facade/crypt"
+	"github.com/lucidfy/lucid/pkg/facade/hash"
 	"github.com/lucidfy/lucid/pkg/functions/php"
 	"github.com/lucidfy/lucid/pkg/paginate/searchable"
-	"github.com/golang-module/carbon"
 
 	sq "github.com/Masterminds/squirrel"
 )
@@ -116,11 +116,15 @@ type Finder struct {
 	Model *Model
 }
 
-func Find(id *string) (*Finder, *errors.AppError) {
+func Find(id interface{}, col interface{}) (*Finder, *errors.AppError) {
 	db := databases.Resolve()
 	record := new(Model)
 
-	err := db.First(record, id).Error
+	if col == nil || col.(string) == "" {
+		col = "id"
+	}
+
+	err := db.First(record, col.(string)+"=?", id).Error
 	if err != nil {
 		return nil, &errors.AppError{
 			Error:   err,
@@ -165,12 +169,12 @@ func sanitize(i interface{}) (interface{}, *errors.AppError) {
 	}
 
 	// here, we check if password is present
-	// then we need to encrypt the raw input as always
+	// then we need to hash the password
 	if pw, ok := inputs["password"]; ok {
 		password := pw.(string)
 		if len(password) > 0 {
-			enc, err := crypt.Encrypt(password)
-			inputs["password"] = enc
+			hashed, err := hash.Make(password)
+			inputs["password"] = hashed
 			if err != nil {
 				return inputs, &errors.AppError{
 					Error:   fmt.Errorf("app.models.##PACKAGE_NAME##.model@sanitize: crypt.Encrypt(): throws an error %s", err),

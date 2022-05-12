@@ -2,9 +2,9 @@ package registrar
 
 import (
 	"github.com/lucidfy/lucid/app/handlers"
-	"github.com/lucidfy/lucid/app/handlers/authhandler"
-	"github.com/lucidfy/lucid/app/handlers/samplehandler"
-	"github.com/lucidfy/lucid/app/handlers/usershandler"
+	"github.com/lucidfy/lucid/app/handlers/auth_handler"
+	"github.com/lucidfy/lucid/app/handlers/sample_handler"
+	"github.com/lucidfy/lucid/app/handlers/users_handler"
 	r "github.com/lucidfy/lucid/pkg/facade/routes"
 )
 
@@ -19,13 +19,13 @@ var Routes = &[]r.Routing{
 		Path: "/users",
 		Name: "users",
 		Resources: r.Resources{
-			"index":   usershandler.Lists,  //  GET    /users
-			"create":  usershandler.Create, //  GET    /users/create
-			"store":   usershandler.Store,  //  POST   /users
-			"show":    usershandler.Show,   //  GET    /users/{id}
-			"edit":    usershandler.Show,   //  GET    /users/{id}/edit
-			"update":  usershandler.Update, //  PUT    /users/{id}, POST /users/{id}/update
-			"destroy": usershandler.Delete, //  DELETE /users/{id}, POST /users/{id}/delete
+			"index":   users_handler.Lists,  //  GET    /users
+			"create":  users_handler.Create, //  GET    /users/create
+			"store":   users_handler.Store,  //  POST   /users
+			"show":    users_handler.Show,   //  GET    /users/{id}
+			"edit":    users_handler.Show,   //  GET    /users/{id}/edit
+			"update":  users_handler.Update, //  PUT    /users/{id}, POST /users/{id}/update
+			"destroy": users_handler.Delete, //  DELETE /users/{id}, POST /users/{id}/delete
 		},
 		Middlewares: r.Middlewares{"auth"},
 	},
@@ -33,13 +33,13 @@ var Routes = &[]r.Routing{
 		Path:    "/samples/requests",
 		Name:    "",
 		Method:  r.Method{"GET", "POST"},
-		Handler: samplehandler.Requests,
+		Handler: sample_handler.Requests,
 	},
 	{
 		Path:    "/samples/storage",
 		Name:    "",
 		Method:  r.Method{"POST"},
-		Handler: samplehandler.FileStorage,
+		Handler: sample_handler.FileStorage,
 	},
 	{
 		Path:   "/static",
@@ -57,8 +57,8 @@ var Routes = &[]r.Routing{
 		Path: "/auth/login",
 		Name: "auth-login",
 		Resources: r.Resources{
-			"index": authhandler.User,
-			"store": authhandler.LoginAttempt,
+			"index": auth_handler.User,
+			"store": auth_handler.LoginAttempt,
 		},
 	},
 }

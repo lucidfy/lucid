@@ -8,11 +8,6 @@ import (
 )
 
 type RequestContract interface {
-	CurrentUrl() string
-	FullUrl() string
-	PreviousUrl() string
-	RedirectPrevious()
-
 	All() interface{}
 	Get(k string) interface{}
 	GetFirst(k string, dfault interface{}) interface{}

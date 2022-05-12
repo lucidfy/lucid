@@ -48,6 +48,7 @@ func (st *Table) QuerySelect(table string) sq.SelectBuilder {
 		for _, searchColumn := range header.Input.SearchColumn {
 			switch header.Input.SearchPattern {
 			case "-":
+			case "=":
 				pred = append(pred, sq.Eq{searchColumn: fmt.Sprintf("%v", header.Input.Value)})
 			case "<-":
 				pred = append(pred, sq.Like{searchColumn: "%" + fmt.Sprintf("%v", header.Input.Value)})

@@ -1,23 +1,30 @@
 package ##PACKAGE_NAME##
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/golang-module/carbon"
 )
 
-const Table = "##TABLE_NAME##"
+const Table = "##PACKAGE_NAME##"
 const PrimaryKey = "id"
 
 var Updatables = []string{
-	// define the updatable columns here!
+	"name",
+	"email",
+	"email_verified_at",
+	"password",
+	"remember_token",
 }
 
 type Model struct {
 	ID              uint           `gorm:"primarykey;auto_increment;not_null" json:"id"`
-
-	// define the missing columns here!
-
+	Name            string         `gorm:"column:name" json:"name"`
+	Email           string         `gorm:"column:email" json:"email"`
+	EmailVerifiedAt *time.Time     `gorm:"column:email_verified_at" json:"-"`
+	Password        string         `gorm:"column:password" json:"-"`
+	RememberToken   sql.NullString `gorm:"column:remember_token" json:"-"`
 	CreatedAt       time.Time      `gorm:"column:created_at" json:"created_at"`
 	UpdatedAt       time.Time      `gorm:"column:updated_at" json:"updated_at"`
 }

@@ -3,10 +3,14 @@ package must
 import "fmt"
 
 type Required struct {
-	Value interface{}
+	CustomErrorMessage func(string, string) string
+	Value              interface{}
 }
 
 func (r *Required) ErrorMessage(inputField string, inputValue string) string {
+	if r.CustomErrorMessage != nil {
+		return r.CustomErrorMessage(inputField, inputValue)
+	}
 	return fmt.Sprintf("%s is required!", inputField)
 }
 

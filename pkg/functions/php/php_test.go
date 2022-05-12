@@ -12,7 +12,7 @@ func init() {
 }
 
 func TestFileGetContents(t *testing.T) {
-	content := FileGetContents(path.Load().BasePath("stubs/handler/handler.stub"))
+	content := FileGetContents(path.Load().BasePath("stubs/handler/single.stub"))
 	if len(string(*content)) == 0 {
 		t.Errorf("FileGetContents is not working!")
 	}
@@ -37,7 +37,7 @@ func TestFilePutContents(t *testing.T) {
 }
 
 func TestFileExists(t *testing.T) {
-	exists := FileExists(path.Load().BasePath("stubs/handler/handler.stub"))
+	exists := FileExists(path.Load().BasePath("stubs/handler/single.stub"))
 	if !exists {
 		t.Errorf("FileExists cant find the file!")
 	}

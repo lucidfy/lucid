@@ -1,4 +1,4 @@
-package usershandler
+package users_handler
 
 import (
 	"net/http"
@@ -53,7 +53,7 @@ func Store(T engines.EngineContract) *errors.AppError {
 	url := engine.Url
 
 	//> validate the inputs
-	validator := req.Validator(validations.UserValidateCreate())
+	validator := req.Validator(validations.Users().Create())
 	if validator != nil {
 		if req.WantsJson() {
 			return res.Json(map[string]interface{}{

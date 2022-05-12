@@ -13,13 +13,15 @@ type StrictPassword struct {
 	WithUpperCase   bool
 	WithLowerCase   bool
 	WithDigit       bool
+
+	ErrorMessageNoSpecialChar func(string, string) string
+	ErrorMessageNoUpperCase   func(string, string) string
+	ErrorMessageNoLowerCase   func(string, string) string
+	ErrorMessageNoDigit       func(string, string) string
 }
 
 func (r *StrictPassword) ErrorMessage(inputField string, inputValue string) string {
-	if len(r.message) > 0 {
-		return r.message
-	}
-	return "Strict password did not pass the validation!"
+	return r.message
 }
 
 func (r *StrictPassword) Valid(inputField string, inputValue string) bool {
@@ -39,22 +41,38 @@ func (r *StrictPassword) Valid(inputField string, inputValue string) bool {
 	}
 
 	if r.WithSpecialChar && !hasSpecial {
-		r.message = fmt.Sprintf("%s should contain at least 1 special character!", inputField)
+		if r.ErrorMessageNoSpecialChar != nil {
+			r.message = r.ErrorMessageNoSpecialChar(inputField, inputValue)
+		} else {
+			r.message = fmt.Sprintf("%s should contain at least 1 special character!", inputField)
+		}
 		return false
 	}
 
 	if r.WithUpperCase && !hasUpper {
-		r.message = fmt.Sprintf("%s should contain at least 1 upper case character!", inputField)
+		if r.ErrorMessageNoUpperCase != nil {
+			r.message = r.ErrorMessageNoUpperCase(inputField, inputValue)
+		} else {
+			r.message = fmt.Sprintf("%s should contain at least 1 upper case character!", inputField)
+		}
 		return false
 	}
 
 	if r.WithLowerCase && !hasLower {
-		r.message = fmt.Sprintf("%s should contain at least 1 lower case character!", inputField)
+		if r.ErrorMessageNoLowerCase != nil {
+			r.message = r.ErrorMessageNoLowerCase(inputField, inputValue)
+		} else {
+			r.message = fmt.Sprintf("%s should contain at least 1 lower case character!", inputField)
+		}
 		return false
 	}
 
 	if r.WithDigit && !hasDigit {
-		r.message = fmt.Sprintf("%s should contain at least 1 digit!", inputField)
+		if r.ErrorMessageNoDigit != nil {
+			r.message = r.ErrorMessageNoDigit(inputField, inputValue)
+		} else {
+			r.message = fmt.Sprintf("%s should contain at least 1 digit!", inputField)
+		}
 		return false
 	}
 

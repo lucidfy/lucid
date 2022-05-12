@@ -1,15 +1,23 @@
 package must
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
 type Max struct {
-	Value interface{}
+	CustomErrorMessage func(string, string) string
+	Value              int
 }
 
 func (r *Max) ErrorMessage(inputField string, inputValue string) string {
-	return fmt.Sprintf("%s should be maximum of %s", inputField, inputValue)
+	if r.CustomErrorMessage != nil {
+		return r.CustomErrorMessage(inputField, inputValue)
+	}
+
+	return fmt.Sprintf("%s is set to maximum of %s length", inputField, strconv.Itoa(r.Value))
 }
 
 func (r *Max) Valid(inputField string, inputValue string) bool {
-	return len(inputValue) <= r.Value.(int)
+	return len(inputValue) <= r.Value
 }

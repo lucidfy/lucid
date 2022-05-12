@@ -9,6 +9,7 @@ import (
 
 	"github.com/golang-module/carbon"
 	"github.com/lucidfy/lucid/pkg/facade/cookie"
+	"github.com/lucidfy/lucid/pkg/facade/crypt"
 	"github.com/lucidfy/lucid/pkg/facade/path"
 	"github.com/lucidfy/lucid/pkg/functions/php"
 )
@@ -26,9 +27,7 @@ func File(w http.ResponseWriter, r *http.Request) *FileSession {
 		return &FileSession{}
 	}
 	s := FileSession{
-		SessionKey:     sessionKey,
-		ResponseWriter: w,
-		HttpRequest:    r,
+		SessionKey: sessionKey,
 	}
 	return &s
 }
@@ -61,6 +60,10 @@ func (s *FileSession) Set(name string, value interface{}) (bool, error) {
 
 	filepath := s.initializeFile(s.getSessionFile())
 	content := *php.JsonDecode(string(*php.FileGetContents(filepath)))
+	value, err := crypt.Encrypt(value)
+	if err != nil {
+		return false, err
+	}
 	content[name] = value
 	if err := s.updateContent(content); err != nil {
 		return false, err
@@ -77,7 +80,11 @@ func (s *FileSession) Get(name string) (interface{}, error) {
 	content := *php.JsonDecode(string(*php.FileGetContents(filepath)))
 
 	if content[name] != nil {
-		return content[name], nil
+		value, err := crypt.Decrypt(content[name].(string))
+		if err != nil {
+			return nil, err
+		}
+		return value, nil
 	}
 
 	return nil, fmt.Errorf("session [%s] does not exists", name)
@@ -129,7 +136,8 @@ func (s *FileSession) GetFlashMap(name string) *map[string]interface{} {
 	ret := &map[string]interface{}{}
 	flash := s.GetFlash(name)
 	if flash != nil {
-		flashStr := (*flash.(*interface{})).(string)
+		// flashStr := (*flash.(*interface{})).(string)
+		flashStr := flash.(string)
 		json.Unmarshal([]byte(flashStr), ret)
 	}
 	return ret

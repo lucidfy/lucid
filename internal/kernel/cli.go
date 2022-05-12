@@ -13,13 +13,13 @@ func ConsoleApplication() {
 	env.LoadEnv()
 
 	app := &cli.App{
-		Name:     "craft",
-		Usage:    "A crafting console command tool for garvel!",
+		Name:     "Run",
+		Usage:    "A console command runner for lucid!",
 		Commands: *registrar.Commands,
 	}
 
 	err := app.Run(os.Args)
-	if errors.Handler("error running craft console command", err) {
+	if errors.Handler("error running run console command", err) {
 		panic(err)
 	}
 }

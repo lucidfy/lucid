@@ -1,16 +1,14 @@
-package usershandler
+package ##PACKAGE_NAME##
 
 import (
 	"net/http"
 	"strconv"
 
 	"github.com/gorilla/csrf"
-	"github.com/lucidfy/lucid/app/models/users"
+	"github.com/lucidfy/lucid/app/models/##SMALL_CASE_NAME##"
 	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/errors"
-	"github.com/lucidfy/lucid/pkg/facade/request"
 	"github.com/lucidfy/lucid/pkg/facade/session"
-	"github.com/lucidfy/lucid/pkg/facade/urls"
 	"github.com/lucidfy/lucid/pkg/paginate/searchable"
 )
 
@@ -26,22 +24,21 @@ func Lists(T engines.EngineContract) *errors.AppError {
 	ses := session.File(w, r)
 	req := engine.Request
 	res := engine.Response
-	url := engine.Url
 
 	//> prepare the searchable structure
-	searchable, err := prepare(req, url)
+	searchable, err := prepare(T)
 	if errors.Handler("error preparing searchable table", err) {
 		return &errors.AppError{Error: err, Message: "error preparing searchable table", Code: http.StatusInternalServerError}
 	}
 
 	//> fetch the searchable
-	err = users.Lists(searchable)
-	if errors.Handler("error fetching users list", err) {
-		return &errors.AppError{Error: err, Message: "error fetching users list", Code: http.StatusInternalServerError}
+	err = ##SMALL_CASE_NAME##.Lists(searchable)
+	if errors.Handler("error fetching ##SMALL_CASE_NAME## list", err) {
+		return &errors.AppError{Error: err, Message: "error fetching ##SMALL_CASE_NAME## list", Code: http.StatusInternalServerError}
 	}
 
 	data := map[string]interface{}{
-		"title":          "Users List",
+		"title":          "##CAMEL_CASE_NAME## List",
 		"data":           searchable,
 		"links_array":    searchable.Paginate.ToArray(),
 		"success":        ses.GetFlash("success"),
@@ -58,16 +55,20 @@ func Lists(T engines.EngineContract) *errors.AppError {
 	return res.View(
 		[]string{
 			"base",
-			"users/lists",
-			"users/_table",
+			"##SMALL_CASE_NAME##/lists",
+			"##SMALL_CASE_NAME##/_table",
 		},
 		data,
 	)
 }
 
-func prepare(request request.MuxRequest, url urls.MuxUrl) (*searchable.Table, error) {
+func prepare(T engines.EngineContract) (*searchable.Table, error) {
+	engine := T.(engines.MuxEngine)
+	req := engine.Request
+	url := engine.Url
+
 	//> get the current "page", literally the default of each current page should always be 1
-	currentPage, err := strconv.Atoi(request.Input("page", PAGE).(string))
+	currentPage, err := strconv.Atoi(req.Input("page", PAGE).(string))
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +76,7 @@ func prepare(request request.MuxRequest, url urls.MuxUrl) (*searchable.Table, er
 	//> get the "per-page", though the default will be relying to defaultPerPage
 	//> then check if the per page reaches the cap of 20 records per page
 	//> if ever someone tries to bypass the value, we over-write it to 20
-	perPage, err := strconv.Atoi(request.Input("per-page", PER_PAGE).(string))
+	perPage, err := strconv.Atoi(req.Input("per-page", PER_PAGE).(string))
 	if err != nil {
 		return nil, err
 	}
@@ -84,42 +85,56 @@ func prepare(request request.MuxRequest, url urls.MuxUrl) (*searchable.Table, er
 	}
 
 	var st searchable.Table
-	st = *table(request, &st)
+	st = *table(T, &st)
 
 	st.Paginate.CurrentPage = currentPage
 	st.Paginate.PerPage = perPage
-	st.Paginate.BaseUrl = request.Input("pagination_url", url.FullUrl()).(string)
+	st.Paginate.BaseUrl = req.Input("pagination_url", url.FullUrl()).(string)
 
-	orderByCol := request.Input("sort-column", SORT_COLUMN).(string)
-	orderBySort := request.Input("sort-type", SORT_TYPE).(string)
+	orderByCol := req.Input("sort-column", SORT_COLUMN).(string)
+	orderBySort := req.Input("sort-type", SORT_TYPE).(string)
 	st.OrderByCol = &orderByCol
 	st.OrderBySort = &orderBySort
 
 	return &st, nil
 }
 
-func table(request request.MuxRequest, st *searchable.Table) *searchable.Table {
+func table(T engines.EngineContract, st *searchable.Table) *searchable.Table {
+	engine := T.(engines.MuxEngine)
+	req := engine.Request
+
 	st.Headers = []searchable.Header{
 		{
-			Name: "name",
+			Name: "column1",
 			Input: searchable.Input{
 				Visible:       true,
 				Placeholder:   "Name*",
-				Value:         request.Input("search[name]", "").(string),
+				Value:         req.Input("search[column1]", "").(string),
 				CanSearch:     true,
-				SearchColumn:  []string{"name"},
+				SearchColumn:  []string{"column1"},
 				SearchPattern: "->",
 			},
 		},
 		{
-			Name: "email",
+			Name: "column2",
 			Input: searchable.Input{
 				Visible:       true,
 				Placeholder:   "Email",
-				Value:         request.Input("search[email]", "").(string),
+				Value:         req.Input("search[column2]", "").(string),
 				CanSearch:     true,
-				SearchColumn:  []string{"email"},
+				SearchColumn:  []string{"column2"},
 				SearchPattern: "-",
+			},
+		},
+		{
+			Name: "column3",
+			Input: searchable.Input{
+				Visible:       true,
+				Placeholder:   "Email",
+				Value:         req.Input("search[column3]", "").(string),
+				CanSearch:     true,
+				SearchColumn:  []string{"column3"},
+				SearchPattern: "<-",
 			},
 		},
 		{
@@ -143,9 +158,9 @@ func table(request request.MuxRequest, st *searchable.Table) *searchable.Table {
 			Input: searchable.Input{
 				Visible:       false,
 				Placeholder:   "*Search*",
-				Value:         request.Input("search", "").(string),
+				Value:         req.Input("search", "").(string),
 				CanSearch:     true,
-				SearchColumn:  []string{"email", "name"},
+				SearchColumn:  []string{"column1", "column2", "column3"},
 				SearchPattern: "<->",
 			},
 		},
@@ -153,7 +168,7 @@ func table(request request.MuxRequest, st *searchable.Table) *searchable.Table {
 			Name: "page",
 			Input: searchable.Input{
 				Visible:   false,
-				Value:     request.Input("page", PAGE).(string),
+				Value:     req.Input("page", PAGE).(string),
 				CanSearch: false,
 			},
 		},
@@ -161,7 +176,7 @@ func table(request request.MuxRequest, st *searchable.Table) *searchable.Table {
 			Name: "per-page",
 			Input: searchable.Input{
 				Visible:   false,
-				Value:     request.Input("per-page", PER_PAGE).(string),
+				Value:     req.Input("per-page", PER_PAGE).(string),
 				CanSearch: false,
 			},
 		},
@@ -169,7 +184,7 @@ func table(request request.MuxRequest, st *searchable.Table) *searchable.Table {
 			Name: "sort-column",
 			Input: searchable.Input{
 				Visible:   false,
-				Value:     request.Input("sort-column", SORT_COLUMN).(string),
+				Value:     req.Input("sort-column", SORT_COLUMN).(string),
 				CanSearch: false,
 			},
 		},
@@ -177,7 +192,7 @@ func table(request request.MuxRequest, st *searchable.Table) *searchable.Table {
 			Name: "sort-type",
 			Input: searchable.Input{
 				Visible:   false,
-				Value:     request.Input("sort-type", SORT_TYPE).(string),
+				Value:     req.Input("sort-type", SORT_TYPE).(string),
 				CanSearch: false,
 			},
 		},

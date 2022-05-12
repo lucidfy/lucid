@@ -1,4 +1,4 @@
-package samplehandler
+package sample_handler
 
 import (
 	"net/http"
