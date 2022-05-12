@@ -32,7 +32,7 @@ As of writing, we're currently using [gorilla/mux](https://github.com/gorilla/mu
 
 > This is the same way for us [Software Engineers](https://en.wikipedia.org/wiki/Software_engineering), we can use an engine for you to replace it anytime you want; while we're expanding the lists of Engines to be supported, or by the community itself.
 
-> Future plans, we're thinking to have this [fasthttp](https://github.com/valyala/fasthttp) to be added in the future, the speed is really promising, by transitioning to this engine sooner, it will just be easy for us!
+> Future plans, we're thinking to have this [Fiber](https://github.com/gofiber/fiber) to be added in the future, the speed is really promising, by transitioning to this engine sooner, it will just be easy for us!
 
 {#-basics-request-and-response}
 
