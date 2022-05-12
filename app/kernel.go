@@ -5,8 +5,7 @@ import (
 	"github.com/lucidfy/lucid/app/middlewares"
 )
 
-// Middleware The application's global HTTP middleware stack.
-// This middlewares are run during every request to your application.
+// Global Middleware
 var Middleware = []mux.MiddlewareFunc{
 	middlewares.HttpAccessLogMiddleware,
 	middlewares.SessionPersistenceMiddleware,
@@ -15,8 +14,7 @@ var Middleware = []mux.MiddlewareFunc{
 	middlewares.CsrfSetterMiddleware,
 }
 
-// RouteMiddleware The application's route middleware.
-// These middlewares may be assigned to group's or used individually.
+// Route Middleware
 var RouteMiddleware = map[string]mux.MiddlewareFunc{
 	"auth": middlewares.AuthenticateMiddleware,
 }
