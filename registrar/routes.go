@@ -27,7 +27,7 @@ var Routes = &[]r.Routing{
 			"update":  users_handler.Update, //  PUT    /users/{id}, POST /users/{id}/update
 			"destroy": users_handler.Delete, //  DELETE /users/{id}, POST /users/{id}/delete
 		},
-		Middlewares: r.Middlewares{"auth"},
+		// Middlewares: r.Middlewares{"auth"}, // Un-comment this line if you want to prevent it from guests
 	},
 	{
 		Path:    "/samples/requests",

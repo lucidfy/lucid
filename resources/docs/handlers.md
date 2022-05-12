@@ -16,9 +16,9 @@ Handlers are the one responding to any http requests, the function will only be 
 
 ## [#](#-basics) Basics
 
-{#-basics-engine}
+{#-engine}
 
-### [#](#-basics-engine) Engine
+### [#](#-engine) Engine
 
 ```go
 func Sample(T engines.EngineContract) *errors.AppError {
@@ -28,15 +28,15 @@ func Sample(T engines.EngineContract) *errors.AppError {
 
 As of writing, we're currently using [gorilla/mux](https://github.com/gorilla/mux) to bootstrap our routing and handlers, although we customized it to be called as "Engine".
 
-> An analogy for this, an Engine differs depends on consumer needs, a consumer wanted to have a Diesel Engine for speed and cost-effectiveness although there are drawbacks about it, similarly if a consumer wanted to have a Petrol Engine.
+> An analogy for this, an Engine differs depending on consumer needs, for instance, a consumer wanted to have a Diesel Engine for speed and cost-effectiveness although there are drawbacks about it, similarly if a consumer wanted to have a Petrol Engine.
 
-> This is the same way for us [Software Engineers](https://en.wikipedia.org/wiki/Software_engineering), we can use an engine for you to replace it anytime you want; while we're expanding the lists of Engines to be supported, or by the community itself.
+> This is the same way for us [Software Engineers](https://en.wikipedia.org/wiki/Software_engineering), we can use an engine for you to replace it anytime you want, although as of the moment, we're expanding the lists of Engines to be supported, or by the community itself.
 
-> Future plans, we're thinking to have this [Fiber](https://github.com/gofiber/fiber) to be added in the future, the speed is really promising, by transitioning to this engine sooner, it will just be easy for us!
+> Future plans, we're thinking to have this [Fiber](https://github.com/gofiber/fiber) as the speed is really promising, by transitioning to this engine sooner, it will just be easy for us!
 
-{#-basics-request-and-response}
+{#-request--response}
 
-### [#](#-basics-request-and-response) Request & Response
+### [#](#-request--response) Request & Response
 
 ```go
 engine := T.(engines.MuxEngine)
@@ -52,9 +52,9 @@ While the `request` and `response` were interpreters to some of the top framewor
 
 > To learn more, you can check out the `request` functions [here](/api-request), while `response` functions can be seen [here](/api-response)
 
-{#-basics-welcome-page}
+{#-welcome-page}
 
-### [#](#-basics-welcome-page) Welcome Page
+### [#](#-welcome-page) Welcome Page
 
 Here's a full example of our welcome page, the explaination can be seen inside as comment block
 

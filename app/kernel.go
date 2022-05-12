@@ -6,7 +6,7 @@ import (
 )
 
 // Global Middleware
-var Middleware = []mux.MiddlewareFunc{
+var GlobalMiddleware = []mux.MiddlewareFunc{
 	middlewares.HttpAccessLogMiddleware,
 	middlewares.SessionPersistenceMiddleware,
 	middlewares.CsrfShouldSkipMiddleware,

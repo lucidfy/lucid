@@ -27,7 +27,7 @@ func Mux() MuxRoutes {
 // extensive support with http requests + middlewares.
 func (mr MuxRoutes) Register(base *[]Routing) interface{} {
 	// Register the global middlewares
-	mr.routeUse(app.Middleware...)
+	mr.routeUse(app.GlobalMiddleware...)
 
 	// each routing should be interpreted as subrouter
 	// the subrouter in mux isolates each path with
