@@ -24,8 +24,9 @@ var Commands = &[]*cli.Command{
 			return nil
 		},
 	},
-	commands.CraftModel().Command,
-	commands.CraftHandler().Command,
-	commands.CraftResource().Command,
-	commands.CraftValidation().Command,
+	commands.MakeInit().Command,
+	commands.MakeHandler().Command,
+	commands.MakeResource().Command,
+	commands.MakeModel().Command,
+	commands.MakeValidation().Command,
 }

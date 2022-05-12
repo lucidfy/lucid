@@ -11,12 +11,12 @@ import (
 	cli "github.com/urfave/cli/v2"
 )
 
-type CraftResourceCommand struct {
+type MakeResourceCommand struct {
 	Command *cli.Command
 }
 
-func CraftResource() *CraftResourceCommand {
-	var cc CraftResourceCommand
+func MakeResource() *MakeResourceCommand {
+	var cc MakeResourceCommand
 	cc.Command = &cli.Command{
 		Name:   "make:resource",
 		Usage:  "Creates a resource along with the model",
@@ -30,14 +30,14 @@ func CraftResource() *CraftResourceCommand {
 			&cli.StringFlag{
 				Name:  "table",
 				Value: "",
-				Usage: `The name of your table (i.e: "user_profiles")`,
+				Usage: `The name of your table (i.e: "report_tags")`,
 			},
 		},
 	}
 	return &cc
 }
 
-func (cc *CraftResourceCommand) Handle(c *cli.Context) error {
+func (cc *MakeResourceCommand) Handle(c *cli.Context) error {
 	shortcut := c.Args().First()
 	name := c.String("name")
 	table := c.String("table")
@@ -63,22 +63,37 @@ func (cc *CraftResourceCommand) Handle(c *cli.Context) error {
 
 	resp := cc.Generate(packageName, smallCaseName, camelCaseName)
 
-	model := CraftModelCommand{}
+	// generate a model files
+	model := MakeModelCommand{}
 	model.Generate(name, table)
 
-	validation := CraftValidationCommand{}
+	// generate a validation file
+	validation := MakeValidationCommand{}
 	validation.Generate(name)
 
 	return resp
 }
 
-func (cc *CraftResourceCommand) Generate(packageName string, smallCaseName string, camelCaseName string) error {
+func (cc *MakeResourceCommand) Generate(packageName string, smallCaseName string, camelCaseName string) error {
 	files := map[string]string{
 		path.Load().HandlersPath(packageName + "/create.go"): "stubs/handler/resource/create.stub",
 		path.Load().HandlersPath(packageName + "/delete.go"): "stubs/handler/resource/delete.stub",
 		path.Load().HandlersPath(packageName + "/lists.go"):  "stubs/handler/resource/lists.stub",
 		path.Load().HandlersPath(packageName + "/update.go"): "stubs/handler/resource/update.stub",
 	}
+
+	//> create the directory
+	err := php.Mkdir(
+		path.Load().HandlersPath(packageName),
+		os.ModePerm,
+		true,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Created resource handler, located at:")
 
 	for orig, stub := range files {
 		//> read the stub and parse it
@@ -93,26 +108,17 @@ func (cc *CraftResourceCommand) Generate(packageName string, smallCaseName strin
 		content = strings.Replace(content, "##SMALL_CASE_NAME##", smallCaseName, -1)
 		content = strings.Replace(content, "##CAMEL_CASE_NAME##", camelCaseName, -1)
 
-		//> create the directory
-		err = php.Mkdir(
-			path.Load().HandlersPath(packageName),
-			os.ModePerm,
-			true,
-		)
-
-		if err != nil {
-			return err
-		}
-
 		//> create a file and write the content
 		err = php.FilePutContents(orig, content, 0755)
 
 		if err != nil {
 			return err
 		}
+
+		fmt.Printf(" > %s\n", orig)
 	}
 
-	fmt.Println("\nSuccessfully created a resource handlers!")
+	fmt.Println("")
 
 	return nil
 }

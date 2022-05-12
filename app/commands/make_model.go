@@ -10,12 +10,12 @@ import (
 	cli "github.com/urfave/cli/v2"
 )
 
-type CraftModelCommand struct {
+type MakeModelCommand struct {
 	Command *cli.Command
 }
 
-func CraftModel() *CraftModelCommand {
-	var cc CraftModelCommand
+func MakeModel() *MakeModelCommand {
+	var cc MakeModelCommand
 	cc.Command = &cli.Command{
 		Name:    "make:model",
 		Aliases: []string{"m:m"},
@@ -25,19 +25,19 @@ func CraftModel() *CraftModelCommand {
 			&cli.StringFlag{
 				Name:  "name",
 				Value: "",
-				Usage: `The package name (i.e: "profiles")`,
+				Usage: `The package name (i.e: "userfriends")`,
 			},
 			&cli.StringFlag{
 				Name:  "table",
 				Value: "",
-				Usage: `The name of your table (i.e: "user_profiles")`,
+				Usage: `The name of your table (i.e: "user_friends")`,
 			},
 		},
 	}
 	return &cc
 }
 
-func (cc *CraftModelCommand) Handle(c *cli.Context) error {
+func (cc *MakeModelCommand) Handle(c *cli.Context) error {
 	shortcut := c.Args().First()
 
 	name := c.String("name")
@@ -61,12 +61,25 @@ func (cc *CraftModelCommand) Handle(c *cli.Context) error {
 	return cc.Generate(name, table)
 }
 
-func (cc *CraftModelCommand) Generate(name string, table string) error {
+func (cc *MakeModelCommand) Generate(name string, table string) error {
 	files := map[string]string{
-		"model_test.go": "stubs/models/model_test.stub",
-		"model.go":      "stubs/models/model.stub",
-		"struct.go":     "stubs/models/struct.stub",
+		path.Load().ModelsPath(name + "/model_test.go"): "stubs/models/model_test.stub",
+		path.Load().ModelsPath(name + "/model.go"):      "stubs/models/model.stub",
+		path.Load().ModelsPath(name + "/struct.go"):     "stubs/models/struct.stub",
 	}
+
+	//> create the directory
+	err := php.Mkdir(
+		path.Load().ModelsPath(name),
+		os.ModePerm,
+		true,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Created model, located at:")
 
 	for orig, stub := range files {
 		//> read the stub and parse it
@@ -76,33 +89,21 @@ func (cc *CraftModelCommand) Generate(name string, table string) error {
 			return err
 		}
 
-		content := strings.Replace(string(stubContent), "##TABLE_NAME##", table, -1)
+		content := string(stubContent)
+		content = strings.Replace(content, "##TABLE_NAME##", table, -1)
 		content = strings.Replace(content, "##PACKAGE_NAME##", table, -1)
 
-		//> create the directory
-		err = php.Mkdir(
-			path.Load().ModelsPath(name),
-			os.ModePerm,
-			true,
-		)
-
-		if err != nil {
-			return err
-		}
-
 		//> create a file and write the content
-		err = php.FilePutContents(
-			path.Load().ModelsPath(name+"/"+orig),
-			content,
-			0755,
-		)
+		err = php.FilePutContents(orig, content, 0755)
 
 		if err != nil {
 			return err
 		}
+
+		fmt.Printf(" > %s\n", orig)
 	}
 
-	fmt.Println("\nSuccessfully created a model!")
+	fmt.Println("")
 
 	return nil
 }

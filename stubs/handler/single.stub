@@ -7,7 +7,7 @@ import (
 	"github.com/lucidfy/lucid/pkg/errors"
 )
 
-func ##NAME_STUDLY##(T engines.EngineContract) *errors.AppError {
+func ##CAMEL_CASE_NAME##(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	// w := engine.HttpResponseWriter
 	// r := engine.HttpRequest
@@ -17,17 +17,17 @@ func ##NAME_STUDLY##(T engines.EngineContract) *errors.AppError {
 
 	// prepare the data
 	data := map[string]interface{}{
-		"title": "##NAME_STUDLY## handler!",
+		"title": "##CAMEL_CASE_NAME## handler!",
 	}
 
 	// this is api request
 	if req.WantsJson() {
-		return response.Json(data, http.StatusOK)
+		return res.Json(data, http.StatusOK)
 	}
 
 	// render the template
 	return res.View(
-		[]string{"base", "##NAME_LOWER##"},
+		[]string{"base", "##SNAKE_CASE_NAME##"},
 		data,
 	)
 }
