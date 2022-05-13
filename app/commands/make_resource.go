@@ -57,9 +57,6 @@ func (cc *MakeResourceCommand) Handle(c *cli.Context) error {
 		}
 	}
 
-	packageName := strcase.ToSnake(name + "_handler")
-	resp := cc.Generate(packageName, name)
-
 	// generate a model files
 	model := MakeModelCommand{}
 	model.Generate(name, table)
@@ -67,6 +64,9 @@ func (cc *MakeResourceCommand) Handle(c *cli.Context) error {
 	// generate a validation file
 	validation := MakeValidationCommand{}
 	validation.Generate(name)
+
+	packageName := strcase.ToSnake(name + "_handler")
+	resp := cc.Generate(packageName, name)
 
 	return resp
 }
@@ -77,6 +77,7 @@ func (cc *MakeResourceCommand) Generate(packageName string, name string) error {
 		path.Load().HandlersPath(packageName + "/delete.go"): "stubs/handler/resource/delete.stub",
 		path.Load().HandlersPath(packageName + "/lists.go"):  "stubs/handler/resource/lists.stub",
 		path.Load().HandlersPath(packageName + "/update.go"): "stubs/handler/resource/update.stub",
+		path.Load().HandlersPath(packageName + "/struct.go"): "stubs/handler/resource/struct.stub",
 	}
 
 	//> create the directory
@@ -116,7 +117,12 @@ func (cc *MakeResourceCommand) Generate(packageName string, name string) error {
 		fmt.Printf(" > %s\n", orig)
 	}
 
-	fmt.Println("")
+	fmt.Println("\nGo to registrar/routes.go and paste this:")
+	fmt.Println()
+	fmt.Println("    var Routes = &[]routes.Routing{")
+	fmt.Println("    	...,")
+	fmt.Println("       " + packageName + ".RouteResource,")
+	fmt.Println("    }")
 
 	return nil
 }

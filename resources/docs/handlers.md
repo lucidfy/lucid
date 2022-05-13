@@ -110,7 +110,19 @@ Here's how to generate a single handler
 ./run make:handler healthcheck
 
 Created handler, located at:
-> ~/lucid/app/handlers/healthcheck.go
+ > ~/lucid-setup/src/lucid/app/handlers/health_check.go
+
+Go to registrar/routes.go and paste this:
+
+    var Routes = &[]routes.Routing{
+        ...,
+        {
+            Path:    "/health-check",
+            Name:    "health-check",
+            Method:  routes.Method{"GET"}, // defaulting to "GET"
+            Handler: handlers.HealthCheck,
+        },
+    }
 ```
 
 {#-resource-handler}
@@ -122,18 +134,25 @@ To generate a resource handler
 ```bash
 ./run make:resource reports
 
-Created resource handler, located at:
- > ~/lucid/app/handlers/reports_handler/update.go
- > ~/lucid/app/handlers/reports_handler/create.go
- > ~/lucid/app/handlers/reports_handler/delete.go
- > ~/lucid/app/handlers/reports_handler/lists.go
-
 Created model, located at:
- > ~/lucid/app/models/reports/model_test.go
- > ~/lucid/app/models/reports/model.go
- > ~/lucid/app/models/reports/struct.go
+ > ~/lucid-setup/src/lucid/app/models/reports/struct.go
+ > ~/lucid-setup/src/lucid/app/models/reports/model_test.go
+ > ~/lucid-setup/src/lucid/app/models/reports/model.go
 
 Created validation, located at:
- > ~/lucid/app/validations/reports.go
+ > ~/lucid-setup/src/lucid//app/validations/reports.go
 
+Created resource handler, located at:
+ > ~/lucid-setup/src/lucid/app/handlers/reports_handler/delete.go
+ > ~/lucid-setup/src/lucid/app/handlers/reports_handler/lists.go
+ > ~/lucid-setup/src/lucid/app/handlers/reports_handler/update.go
+ > ~/lucid-setup/src/lucid/app/handlers/reports_handler/struct.go
+ > ~/lucid-setup/src/lucid/app/handlers/reports_handler/create.go
+
+Go to registrar/routes.go and paste this:
+
+    var Routes = &[]routes.Routing{
+        ...
+        reports_handler.RouteResource,
+    }
 ```
