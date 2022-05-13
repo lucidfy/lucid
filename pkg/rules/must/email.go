@@ -14,7 +14,7 @@ func (r *Email) ErrorMessage(inputField string, inputValue string) string {
 		return r.CustomErrorMessage(inputField, inputValue)
 	}
 
-	return fmt.Sprintf("%s is not a valid email address!", inputField)
+	return fmt.Sprintf("%s is not a valid email address!", inputValue)
 }
 
 func (r *Email) Valid(inputField string, inputValue string) bool {

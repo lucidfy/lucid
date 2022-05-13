@@ -58,10 +58,7 @@ func (cc *MakeResourceCommand) Handle(c *cli.Context) error {
 	}
 
 	packageName := strcase.ToSnake(name + "_handler")
-	smallCaseName := strcase.ToSnake(name)
-	camelCaseName := strcase.ToCamel(name)
-
-	resp := cc.Generate(packageName, smallCaseName, camelCaseName)
+	resp := cc.Generate(packageName, name)
 
 	// generate a model files
 	model := MakeModelCommand{}
@@ -74,7 +71,7 @@ func (cc *MakeResourceCommand) Handle(c *cli.Context) error {
 	return resp
 }
 
-func (cc *MakeResourceCommand) Generate(packageName string, smallCaseName string, camelCaseName string) error {
+func (cc *MakeResourceCommand) Generate(packageName string, name string) error {
 	files := map[string]string{
 		path.Load().HandlersPath(packageName + "/create.go"): "stubs/handler/resource/create.stub",
 		path.Load().HandlersPath(packageName + "/delete.go"): "stubs/handler/resource/delete.stub",
@@ -105,8 +102,9 @@ func (cc *MakeResourceCommand) Generate(packageName string, smallCaseName string
 
 		content := string(stubContent)
 		content = strings.Replace(content, "##PACKAGE_NAME##", packageName, -1)
-		content = strings.Replace(content, "##SMALL_CASE_NAME##", smallCaseName, -1)
-		content = strings.Replace(content, "##CAMEL_CASE_NAME##", camelCaseName, -1)
+		content = strings.Replace(content, "##SMALL_CASE_NAME##", strcase.ToSnake(name), -1)
+		content = strings.Replace(content, "##CAMEL_CASE_NAME##", strcase.ToCamel(name), -1)
+		content = strings.Replace(content, "##KEBAB_CASE_NAME##", strcase.ToKebab(name), -1)
 
 		//> create a file and write the content
 		err = php.FilePutContents(orig, content, 0755)

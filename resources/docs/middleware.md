@@ -19,9 +19,10 @@ A middleware intercepts the http request, you can throw an error, create a cooki
 The variable `GlobalMiddleware` every route will automatically process these middlewares, such as `middlewares.HttpAccessLogMiddleware`
 
 {#-route-middleware}
+
 ## [#](#-route-middleware) Route Middleware
 
-The variable `RouteMiddleware` is only available if you're going to append and configure each route, to learn more about this [click here](/routing#-route-middlewares)
+The variable `RouteMiddleware` will only be executed if you're going to specifically add it for each route, to learn more about this [Routing -> Middleware](/routing#-route-middlewares)
 
 {#-examples}
 
@@ -48,6 +49,8 @@ func MyMiddleware(next http.Handler) http.Handler {
 
 Here's a sample middleware that lucid have, basically, we're checking if there was a `authenticated` inside the session.
 
+If the session key isn't present, we then return a status `403 Forbidden`
+
 ```go
 func AuthenticateMiddleware(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -68,3 +71,5 @@ func AuthenticateMiddleware(next http.Handler) http.Handler {
     })
 }
 ```
+
+> To learn more about [Session](/session)

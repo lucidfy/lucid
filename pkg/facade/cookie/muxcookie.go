@@ -41,7 +41,7 @@ func (s *MuxCookie) Set(name string, value interface{}) (bool, error) {
 			Value:   encoded,
 			Path:    "/",
 			MaxAge:  lifetime,
-			Expires: carbon.Now().AddSeconds(lifetime).Time,
+			Expires: carbon.Now().AddSeconds(lifetime).Carbon2Time(),
 			Domain:  os.Getenv("SESSION_DOMAIN"),
 		}
 		http.SetCookie(s.ResponseWriter, cookie)

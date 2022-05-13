@@ -64,7 +64,7 @@ func LoginAttempt(T engines.EngineContract) *errors.AppError {
 	message := "Successfully Logged In!"
 	status := http.StatusOK
 
-	if req.WantsJson() && req.IsJson() {
+	if req.WantsJson() {
 		return res.Json(map[string]interface{}{
 			"success": message,
 			"data":    record,

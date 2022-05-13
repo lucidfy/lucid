@@ -1,4 +1,4 @@
-package handlers
+package sample_handler
 
 import (
 	"net/http"
@@ -9,8 +9,17 @@ import (
 	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/errors"
 	"github.com/lucidfy/lucid/pkg/facade/path"
+	"github.com/lucidfy/lucid/pkg/facade/routes"
 	"github.com/lucidfy/lucid/pkg/functions/php"
 )
+
+var DocsRoute = routes.Routing{
+	Path:    "/docs",
+	Prefix:  true,
+	Name:    "docs",
+	Method:  routes.Method{"GET"},
+	Handler: Docs,
+}
 
 func Docs(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
@@ -57,7 +66,7 @@ func Docs(T engines.EngineContract) *errors.AppError {
 		"content": string(asHtml),
 	}
 
-	if req.WantsJson() && req.IsJson() {
+	if req.WantsJson() {
 		return res.Json(data, http.StatusOK)
 	}
 
