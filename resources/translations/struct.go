@@ -8,7 +8,7 @@ import (
 )
 
 var Translations = map[string]helpers.MS{
-	"en": English,
+	"en-US": EnglishUnitedStates,
 }
 
 // T translates based on the default language

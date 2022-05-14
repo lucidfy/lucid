@@ -1,4 +1,4 @@
-# Form Validations
+# Validations
 
 - [# Basics](#-basics)
   - [# Generate a Validation](#-generate-a-validation)
@@ -11,7 +11,7 @@
 
 ## [#](#-basics) Basics
 
-The validation will help you to filter out invalid inputs or to limit someone from passing too much data.
+This feature will help you to filter out invalid inputs or to limit someone from passing too much data, or wrong inputs
 
 This page will help you to write a simple validation and re-use it wherever in your lucid project.
 

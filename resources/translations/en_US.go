@@ -1,10 +1,10 @@
 package translations
 
-var English = map[string]string{
+var EnglishUnitedStates = map[string]string{
 	"validations.email":                    ":field is not a valid email address!",
-	"validations.matches":                  ":field did not match with :target",
-	"validations.max":                      ":field is set to maximum of :length length",
-	"validations.min":                      ":field is set to minimum of :length length",
+	"validations.matches":                  ":field did not match with :target!",
+	"validations.max":                      ":field is set to maximum of :length length!",
+	"validations.min":                      ":field is set to minimum of :length length!",
 	"validations.required":                 ":field is required!",
 	"validations.strictpassword.special":   ":field should contain at least 1 special character!",
 	"validations.strictpassword.uppercase": ":field should contain at least 1 upper case character!",

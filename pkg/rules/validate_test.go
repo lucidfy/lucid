@@ -60,7 +60,7 @@ func TestGetErrors(t *testing.T) {
 	validationErrors = GetErrors(setOfRules, inputValues)
 
 	got := validationErrors["confirm_password"]
-	expect := "confirm_password did not match with password"
+	expect := "confirm_password did not match with password!"
 	if got != expect {
 		t.Errorf("got %q, expect %q", got, expect)
 	}
@@ -72,7 +72,7 @@ func TestGetErrors(t *testing.T) {
 	}
 
 	got = validationErrors["name"]
-	expect = "name is set to minimum of 4 length"
+	expect = "name is set to minimum of 4 length!"
 	if got != expect {
 		t.Errorf("got %q, expect %q", got, expect)
 	}

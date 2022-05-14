@@ -38,7 +38,7 @@ func TestMaxInvalid(t *testing.T) {
 func TestMaxWithDefaultErrorMessage(t *testing.T) {
 	rule := Max{Value: 10}
 
-	wantedErrMsg := "input_name is set to maximum of 10 length"
+	wantedErrMsg := "input_name is set to maximum of 10 length!"
 	gotErrMsg := rule.ErrorMessage("input_name", "1234567890a")
 	if gotErrMsg != wantedErrMsg {
 		t.Errorf(`got %q, wanted %q`, gotErrMsg, wantedErrMsg)

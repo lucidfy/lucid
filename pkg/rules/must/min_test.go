@@ -42,7 +42,7 @@ func TestMinInvalid(t *testing.T) {
 func TestMinWithDefaultErrorMessage(t *testing.T) {
 	rule := Min{Value: 5}
 
-	wantedErrMsg := "input_name is set to minimum of 5 length"
+	wantedErrMsg := "input_name is set to minimum of 5 length!"
 	gotErrMsg := rule.ErrorMessage("input_name", "1234567890a")
 	if gotErrMsg != wantedErrMsg {
 		t.Errorf(`got %q, wanted %q`, gotErrMsg, wantedErrMsg)
