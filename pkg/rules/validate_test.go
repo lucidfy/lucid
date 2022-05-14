@@ -3,8 +3,13 @@ package rules
 import (
 	"testing"
 
+	"github.com/lucidfy/lucid/pkg/env"
 	"github.com/lucidfy/lucid/pkg/rules/must"
 )
+
+func init() {
+	env.LoadEnv()
+}
 
 func TestGetErrors(t *testing.T) {
 	setOfRules := &must.SetOfRules{
@@ -41,7 +46,7 @@ func TestGetErrors(t *testing.T) {
 
 	validationErrors := GetErrors(setOfRules, inputValues)
 	if len(validationErrors) != 0 {
-		t.Error("Validation should pass")
+		t.Error("Validation error should be empty!")
 	}
 
 	// ---
@@ -52,18 +57,23 @@ func TestGetErrors(t *testing.T) {
 		"password":         "1234qwerASDF!@#$",
 		"confirm_password": "1q3rZo4ogF!t4$",
 	}
-
 	validationErrors = GetErrors(setOfRules, inputValues)
 
-	if validationErrors["confirm_password"] != "confirm_password did not match with password" {
-		t.Error("Validating confirm_password seems not right!")
+	got := validationErrors["confirm_password"]
+	expect := "confirm_password did not match with password"
+	if got != expect {
+		t.Errorf("got %q, expect %q", got, expect)
 	}
 
-	if validationErrors["email"] != "johndoe is not a valid email address!" {
-		t.Error("Validating email seems not right!")
+	got = validationErrors["email"]
+	expect = "email is not a valid email address!"
+	if got != expect {
+		t.Errorf("got %q, expect %q", got, expect)
 	}
 
-	if validationErrors["name"] != "name is set to minimum of 4 length" {
-		t.Error("Validating email seems not right!")
+	got = validationErrors["name"]
+	expect = "name is set to minimum of 4 length"
+	if got != expect {
+		t.Errorf("got %q, expect %q", got, expect)
 	}
 }

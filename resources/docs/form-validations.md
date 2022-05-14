@@ -60,7 +60,7 @@ func SignUp() *SignUpValidator {
             },
             "confirmed_password": {
                 &must.Required{},
-                &must.Matches{Field: "password"},
+                &must.Matches{TargetField: "password"},
             },
         },
     }
@@ -118,3 +118,4 @@ Max | name is set to maximum of 1 length
 Min | name is set to minimum of 100 length
 Required | email is required!
 StrictPassword | password should contain at least 1 special character!<br>password should contain at least 1 upper case character!<br>password should contain at least 1 lower case character!<br>password should contain at least 1 digit!
+Matches | confirm_password did not match with password

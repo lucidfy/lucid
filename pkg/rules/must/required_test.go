@@ -3,7 +3,13 @@ package must
 import (
 	"fmt"
 	"testing"
+
+	"github.com/lucidfy/lucid/pkg/env"
 )
+
+func init() {
+	env.LoadEnv()
+}
 
 func TestRequiredValid(t *testing.T) {
 	rule := Required{}

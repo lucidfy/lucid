@@ -3,7 +3,13 @@ package must
 import (
 	"fmt"
 	"testing"
+
+	"github.com/lucidfy/lucid/pkg/env"
 )
+
+func init() {
+	env.LoadEnv()
+}
 
 func TestMinValid(t *testing.T) {
 	rule := Min{Value: 5}
@@ -46,7 +52,7 @@ func TestMinWithDefaultErrorMessage(t *testing.T) {
 func TestMinWithCustomErrorMessage(t *testing.T) {
 	rule := Min{
 		Value: 10,
-		CustomErrorMessage: func(field string, value string) string {
+		CustomErrorMessage: func(field string, value string, length int) string {
 			return fmt.Sprintf("This %s field is invalid!!! with value %s", field, value)
 		},
 	}

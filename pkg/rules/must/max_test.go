@@ -3,7 +3,13 @@ package must
 import (
 	"fmt"
 	"testing"
+
+	"github.com/lucidfy/lucid/pkg/env"
 )
+
+func init() {
+	env.LoadEnv()
+}
 
 func TestMaxValid(t *testing.T) {
 	rule := Max{Value: 10}
@@ -42,7 +48,7 @@ func TestMaxWithDefaultErrorMessage(t *testing.T) {
 func TestMaxWithCustomErrorMessage(t *testing.T) {
 	rule := Max{
 		Value: 10,
-		CustomErrorMessage: func(field string, value string) string {
+		CustomErrorMessage: func(field string, value string, length int) string {
 			return fmt.Sprintf("This %s field is invalid!!! with value %s", field, value)
 		},
 	}

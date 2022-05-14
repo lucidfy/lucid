@@ -1,8 +1,10 @@
 package must
 
 import (
-	"fmt"
 	"regexp"
+
+	"github.com/lucidfy/lucid/pkg/helpers"
+	"github.com/lucidfy/lucid/resources/translations"
 )
 
 type Email struct {
@@ -13,8 +15,10 @@ func (r *Email) ErrorMessage(inputField string, inputValue string) string {
 	if r.CustomErrorMessage != nil {
 		return r.CustomErrorMessage(inputField, inputValue)
 	}
-
-	return fmt.Sprintf("%s is not a valid email address!", inputValue)
+	return translations.T("validations.email", helpers.MS{
+		":field": inputField,
+		":value": inputValue,
+	})
 }
 
 func (r *Email) Valid(inputField string, inputValue string) bool {

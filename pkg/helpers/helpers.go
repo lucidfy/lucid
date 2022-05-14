@@ -7,6 +7,7 @@ import (
 )
 
 type MP = map[string]interface{}
+type MS = map[string]string
 
 func DD(data ...interface{}) {
 	prefix := fmt.Sprintf("[%s] [debug] (die-dump) -> ", os.Getenv("APP_ENV"))

@@ -1,8 +1,10 @@
 package must
 
 import (
-	"fmt"
 	"unicode"
+
+	"github.com/lucidfy/lucid/pkg/helpers"
+	"github.com/lucidfy/lucid/resources/translations"
 )
 
 type StrictPassword struct {
@@ -44,7 +46,11 @@ func (r *StrictPassword) Valid(inputField string, inputValue string) bool {
 		if r.ErrorMessageNoSpecialChar != nil {
 			r.message = r.ErrorMessageNoSpecialChar(inputField, inputValue)
 		} else {
-			r.message = fmt.Sprintf("%s should contain at least 1 special character!", inputField)
+			r.message = translations.T("validations.strictpassword.special", helpers.MS{
+				":field": inputField,
+				":value": inputValue,
+			})
+
 		}
 		return false
 	}
@@ -53,7 +59,10 @@ func (r *StrictPassword) Valid(inputField string, inputValue string) bool {
 		if r.ErrorMessageNoUpperCase != nil {
 			r.message = r.ErrorMessageNoUpperCase(inputField, inputValue)
 		} else {
-			r.message = fmt.Sprintf("%s should contain at least 1 upper case character!", inputField)
+			r.message = translations.T("validations.strictpassword.uppercase", helpers.MS{
+				":field": inputField,
+				":value": inputValue,
+			})
 		}
 		return false
 	}
@@ -62,7 +71,10 @@ func (r *StrictPassword) Valid(inputField string, inputValue string) bool {
 		if r.ErrorMessageNoLowerCase != nil {
 			r.message = r.ErrorMessageNoLowerCase(inputField, inputValue)
 		} else {
-			r.message = fmt.Sprintf("%s should contain at least 1 lower case character!", inputField)
+			r.message = translations.T("validations.strictpassword.lowercase", helpers.MS{
+				":field": inputField,
+				":value": inputValue,
+			})
 		}
 		return false
 	}
@@ -71,7 +83,10 @@ func (r *StrictPassword) Valid(inputField string, inputValue string) bool {
 		if r.ErrorMessageNoDigit != nil {
 			r.message = r.ErrorMessageNoDigit(inputField, inputValue)
 		} else {
-			r.message = fmt.Sprintf("%s should contain at least 1 digit!", inputField)
+			r.message = translations.T("validations.strictpassword.digit", helpers.MS{
+				":field": inputField,
+				":value": inputValue,
+			})
 		}
 		return false
 	}
