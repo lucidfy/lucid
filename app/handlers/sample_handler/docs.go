@@ -6,6 +6,7 @@ import (
 
 	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/parser"
+	"github.com/iancoleman/strcase"
 	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/errors"
 	"github.com/lucidfy/lucid/pkg/facade/path"
@@ -62,7 +63,7 @@ func Docs(T engines.EngineContract) *errors.AppError {
 	}
 
 	data := map[string]interface{}{
-		"title":   title,
+		"title":   strings.Title(strcase.ToDelimited(title, ' ')),
 		"content": string(asHtml),
 	}
 

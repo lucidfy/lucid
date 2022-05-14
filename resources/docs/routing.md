@@ -2,6 +2,7 @@
 
 - [# Structure](#-structure)
 - [# Route Resource](#-route-resource)
+- [# Serve Static Files](#-serve-static-files)
 - [# Route Middlewares](#-route-middlewares)
 
 ---
@@ -14,14 +15,14 @@ Lucid's routing structure is simple, as if you're just writing a json schema.
 
 Routes are stored inside `registrar/routes.go` under a variable called `Routes`
 
-Here is a simple way to write a route.
+Here is a simple way to write a single route.
 
 ```go
-var Routes = &[]r.Routing{
+var Routes = &[]routes.Routing{
   {
     Path:    "/",
     Name:    "welcome",
-    Method:  r.Method{"GET"},
+    Method:  routes.Method{"GET"},
     Handler: handlers.Welcome,
   },
 }
@@ -61,7 +62,7 @@ We're commonly building routes to serve a [C.R.U.D.](https://en.wikipedia.org/wi
 {
     Path: "/users",
     Name: "users",
-    Resources: r.Resources{
+    Resources: routes.Resources{
         "index":   users_handler.Lists,
         "create":  users_handler.Create,
         "store":   users_handler.Store,
@@ -86,6 +87,22 @@ update | `PUT` /users/{id} | `POST` /users/{id}/update
 destroy | `DELETE` /users/{id} | `POST` /users/{id}/delete
 
 To learn more about the core behind this, please read [Core -> Routing Resource](/core-routing-resource)
+
+{#-serve-static-files}
+
+## [#](#-serve-static-files) Serve Static Files
+
+To serve a content such as js, css or markdown files, or any files, just use `Static: "{path to the folder}",`
+
+```go
+var Routes = &[]routes.Routing{
+  {
+    Path:   "/static",
+    Name:   "static",
+    Static: "./resources/static",
+  },
+}
+```
 
 {#-route-middlewares}
 

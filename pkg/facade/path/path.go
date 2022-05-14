@@ -20,8 +20,13 @@ type PathStruct struct {
 }
 
 func Load() *PathStruct {
+	basePath, err := RootPath()
+	if err != nil {
+		panic(err)
+	}
+
 	p := &PathStruct{
-		BASE_PATH:        PathTo(os.Getenv("BASE_PATH")),
+		BASE_PATH:        *basePath,
 		CONSOLE_PATH:     PathTo(os.Getenv("CONSOLE_PATH")),
 		HANDLERS_PATH:    PathTo(os.Getenv("HANDLERS_PATH")),
 		MIDDLEWARES_PATH: PathTo(os.Getenv("MIDDLEWARES_PATH")),
@@ -73,7 +78,14 @@ func append(path string, str string) string {
 	return path + str
 }
 
-func BasePath() (*string, error) {
+func RootPath() (*string, error) {
+	if len(os.Getenv("LUCID_ROOT")) != 0 {
+		projectpath := os.Getenv("LUCID_ROOT")
+		return &projectpath, nil
+	}
+
+	// if LUCID_ROOT isn't present
+	// let's try to look up the runtime caller
 	_, callerFile, _, _ := runtime.Caller(0)
 	path := filepath.Dir(callerFile)
 	projectpath, err := filepath.Abs(path + "/../../../")
@@ -86,7 +98,7 @@ func BasePath() (*string, error) {
 }
 
 func PathTo(path string) string {
-	basepath, err := BasePath()
+	basepath, err := RootPath()
 	if err != nil {
 		panic(err)
 	}

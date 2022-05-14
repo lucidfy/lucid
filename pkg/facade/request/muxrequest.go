@@ -7,7 +7,6 @@ import (
 	"mime/multipart"
 	"net/http"
 	"strings"
-	"sync"
 
 	"github.com/gorilla/mux"
 	"github.com/lucidfy/lucid/pkg/errors"
@@ -135,38 +134,14 @@ func (t *MuxRequest) WantsJson() bool {
 	return t.HasAccept("json")
 }
 
-// --- Validator
-
+// Validator
 func (t *MuxRequest) Validator(setOfRules *must.SetOfRules) *errors.AppError {
-	var errsChan = make(chan map[string]string)
+	inputValues := t.All().(map[string]interface{})
 
-	var wg sync.WaitGroup
-
-	for inputField, inputRules := range *setOfRules {
-		for _, inputRule := range inputRules {
-			inputValue := t.Get(inputField)
-			wg.Add(1)
-			go rules.Validate(
-				inputField,
-				fmt.Sprint(inputValue),
-				inputRule,
-				errsChan,
-				&wg,
-			)
-		}
-	}
-
-	go func() {
-		wg.Wait()
-		close(errsChan)
-	}()
-
-	validationErrors := map[string]interface{}{}
-	for val := range errsChan {
-		for k, v := range val {
-			validationErrors[k] = v
-		}
-	}
+	validationErrors := rules.GetErrors(
+		setOfRules,
+		inputValues,
+	)
 
 	if len(validationErrors) > 0 {
 		return &errors.AppError{

@@ -1,2 +1,2 @@
 #!/bin/sh
-./cmd/build-go.sh
+LUCID_ROOT=${PWD} ./cmd/build-go.sh

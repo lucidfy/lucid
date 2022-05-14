@@ -63,8 +63,7 @@ func Store(T engines.EngineContract) *errors.AppError {
 
 		ses.SetFlashMap("fails", validator.ValidationError)
 		ses.SetFlashMap("inputs", req.All())
-		url.RedirectPrevious()
-		return nil
+		return url.RedirectPrevious()
 	}
 
 	//> prepare message and status
@@ -87,6 +86,5 @@ func Store(T engines.EngineContract) *errors.AppError {
 
 	//> for form based, just redirect
 	ses.SetFlash("success", message)
-	url.RedirectPrevious()
-	return nil
+	return url.RedirectPrevious()
 }

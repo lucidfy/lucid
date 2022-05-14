@@ -3,6 +3,8 @@ package urls
 import (
 	"net/http"
 	"strings"
+
+	"github.com/lucidfy/lucid/pkg/errors"
 )
 
 type MuxUrl struct {
@@ -47,6 +49,7 @@ func (u *MuxUrl) PreviousUrl() string {
 	return u.HttpRequest.Referer()
 }
 
-func (u *MuxUrl) RedirectPrevious() {
+func (u *MuxUrl) RedirectPrevious() *errors.AppError {
 	http.Redirect(u.ResponseWriter, u.HttpRequest, u.PreviousUrl(), http.StatusFound)
+	return nil
 }

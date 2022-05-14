@@ -72,6 +72,5 @@ func LoginAttempt(T engines.EngineContract) *errors.AppError {
 	}
 
 	ses.SetFlash("success", message)
-	url.RedirectPrevious()
-	return nil
+	return url.RedirectPrevious()
 }

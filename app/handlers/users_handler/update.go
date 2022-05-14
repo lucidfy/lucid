@@ -92,6 +92,6 @@ func Update(T engines.EngineContract) *errors.AppError {
 
 	//> for form based, just redirect
 	ses.SetFlash("success", message)
-	url.RedirectPrevious()
+	return url.RedirectPrevious()
 	return nil
 }
