@@ -13,9 +13,9 @@
 
 ---
 
-Each time a guest visits your website, we're producing a session identifier and that is stored inside the guest's browser, this is made possible inside our `app/middlewares/session.go`, by inspecting your browser network, there should be a `lucid_session`
+Session is mainly used to store other information of the current state, we often use this to set the user's language, user's preferred themes and whatever things that we can store.
 
-Succeeding requests should carry that cookie, the identifier's value is a random string and encrypted using your `APP_KEY`
+> Note: Most developers often compare `Session` over `Cache`, they have the same process, its just that `Cache` is a global and it is not bound to any identifier, while `Session` is bound to `lucid_session`  cookie as identifier.
 
 {#-basics}
 

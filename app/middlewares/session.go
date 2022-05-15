@@ -10,9 +10,8 @@ import (
 
 func SessionPersistenceMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		name := os.Getenv("SESSION_NAME")
 		coo := cookie.New(w, r)
-		_, err := coo.Get(name)
+		_, err := coo.Get(os.Getenv("SESSION_NAME"))
 
 		if err != nil && errors.Is(err, http.ErrNoCookie) {
 			coo.CreateSessionCookie()
