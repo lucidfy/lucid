@@ -17,9 +17,11 @@ To set an env on runtime, you just need to call `os.Setenv("MY_KEY", "VALUE")`
 APP_ENV=local
 ```
 
-`.env` will be the first file that shall be loaded, it parses and determines the `APP_ENV`, consider the value is equal to **"local"**, then it will load the `.env.local`
+The `.env` file will be loaded first, lucid parses and checks the `APP_ENV`, assume the value is equal to **"local"**, therefore it will load the `.env.local`
 
-> Note: The main github repository of Lucid uses "local", consider not to commit your `.env` by adding it inside the `.gitignore`
+> Note: The main github repository of Lucid uses "local", consider not to commit your `.env` by adding it inside your `.gitignore`
+
+<br>
 
 ```bash
 APP_TIMEZONE="UTC"
@@ -27,11 +29,15 @@ APP_TIMEZONE="UTC"
 
 By default we're using UTC time, this is useful when storing data to be in-sync with our application, to check which timezone to use, refer to "TZ database name" at https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
+<br>
+
 ```bash
 APP_LANGUAGE="en-US"
 ```
 
 By default we're using `"en-US"` stands for "English United States" translation, it will automatically use `resources/translations/en_US.go`
+
+<br>
 
 ```bash
 SESSION_NAME="lucid_session"
@@ -39,7 +45,9 @@ SESSION_DOMAIN=""
 SESSION_LIFETIME=7200
 ```
 
-Every http request we're producing a session identifier and that is stored inside a guest's browser, this is made possible inside our `app/middlewares/session.go`
+Every http request, we're producing a session identifier and that is stored inside a guest's browser, learn more about it [here](/session)
+
+<br>
 
 ```bash
 CONSOLE_PATH=/app/commands
@@ -78,6 +86,8 @@ APP_DEBUG=true
 
 This is mainly used to trace any unwanted http request errors.
 
+<br>
+
 ```bash
 APP_KEY="SomeRandomString"
 ```
@@ -86,12 +96,16 @@ The above is used as our key to encrypt / decrypt a string, this is mainly used 
 
 > To learn more about the [Lucid's Cryptography](/cryptography)
 
+<br>
+
 ```bash
 LOGGING_ENABLED=true
 LOGGING_FILE=/storage/logs/lucid.log
 ```
 
 This enables or disables our logger, as of the moment our logger is based on filesystem, but later on we will add a driver based, such as kibana logs and so on!
+
+<br>
 
 ```bash
 SCHEME="http"
@@ -101,12 +115,16 @@ PORT="8080"
 
 This configures how lucid will serve your app
 
+<br>
+
 ```bash
 CSRF_AUTH_KEY="MyCsrfAuthKey"
 CSRF_TRUSTED_ORIGIN=""
 ```
 
 This will prevent any [Cross Site Request Forgery](https://owasp.org/www-community/attacks/csrf), provide the authentication key and your trusted origin.
+
+<br>
 
 ```bash
 DB_CONNECTION="sqlite"

@@ -107,7 +107,7 @@ These console commands will help you to generate a `go` file to speed up your de
 Here's how to generate a single handler
 
 ```bash
-./run make:handler healthcheck
+./run make:handler health_check
 
 Created handler, located at:
  > ~/lucid-setup/src/lucid/app/handlers/health_check.go

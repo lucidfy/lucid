@@ -15,7 +15,7 @@ require (
 	github.com/joho/godotenv v1.4.0
 	github.com/techoner/gophp v0.2.0
 	github.com/urfave/cli/v2 v2.6.0
-	golang.org/x/crypto v0.0.0-20220511200225-c6db032c6c88
+	golang.org/x/crypto v0.0.0-20220513210258-46612604a0f9
 	gorm.io/driver/sqlite v1.3.2
 	gorm.io/gorm v1.23.5
 )
@@ -31,11 +31,11 @@ require (
 	github.com/lann/builder v0.0.0-20180802200727-47ae307949d0 // indirect
 	github.com/lann/ps v0.0.0-20150810152359-62de8c46ede0 // indirect
 	github.com/mattn/go-runewidth v0.0.13 // indirect
-	github.com/mattn/go-sqlite3 v1.14.12 // indirect
+	github.com/mattn/go-sqlite3 v1.14.13 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/rogpeppe/go-internal v1.8.1 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
-	golang.org/x/sys v0.0.0-20220503163025-988cb79eb6c6 // indirect
+	golang.org/x/sys v0.0.0-20220513210249-45d2b4557a2a // indirect
 	gopkg.in/yaml.v3 v3.0.0-20220512140231-539c8e751b99 // indirect
 )

@@ -90,13 +90,11 @@ Most of the time you're going to use this in your handler, an example can be see
 9. }
 ```
 
-At `line 4` we're calling this `validations.SignUp().Create()`, what it does is to initialize the set of rules and then we're calling the `Create()` to return all the rules to us.
-
+At ***line 4*** we're calling this `validations.SignUp().Create()`, it initializes the set of rules and then we're calling the `Create()` to return all the rules to us.
 Then passing that rules to our [`request.Validator`](http://localhost:8332/handlers#-request--response)
+At ***line 5*** if the validation is not `nil`, then return a [`json response`](http://localhost:8332/handlers#-request--response) with the validation error in it.
 
-At `line 5` if the vlaidation is not `nil`, then return [`json response`](http://localhost:8332/handlers#-request--response) with the validation error in it.
-
-The response will look like this
+The api json response will look like this
 
 ```json
 {
@@ -119,3 +117,5 @@ Min | name is set to minimum of 100 length
 Required | email is required!
 StrictPassword | password should contain at least 1 special character!<br>password should contain at least 1 upper case character!<br>password should contain at least 1 lower case character!<br>password should contain at least 1 digit!
 Matches | confirm_password did not match with password
+
+> Pleae do note that we are adding more rules as of the moment.
