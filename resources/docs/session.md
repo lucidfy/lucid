@@ -2,14 +2,14 @@
 
 - [# Basics](#-basics)
 - [# Adaptors](#-adaptors)
-  - [# Given Functions](#-given-functions)
-    - [# Get](#-get)
-    - [# Set](#-set)
-    - [# Destroy](#-destroy)
-    - [# SetFlash](#-setflash)
-    - [# GetFlash](#-getflash)
-    - [# SetFlashMap](#-setflashmap)
-    - [# GetFlashMap](#-getflashmap)
+- [# API](#-api)
+  - [# Get](#-get)
+  - [# Set](#-set)
+  - [# Destroy](#-destroy)
+  - [# SetFlash](#-setflash)
+  - [# GetFlash](#-getflash)
+  - [# SetFlashMap](#-setflashmap)
+  - [# GetFlashMap](#-getflashmap)
 
 ---
 
@@ -48,15 +48,15 @@ File         | Yes          | `session.File(w, r)`
 ~~Database~~ | Not yet      | `session.Database(w, r)`
 ~~Redis~~    | Not yet      | `session.Redis(w, r)`
 
-{#-given-functions}
+{#-api}
 
-### [#](#-given-functions) Given Functions
+## [#](#-api) API
 
 Here are the lists of functions available with their sample
 
 {#-get}
 
-#### [#](#-get) Get
+### [#](#-get) Get
 
 ```go
 ses.Get("key")
@@ -64,7 +64,7 @@ ses.Get("key")
 
 {#-set}
 
-#### [#](#-set) Set
+### [#](#-set) Set
 
 ```go
 ses.Set("key", 100)
@@ -72,7 +72,7 @@ ses.Set("key", 100)
 
 {#-destroy}
 
-#### [#](#-destroy) Destroy
+### [#](#-destroy) Destroy
 
 ```go
 ses.Destroy("key")
@@ -80,7 +80,7 @@ ses.Destroy("key")
 
 {#-setflash}
 
-#### [#](#-setflash) SetFlash
+### [#](#-setflash) SetFlash
 
 ```go
 ses.SetFlash("message", "Hello Jane!")
@@ -88,7 +88,7 @@ ses.SetFlash("message", "Hello Jane!")
 
 {#-getflash}
 
-#### [#](#-getflash) GetFlash
+### [#](#-getflash) GetFlash
 
 ```go
 ses.GetFlash("message")
@@ -96,7 +96,7 @@ ses.GetFlash("message")
 
 {#-setflashmap}
 
-#### [#](#-setflashmap) SetFlashMap
+### [#](#-setflashmap) SetFlashMap
 
 ```go
 ses.SetFlashMap(
@@ -110,7 +110,7 @@ ses.SetFlashMap(
 
 {#-getflashmap}
 
-#### [#](#-getflashmap) GetFlashMap
+### [#](#-getflashmap) GetFlashMap
 
 ```go
 ses.GetFlashMap("messages")

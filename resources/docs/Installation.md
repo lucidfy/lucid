@@ -34,10 +34,16 @@ If you want to quickly try Lucid, please follow below source, make sure your por
 > wget -c https://github.com/lucidfy/ui/archive/refs/heads/develop.tar.gz -O - | tar -xz
 > cd ui-develop/
 > npm install
-> ./make guest dev -- --host=0.0.0.0 --port=8080
+> ./make guest dev -- --host=0.0.0.0 --port=8081
 ```
 
-After executing above, it should automatically open a browser pointing to localhost:8080
+After executing above, it should automatically sere `src/guest/` and opens a browser pointing to localhost:8081
+
+```bash
+> ./make docs dev -- --host=0.0.0.0 --port=8082
+```
+
+Then running above should serve the `src/docs/`, it should automatically open a browser pointing to localhost:8082
 
 ---
 

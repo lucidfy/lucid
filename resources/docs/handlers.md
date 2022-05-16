@@ -77,8 +77,8 @@ func Welcome(T engines.EngineContract) *errors.AppError {
         "title": "Lucid Rocks!",
     }
 
-    // here, we're checking if the request wanted a json response
-    // we're going to pass the
+    // here, we're checking if the request wants a json response
+    // we then pass the above data as a json, with StatusOK (200)
     if request.WantsJson() {
         return response.Json(data, http.StatusOK)
     }

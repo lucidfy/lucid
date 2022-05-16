@@ -1,7 +1,7 @@
 # Cookie
 
 - [# Basics](#-basics)
-- [# Given Functions](#-given-functions)
+- [# API](#-api)
   - [# CreateSessionCookie](#-createsessioncookie)
   - [# Set](#-set)
   - [# Get](#-get)
@@ -31,9 +31,9 @@ if err != nil && errors.Is(err, http.ErrNoCookie) {
 
 The code above, we're checking if there is existing cookie from the http request header, if the error contains `http.ErrNoCookie`, then we need to call `CreateSessionCookie()` to generate the `lucid_session`.
 
-{#-given-functions}
+{#-api}
 
-## [#](#-given-functions) Given Functions
+## [#](#-api) API
 
 Here are the lists of functions available with their sample
 
