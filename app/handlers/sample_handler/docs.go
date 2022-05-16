@@ -62,17 +62,8 @@ func Docs(T engines.EngineContract) *errors.AppError {
 		asHtml = *php.FileGetContents(string(d))
 	}
 
-	data := map[string]interface{}{
+	return res.Json(map[string]interface{}{
 		"title":   strings.Title(strcase.ToDelimited(title, ' ')),
 		"content": string(asHtml),
-	}
-
-	if req.WantsJson() {
-		return res.Json(data, http.StatusOK)
-	}
-
-	return res.View(
-		[]string{"base", "docs"},
-		data,
-	)
+	}, http.StatusOK)
 }
