@@ -22,15 +22,16 @@ type Method []string
 type Resources map[string]Handler
 type Handler func(engines.EngineContract) *errors.AppError
 type Routing struct {
-	Name        string
-	Path        string
-	Prefix      bool
-	Method      []string
-	Queries     Queries
-	Handler     Handler
-	Resources   map[string]Handler
-	Middlewares []string
-	Static      string
+	Name                 string
+	Path                 string
+	Prefix               bool
+	Method               []string
+	Queries              Queries
+	Handler              Handler
+	Resources            map[string]Handler
+	Middlewares          []string
+	Static               string
+	WithGlobalMiddleware interface{}
 }
 
 // helpers

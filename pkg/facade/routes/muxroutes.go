@@ -26,9 +26,6 @@ func Mux() MuxRoutes {
 // we're using gorilla/mux package to serve our routing with
 // extensive support with http requests + middlewares.
 func (mr MuxRoutes) Register(base *[]Routing) interface{} {
-	// Register the global middlewares
-	mr.routeUse(app.GlobalMiddleware...)
-
 	// each routing should be interpreted as subrouter
 	// the subrouter in mux isolates each path with
 	// a way to register a repetitive middlewares
@@ -85,6 +82,10 @@ func (mr MuxRoutes) register(route Routing) {
 			Methods(getMethods(route.Method)...).
 			Queries(route.Queries...).
 			Name(route.Name)
+	}
+
+	if route.WithGlobalMiddleware == nil || route.WithGlobalMiddleware == true {
+		mr.routeUse(app.GlobalMiddleware...)
 	}
 
 	for _, v := range route.Middlewares {
