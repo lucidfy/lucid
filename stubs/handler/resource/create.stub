@@ -11,7 +11,7 @@ import (
 	"github.com/lucidfy/lucid/pkg/facade/session"
 )
 
-func Create(T engines.EngineContract) *errors.AppError {
+func create(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	w := engine.ResponseWriter
 	r := engine.HttpRequest
@@ -43,7 +43,7 @@ func Create(T engines.EngineContract) *errors.AppError {
 	)
 }
 
-func Store(T engines.EngineContract) *errors.AppError {
+func store(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	w := engine.ResponseWriter
 	r := engine.HttpRequest
@@ -71,9 +71,9 @@ func Store(T engines.EngineContract) *errors.AppError {
 	status := http.StatusOK
 
 	//> create user based on all request inputs
-	data, appErr := ##SMALL_CASE_NAME##.Create(req.All())
-	if appErr != nil {
-		return appErr
+	data, app_err := ##SMALL_CASE_NAME##.Create(req.All())
+	if app_err != nil {
+		return app_err
 	}
 
 	//> for api based

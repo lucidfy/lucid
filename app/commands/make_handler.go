@@ -50,7 +50,7 @@ func (cc *MakeHandlerCommand) Handle(c *cli.Context) error {
 
 func (cc *MakeHandlerCommand) Generate(name string) error {
 	files := map[string]string{
-		path.Load().HandlersPath(strcase.ToSnake(name) + ".go"): "stubs/handler/single.stub",
+		path.Load().HandlersPath("single_handler/" + strcase.ToSnake(name) + ".go"): "stubs/handler/single.stub",
 	}
 
 	fmt.Println("Created handler, located at:")
@@ -66,12 +66,12 @@ func (cc *MakeHandlerCommand) Generate(name string) error {
 		content := string(stubContent)
 		content = strings.Replace(content, "##CAMEL_CASE_NAME##", strcase.ToCamel(name), -1)
 		content = strings.Replace(content, "##SNAKE_CASE_NAME##", strcase.ToSnake(name), -1)
+		content = strings.Replace(content, "##KEBAB_CASE_NAME##", strcase.ToKebab(name), -1)
 
 		//> create a file and write the content
-		err = php.FilePutContents(orig, content, 0755)
-
-		if err != nil {
-			return err
+		app_err := php.FilePutContents(orig, content, 0755)
+		if app_err != nil {
+			return app_err.Error
 		}
 
 		fmt.Printf(" > %s\n", orig)
@@ -79,19 +79,25 @@ func (cc *MakeHandlerCommand) Generate(name string) error {
 
 	fmt.Println("\nGo to registrar/routes.go and paste this:")
 	fmt.Println()
+	fmt.Println()
 	fmt.Println("    var Routes = &[]routes.Routing{")
 	fmt.Println("    	...,")
-	fmt.Printf(`        {
-		Path:    "/%s",
-		Name:    "%s",
-		Method:  routes.Method{"GET"}, // defaulting to "GET"
-		Handler: handlers.%s,
-	},`,
-		strcase.ToKebab(name),
-		strcase.ToKebab(name),
-		strcase.ToCamel(name),
-	)
-	fmt.Println("\n    }")
+	fmt.Printf("       single_handler.%sRoute,\n", strcase.ToCamel(name))
+	fmt.Println("    }")
+
+	// fmt.Println("    var Routes = &[]routes.Routing{")
+	// fmt.Println("    	...,")
+	// fmt.Printf(`        {
+	// 	Path:    "/%s",
+	// 	Name:    "%s",
+	// 	Method:  routes.Method{"GET"}, // defaulting to "GET"
+	// 	Handler: handlers.%s,
+	// },`,
+	// 	strcase.ToKebab(name),
+	// 	strcase.ToKebab(name),
+	// 	strcase.ToCamel(name),
+	// )
+	// fmt.Println("\n    }")
 
 	return nil
 }

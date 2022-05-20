@@ -6,7 +6,7 @@ var RouteResource = routes.Routing{
 	Path: "/auth/login",
 	Name: "auth-login",
 	Resources: routes.Resources{
-		"index": User,         //  GET    /auth/login
-		"store": LoginAttempt, //  POST   /auth/login
+		"index": user,          //  GET    /auth/login
+		"store": login_attempt, //  POST   /auth/login
 	},
 }

@@ -12,7 +12,7 @@ import (
 	"github.com/lucidfy/lucid/pkg/facade/session"
 )
 
-func Show(T engines.EngineContract) *errors.AppError {
+func show(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	w := engine.ResponseWriter
 	r := engine.HttpRequest
@@ -22,13 +22,13 @@ func Show(T engines.EngineContract) *errors.AppError {
 	url := engine.Url
 
 	id := req.Input("id", nil).(string)
-	if appErr := users.Exists("id", &id); appErr != nil {
-		return appErr
+	if app_err := users.Exists("id", &id); app_err != nil {
+		return app_err
 	}
 
-	data, appErr := users.Find(&id, nil)
-	if appErr != nil {
-		return appErr
+	data, app_err := users.Find(&id, nil)
+	if app_err != nil {
+		return app_err
 	}
 
 	record := data.Model
@@ -42,7 +42,7 @@ func Show(T engines.EngineContract) *errors.AppError {
 	}
 
 	respData := map[string]interface{}{
-		"title":          record.Name + "'s Profile",
+		"title":          record.Name + "'s Info",
 		"previousUrl":    url.PreviousUrl(),
 		"record":         record,
 		"isShow":         isShow,
@@ -64,7 +64,7 @@ func Show(T engines.EngineContract) *errors.AppError {
 	)
 }
 
-func Update(T engines.EngineContract) *errors.AppError {
+func update(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	w := engine.ResponseWriter
 	r := engine.HttpRequest
@@ -77,9 +77,9 @@ func Update(T engines.EngineContract) *errors.AppError {
 	status := http.StatusOK
 
 	id := req.Input("id", nil).(string)
-	data, appErr := users.Find(&id, nil)
-	if appErr != nil {
-		return appErr
+	data, app_err := users.Find(&id, nil)
+	if app_err != nil {
+		return app_err
 	}
 	data.Updates(req.All())
 
@@ -93,5 +93,4 @@ func Update(T engines.EngineContract) *errors.AppError {
 	//> for form based, just redirect
 	ses.SetFlash("success", message)
 	return url.RedirectPrevious()
-	return nil
 }

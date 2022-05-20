@@ -9,7 +9,7 @@ import (
 	"github.com/lucidfy/lucid/pkg/facade/session"
 )
 
-func Delete(T engines.EngineContract) *errors.AppError {
+func delete(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	w := engine.ResponseWriter
 	r := engine.HttpRequest
@@ -24,14 +24,14 @@ func Delete(T engines.EngineContract) *errors.AppError {
 
 	//> validate "id" if exists
 	id := req.Input("id", nil).(string)
-	if err := users.Exists("id", &id); err != nil {
-		return err
+	if app_err := users.Exists("id", &id); app_err != nil {
+		return app_err
 	}
 
 	//> now get the data
-	data, err := users.Find(&id, nil)
-	if err != nil {
-		return err
+	data, app_err := users.Find(&id, nil)
+	if app_err != nil {
+		return app_err
 	}
 
 	//> and delete the data

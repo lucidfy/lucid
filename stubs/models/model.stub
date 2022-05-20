@@ -14,22 +14,22 @@ import (
 	sq "github.com/Masterminds/squirrel"
 )
 
-func Lists(st *searchable.Table) error {
+func Lists(st *searchable.Table) *errors.AppError {
 	db := databases.Resolve()
 
 	// fetch counts
 	var total int
 	countStmt, countArgs, err := st.QueryCount(Table).ToSql()
-	if errors.Handler("error fetching count", err) {
-		panic(err)
+	if err != nil {
+		return errors.InternalServerError("st.QueryCount() error", err)
 	}
 	db.Raw(countStmt, countArgs...).Scan(&total)
 
 	// fetch the data
 	var records []Model
 	selectStmt, selectArgs, err := st.QuerySelect(Table).ToSql()
-	if errors.Handler("error fetching data", err) {
-		panic(err)
+	if err != nil {
+		return errors.InternalServerError("st.QuerySelect() error", err)
 	}
 	db.Raw(selectStmt, selectArgs...).Scan(&records)
 
@@ -69,11 +69,11 @@ func Create(i interface{}) (*Finder, *errors.AppError) {
 	db := databases.Resolve()
 
 	// here, we call the sanitizer function
-	i, appErr := sanitize(i)
+	i, app_err := sanitize(i)
 	inputs := i.(map[string]interface{})
 
-	if appErr != nil {
-		return nil, appErr
+	if app_err != nil {
+		return nil, app_err
 	}
 
 	// here, we validate if the email existence is present
@@ -140,11 +140,11 @@ func (f *Finder) Updates(i interface{}) *errors.AppError {
 	db := databases.Resolve()
 
 	// here, we call the sanitizer function
-	i, appErr := sanitize(i)
+	i, app_err := sanitize(i)
 	inputs := i.(map[string]interface{})
 
-	if appErr != nil {
-		return appErr
+	if app_err != nil {
+		return app_err
 	}
 
 	// here, we can safely update the inputs
@@ -173,14 +173,10 @@ func sanitize(i interface{}) (interface{}, *errors.AppError) {
 	if pw, ok := inputs["password"]; ok {
 		password := pw.(string)
 		if len(password) > 0 {
-			hashed, err := hash.Make(password)
+			hashed, app_err := hash.Make(password)
 			inputs["password"] = hashed
-			if err != nil {
-				return inputs, &errors.AppError{
-					Error:   fmt.Errorf("app.models.##PACKAGE_NAME##.model@sanitize: crypt.Encrypt(): throws an error %s", err),
-					Message: "Encrypting password seems not possible",
-					Code:    http.StatusInternalServerError,
-				}
+			if app_err != nil {
+				return inputs, app_err
 			}
 		}
 	}

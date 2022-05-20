@@ -2,13 +2,13 @@ package users_handler
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/gorilla/csrf"
 	"github.com/lucidfy/lucid/app/models/users"
 	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/errors"
 	"github.com/lucidfy/lucid/pkg/facade/session"
+	"github.com/lucidfy/lucid/pkg/helpers"
 	"github.com/lucidfy/lucid/pkg/paginate/searchable"
 )
 
@@ -17,7 +17,7 @@ const PER_PAGE = "5"
 const SORT_COLUMN = "id"
 const SORT_TYPE = "desc"
 
-func Lists(T engines.EngineContract) *errors.AppError {
+func lists(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	w := engine.ResponseWriter
 	r := engine.HttpRequest
@@ -26,15 +26,15 @@ func Lists(T engines.EngineContract) *errors.AppError {
 	res := engine.Response
 
 	//> prepare the searchable structure
-	searchable, err := prepare(T)
-	if errors.Handler("error preparing searchable table", err) {
-		return &errors.AppError{Error: err, Message: "error preparing searchable table", Code: http.StatusInternalServerError}
+	searchable, app_err := prepare(T)
+	if app_err != nil {
+		return app_err
 	}
 
 	//> fetch the searchable
-	err = users.Lists(searchable)
-	if errors.Handler("error fetching users list", err) {
-		return &errors.AppError{Error: err, Message: "error fetching users list", Code: http.StatusInternalServerError}
+	app_err = users.Lists(searchable)
+	if app_err != nil {
+		return app_err
 	}
 
 	data := map[string]interface{}{
@@ -62,24 +62,26 @@ func Lists(T engines.EngineContract) *errors.AppError {
 	)
 }
 
-func prepare(T engines.EngineContract) (*searchable.Table, error) {
+func prepare(T engines.EngineContract) (*searchable.Table, *errors.AppError) {
 	engine := T.(engines.MuxEngine)
 	req := engine.Request
 	url := engine.Url
 
 	//> get the current "page", literally the default of each current page should always be 1
-	currentPage, err := strconv.Atoi(req.Input("page", PAGE).(string))
-	if err != nil {
-		return nil, err
+	currentPage, app_err := helpers.StringToInt(req.Input("page", PAGE).(string))
+	if app_err != nil {
+		return nil, app_err
 	}
 
 	//> get the "per-page", though the default will be relying to defaultPerPage
 	//> then check if the per page reaches the cap of 20 records per page
 	//> if ever someone tries to bypass the value, we over-write it to 20
-	perPage, err := strconv.Atoi(req.Input("per-page", PER_PAGE).(string))
-	if err != nil {
-		return nil, err
+	perPage, app_err := helpers.StringToInt(req.Input("per-page", PER_PAGE).(string))
+
+	if app_err != nil {
+		return nil, app_err
 	}
+
 	if perPage > 20 {
 		perPage = 20
 	}

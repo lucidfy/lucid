@@ -6,12 +6,12 @@ var RouteResource = routes.Routing{
 	Path: "/##KEBAB_CASE_NAME##",
 	Name: "##KEBAB_CASE_NAME##",
 	Resources: routes.Resources{
-		"index":   Lists,  //  GET    /##SMALL_CASE_NAME##
-		"create":  Create, //  GET    /##SMALL_CASE_NAME##/create
-		"store":   Store,  //  POST   /##SMALL_CASE_NAME##
-		"show":    Show,   //  GET    /##SMALL_CASE_NAME##/{id}
-		"edit":    Show,   //  GET    /##SMALL_CASE_NAME##/{id}/edit
-		"update":  Update, //  PUT    /##SMALL_CASE_NAME##/{id}, POST /##SMALL_CASE_NAME##/{id}/update
-		"destroy": Delete, //  DELETE /##SMALL_CASE_NAME##/{id}, POST /##SMALL_CASE_NAME##/{id}/delete
+		"index":   lists,  //  GET    /##SMALL_CASE_NAME##
+		"create":  create, //  GET    /##SMALL_CASE_NAME##/create
+		"store":   store,  //  POST   /##SMALL_CASE_NAME##
+		"show":    show,   //  GET    /##SMALL_CASE_NAME##/{id}
+		"edit":    show,   //  GET    /##SMALL_CASE_NAME##/{id}/edit
+		"update":  update, //  PUT    /##SMALL_CASE_NAME##/{id}, POST /##SMALL_CASE_NAME##/{id}/update
+		"destroy": delete, //  DELETE /##SMALL_CASE_NAME##/{id}, POST /##SMALL_CASE_NAME##/{id}/delete
 	},
 }

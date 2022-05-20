@@ -3,10 +3,11 @@ package cookie
 import (
 	"net/http"
 	"os"
-	"strconv"
 
 	"github.com/golang-module/carbon"
+	"github.com/lucidfy/lucid/pkg/errors"
 	"github.com/lucidfy/lucid/pkg/facade/crypt"
+	"github.com/lucidfy/lucid/pkg/helpers"
 )
 
 type MuxCookie struct {
@@ -29,10 +30,10 @@ func (s *MuxCookie) CreateSessionCookie() interface{} {
 	return sessionKey
 }
 
-func (s *MuxCookie) Set(name string, value interface{}) (bool, error) {
+func (s *MuxCookie) Set(name string, value interface{}) (bool, *errors.AppError) {
 	encoded, err := crypt.Encrypt(value)
 	if err == nil {
-		lifetime, err := strconv.Atoi(os.Getenv("SESSION_LIFETIME"))
+		lifetime, err := helpers.StringToInt(os.Getenv("SESSION_LIFETIME"))
 		if err != nil {
 			return false, err
 		}
@@ -51,19 +52,19 @@ func (s *MuxCookie) Set(name string, value interface{}) (bool, error) {
 	return false, err
 }
 
-func (s *MuxCookie) Get(name string) (interface{}, error) {
+func (s *MuxCookie) Get(name string) (interface{}, *errors.AppError) {
 	if s.HttpRequest == nil {
 		return nil, nil
 	}
 
 	cookie, err := s.HttpRequest.Cookie(name)
 	if err != nil {
-		return nil, err
+		return nil, errors.InternalServerError("s.HttpRequest.Cookie() error", err)
 	}
 
-	decoded, err := crypt.Decrypt(cookie.Value)
-	if err != nil {
-		return nil, err
+	decoded, app_err := crypt.Decrypt(cookie.Value)
+	if app_err != nil {
+		return nil, app_err
 	}
 
 	return decoded, nil

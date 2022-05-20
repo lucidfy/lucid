@@ -176,25 +176,25 @@ func (t *MuxRequest) GetUserAgent() string {
 }
 
 // GetFileByName returns the first file for the provided form key.
-func (t *MuxRequest) GetFileByName(name string) (*multipart.FileHeader, error) {
+func (t *MuxRequest) GetFileByName(name string) (*multipart.FileHeader, *errors.AppError) {
 	if t.HttpRequest.MultipartForm == nil {
 		if err := t.HttpRequest.ParseMultipartForm(t.MaxMultipartMemory); err != nil {
-			return nil, err
+			return nil, errors.InternalServerError("t.HttpRequest.ParseMultipartForm() error", err)
 		}
 	}
+
 	f, fh, err := t.HttpRequest.FormFile(name)
 	if err != nil {
-		return nil, err
+		return nil, errors.InternalServerError("t.HttpRequest.FormFile() error", err)
 	}
+
 	err = f.Close()
-	if err != nil {
-		return nil, err
-	}
-	return fh, err
+
+	return fh, errors.InternalServerError("f.Close() error", err)
 }
 
 // GetFiles is the parsed multipart form files
-func (t *MuxRequest) GetFiles() (map[string][]*multipart.FileHeader, error) {
+func (t *MuxRequest) GetFiles() (map[string][]*multipart.FileHeader, *errors.AppError) {
 	err := t.HttpRequest.ParseMultipartForm(t.MaxMultipartMemory)
-	return t.HttpRequest.MultipartForm.File, err
+	return t.HttpRequest.MultipartForm.File, errors.InternalServerError("t.HttpRequest.ParseMultipartForm() error", err)
 }

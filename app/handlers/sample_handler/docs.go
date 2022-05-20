@@ -19,10 +19,10 @@ var DocsRoute = routes.Routing{
 	Prefix:  true,
 	Name:    "docs",
 	Method:  routes.Method{"GET"},
-	Handler: Docs,
+	Handler: docs,
 }
 
-func Docs(T engines.EngineContract) *errors.AppError {
+func docs(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	r := engine.HttpRequest
 	req := engine.Request

@@ -5,6 +5,7 @@ import (
 	"mime/multipart"
 	"os"
 
+	"github.com/lucidfy/lucid/pkg/errors"
 	"github.com/lucidfy/lucid/pkg/facade/path"
 )
 
@@ -18,27 +19,28 @@ func NewLocalStorage() *LocalStorage {
 	}
 }
 
-func (s *LocalStorage) Get(path string) (multipart.File, error) {
-	return os.Open(s.basePath + "/" + path)
+func (s *LocalStorage) Get(path string) (multipart.File, *errors.AppError) {
+	f, err := os.Open(s.basePath + "/" + path)
+	return f, errors.InternalServerError("os.Open() error", err)
 }
 
-func (s *LocalStorage) Put(path string, file *multipart.FileHeader) error {
-
+func (s *LocalStorage) Put(path string, file *multipart.FileHeader) *errors.AppError {
 	src, err := file.Open()
-
 	if err != nil {
-		return err
+		return errors.InternalServerError("file.Open() error", err)
 	}
+
 	defer src.Close()
 
 	out, err := os.Create(s.basePath + "/" + path)
 	if err != nil {
-		return err
+		return errors.InternalServerError("os.Create() error", err)
 	}
+
 	defer out.Close()
 
 	_, err = io.Copy(out, src)
-	return err
+	return errors.InternalServerError("os.Copy() error", err)
 }
 
 // Exists check if file exists
@@ -63,8 +65,9 @@ func (s *LocalStorage) Size(path string) int64 {
 }
 
 // Delete file
-func (s *LocalStorage) Delete(path string) error {
-	return os.Remove(s.basePath + "/" + path)
+func (s *LocalStorage) Delete(path string) *errors.AppError {
+	err := os.Remove(s.basePath + "/" + path)
+	return errors.InternalServerError("os.Remove() error", err)
 }
 
 // Path get file path

@@ -1,13 +1,21 @@
-package handlers
+package single_handler
 
 import (
 	"net/http"
 
 	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/errors"
+	"github.com/lucidfy/lucid/pkg/facade/routes"
 )
 
-func ##CAMEL_CASE_NAME##(T engines.EngineContract) *errors.AppError {
+var ##CAMEL_CASE_NAME##Route = routes.Routing{
+	Path:    "/##KEBAB_CASE_NAME##",
+	Name:    "##KEBAB_CASE_NAME##",
+	Method:  routes.Method{"GET"},
+	Handler: ##SNAKE_CASE_NAME##,
+}
+
+func ##SNAKE_CASE_NAME##(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	// w := engine.ResponseWriter
 	// r := engine.HttpRequest

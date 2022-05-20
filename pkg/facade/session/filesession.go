@@ -2,12 +2,13 @@ package session
 
 import (
 	"encoding/json"
-	"errors"
+	e "errors"
 	"fmt"
 	"net/http"
 	"os"
 
 	"github.com/golang-module/carbon"
+	"github.com/lucidfy/lucid/pkg/errors"
 	"github.com/lucidfy/lucid/pkg/facade/cookie"
 	"github.com/lucidfy/lucid/pkg/facade/crypt"
 	"github.com/lucidfy/lucid/pkg/facade/path"
@@ -22,8 +23,8 @@ type FileSession struct {
 
 func File(w http.ResponseWriter, r *http.Request) *FileSession {
 	coo := cookie.New(w, r)
-	sessionKey, err := coo.Get(os.Getenv("SESSION_NAME"))
-	if err != nil && errors.Is(err, http.ErrNoCookie) {
+	sessionKey, app_err := coo.Get(os.Getenv("SESSION_NAME"))
+	if app_err != nil && e.Is(app_err.Error, http.ErrNoCookie) {
 		return &FileSession{}
 	}
 	s := FileSession{
@@ -45,17 +46,17 @@ func (s *FileSession) initializeFile(filepath string) string {
 	return filepath
 }
 
-func (s *FileSession) updateContent(content interface{}) error {
+func (s *FileSession) updateContent(content interface{}) *errors.AppError {
 	filepath := s.getSessionFile()
-	if err := php.FilePutContents(filepath, content, 0644); err != nil {
-		return err
+	if app_err := php.FilePutContents(filepath, content, 0644); app_err != nil {
+		return app_err
 	}
 	return nil
 }
 
-func (s *FileSession) Set(name string, value interface{}) (bool, error) {
+func (s *FileSession) Set(name string, value interface{}) (bool, *errors.AppError) {
 	if s.SessionKey == nil {
-		return false, fmt.Errorf("session [%s] does not exists", name)
+		return false, errors.InternalServerError("s.SessionKey error", fmt.Errorf("session [%s] does not exists", name))
 	}
 
 	filepath := s.initializeFile(s.getSessionFile())
@@ -71,9 +72,9 @@ func (s *FileSession) Set(name string, value interface{}) (bool, error) {
 	return true, nil
 }
 
-func (s *FileSession) Get(name string) (interface{}, error) {
+func (s *FileSession) Get(name string) (interface{}, *errors.AppError) {
 	if s.SessionKey == nil {
-		return nil, fmt.Errorf("session [%s] does not exists", name)
+		return nil, errors.InternalServerError("s.SessionKey error", fmt.Errorf("session [%s] does not exists", name))
 	}
 
 	filepath := s.initializeFile(s.getSessionFile())
@@ -87,12 +88,12 @@ func (s *FileSession) Get(name string) (interface{}, error) {
 		return value, nil
 	}
 
-	return nil, fmt.Errorf("session [%s] does not exists", name)
+	return nil, errors.InternalServerError("s.SessionKey error", fmt.Errorf("session [%s] does not exists", name))
 }
 
-func (s *FileSession) Destroy(name string) (interface{}, error) {
+func (s *FileSession) Destroy(name string) (interface{}, *errors.AppError) {
 	if s.SessionKey == nil {
-		return nil, fmt.Errorf("session [%s] does not exists", name)
+		return nil, errors.InternalServerError("s.SessionKey error", fmt.Errorf("session [%s] does not exists", name))
 	}
 
 	filepath := s.initializeFile(s.getSessionFile())

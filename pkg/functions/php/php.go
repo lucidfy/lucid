@@ -2,27 +2,30 @@ package php
 
 import (
 	"encoding/json"
-	"errors"
+	e "errors"
 	"io/fs"
 	"io/ioutil"
 	"os"
 	"reflect"
 
+	"github.com/lucidfy/lucid/pkg/errors"
 	"github.com/lucidfy/lucid/pkg/facade/logger"
 )
 
 // Mkdir
 // php equivalent https://www.php.net/manual/en/function.mkdir.php
-func Mkdir(filename string, mode fs.FileMode, recursive bool) error {
+func Mkdir(filename string, mode fs.FileMode, recursive bool) *errors.AppError {
 	if recursive {
-		return os.MkdirAll(filename, mode)
+		err := os.MkdirAll(filename, mode)
+		return errors.InternalServerError("os.MkdirAll() error", err)
 	}
-	return os.Mkdir(filename, mode)
+	err := os.Mkdir(filename, mode)
+	return errors.InternalServerError("os.Mkdir() error", err)
 }
 
 // FilePutContents
 // php equivalent for https://www.php.net/manual/en/function.file-put-contents.php
-func FilePutContents(filename string, data interface{}, mode os.FileMode) error {
+func FilePutContents(filename string, data interface{}, mode os.FileMode) *errors.AppError {
 	var content string
 	switch reflect.TypeOf(data).Kind() {
 	case reflect.Map:
@@ -32,7 +35,8 @@ func FilePutContents(filename string, data interface{}, mode os.FileMode) error 
 		content = data.(string)
 	}
 
-	return ioutil.WriteFile(filename, []byte(content), mode)
+	err := ioutil.WriteFile(filename, []byte(content), mode)
+	return errors.InternalServerError("ioutil.WriteFile() error", err)
 }
 
 // FileGetContents
@@ -49,7 +53,7 @@ func FileGetContents(filename string) *[]byte {
 // FileExists
 // php equivalent for https://www.php.net/manual/en/function.file-exists.php
 func FileExists(filename string) bool {
-	if _, err := os.Stat(filename); errors.Is(err, fs.ErrNotExist) {
+	if _, err := os.Stat(filename); e.Is(err, fs.ErrNotExist) {
 		return false
 	}
 	return true

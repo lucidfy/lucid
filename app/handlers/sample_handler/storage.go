@@ -15,19 +15,19 @@ var StorageRoute = routes.Routing{
 	Path:    "/samples/storage",
 	Name:    "",
 	Method:  routes.Method{"POST"},
-	Handler: FileStorage,
+	Handler: sample_file_storage,
 }
 
-func FileStorage(T engines.EngineContract) *errors.AppError {
+func sample_file_storage(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	req := engine.Request
 	res := engine.Response
 
-	files, err := req.GetFiles()
+	files, app_err := req.GetFiles()
 
-	if err != nil {
+	if app_err != nil {
 		return res.Json(helpers.MP{
-			"error": err.Error(),
+			"error": app_err.Error,
 		}, http.StatusOK)
 	}
 
@@ -38,9 +38,9 @@ func FileStorage(T engines.EngineContract) *errors.AppError {
 	store := storage.NewLocalStorage()
 
 	for _, image := range images {
-		err := store.Put(image.Filename, image)
-		if err != nil {
-			return &errors.AppError{Code: 400, Error: err}
+		app_err := store.Put(image.Filename, image)
+		if app_err != nil {
+			continue
 		}
 
 		go logger.Info("Storage Size: ", store.Size(image.Filename))
@@ -49,9 +49,9 @@ func FileStorage(T engines.EngineContract) *errors.AppError {
 		store.Delete(image.Filename)
 	}
 
-	if err != nil {
+	if app_err != nil {
 		return res.Json(helpers.MP{
-			"error": err.Error(),
+			"error": app_err.Error,
 		}, http.StatusOK)
 	}
 

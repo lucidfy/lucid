@@ -69,14 +69,14 @@ func (cc *MakeModelCommand) Generate(name string, table string) error {
 	}
 
 	//> create the directory
-	err := php.Mkdir(
+	app_err := php.Mkdir(
 		path.Load().ModelsPath(name),
 		os.ModePerm,
 		true,
 	)
 
-	if err != nil {
-		return err
+	if app_err != nil {
+		return app_err.Error
 	}
 
 	fmt.Println("Created model, located at:")
@@ -94,10 +94,9 @@ func (cc *MakeModelCommand) Generate(name string, table string) error {
 		content = strings.Replace(content, "##PACKAGE_NAME##", table, -1)
 
 		//> create a file and write the content
-		err = php.FilePutContents(orig, content, 0755)
-
-		if err != nil {
-			return err
+		app_err := php.FilePutContents(orig, content, 0755)
+		if app_err != nil {
+			return app_err.Error
 		}
 
 		fmt.Printf(" > %s\n", orig)

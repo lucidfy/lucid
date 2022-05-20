@@ -20,7 +20,7 @@ type ResponseContract interface {
 }
 
 // render the templates as string
-func Render(filepaths []string, data interface{}) (string, error) {
+func Render(filepaths []string, data interface{}) (string, *errors.AppError) {
 	for idx, filepath := range filepaths {
 		if !strings.Contains(filepath, DEFAULT_VIEW_EXT) {
 			filepath = filepath + DEFAULT_VIEW_EXT
@@ -32,19 +32,19 @@ func Render(filepaths []string, data interface{}) (string, error) {
 	t, err := text.ParseFiles(filepaths...)
 	if err != nil {
 		logger.Fatal(err)
-		return "", err
+		return "", errors.InternalServerError("text.ParseFiles() error", err)
 	}
 
 	var tpl bytes.Buffer
 	if err = t.Execute(&tpl, data); err != nil {
 		logger.Fatal(err)
-		return "", err
+		return "", errors.InternalServerError("t.Execute() error", err)
 	}
 
 	return tpl.String(), nil
 }
 
-func HTML(filepaths []string, data interface{}) (html.HTML, error) {
+func HTML(filepaths []string, data interface{}) (html.HTML, *errors.AppError) {
 	rendered, err := Render(filepaths, data)
 	if err != nil {
 		return html.HTML(""), err

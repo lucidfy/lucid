@@ -67,10 +67,9 @@ func (cc *MakeValidationCommand) Generate(name string) error {
 		content = strings.Replace(content, "##CAMEL_CASE_NAME##", strcase.ToCamel(name), -1)
 
 		//> create a file and write the content
-		err = php.FilePutContents(orig, content, 0755)
-
-		if err != nil {
-			return err
+		app_err := php.FilePutContents(orig, content, 0755)
+		if app_err != nil {
+			return app_err.Error
 		}
 
 		fmt.Printf(" > %s\n", orig)

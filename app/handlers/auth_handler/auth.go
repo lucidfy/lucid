@@ -10,21 +10,21 @@ import (
 	"github.com/lucidfy/lucid/pkg/facade/session"
 )
 
-func User(T engines.EngineContract) *errors.AppError {
+func user(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	w := engine.ResponseWriter
 	r := engine.HttpRequest
 	ses := session.File(w, r)
 	res := engine.Response
 
-	userID, err := ses.Get("authenticated")
-	if userID != nil || err != nil {
+	userID, app_err := ses.Get("authenticated")
+	if userID != nil || app_err != nil {
 		return res.Json(map[string]interface{}{}, http.StatusOK)
 	}
 
-	data, appErr := users.Find(userID, nil)
-	if appErr != nil {
-		return appErr
+	data, app_err := users.Find(userID, nil)
+	if app_err != nil {
+		return app_err
 	}
 
 	return res.Json(map[string]interface{}{
@@ -32,7 +32,7 @@ func User(T engines.EngineContract) *errors.AppError {
 	}, http.StatusOK)
 }
 
-func LoginAttempt(T engines.EngineContract) *errors.AppError {
+func login_attempt(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	w := engine.ResponseWriter
 	r := engine.HttpRequest
@@ -44,15 +44,15 @@ func LoginAttempt(T engines.EngineContract) *errors.AppError {
 	email := req.Input("email", nil).(string)
 	password := req.Input("password", nil).(string)
 
-	if appErr := users.Exists("email", &email); appErr != nil {
-		appErr.Message = "Email or Password is incorrect!"
-		return appErr
+	if app_err := users.Exists("email", &email); app_err != nil {
+		app_err.Message = "Email or Password is incorrect!"
+		return app_err
 	}
 
-	data, appErr := users.Find(&email, "email")
-	if appErr != nil {
-		appErr.Message = "Email or Password is incorrect!"
-		return appErr
+	data, app_err := users.Find(&email, "email")
+	if app_err != nil {
+		app_err.Message = "Email or Password is incorrect!"
+		return app_err
 	}
 
 	record := data.Model

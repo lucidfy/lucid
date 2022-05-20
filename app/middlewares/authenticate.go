@@ -13,12 +13,12 @@ func AuthenticateMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ses := session.File(w, r)
 
-		_, err := ses.Get("authenticated")
-		if err != nil {
+		_, app_err := ses.Get("authenticated")
+		if app_err != nil {
 			handlers.HttpErrorHandler(engines.Mux(w, r), &errors.AppError{
 				Code:    http.StatusForbidden,
 				Message: "Forbidden!",
-				Error:   err,
+				Error:   app_err.Error,
 			})
 			return
 		}

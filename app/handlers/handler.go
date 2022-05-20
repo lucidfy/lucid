@@ -16,12 +16,12 @@ import (
 // PageNotFound > on this method, once the engine detects a page not found
 //> (404 Code) requests, it should divert back to this handler
 func PageNotFound(T engines.EngineContract) {
-	err := &errors.AppError{
+	app_err := &errors.AppError{
 		Code:    http.StatusNotFound,
 		Message: "Page not found",
 		Error:   fmt.Errorf("404 page not found"),
 	}
-	HttpErrorHandler(T, err)
+	HttpErrorHandler(T, app_err)
 }
 
 // MethodNotAllowed > on this method, once the engine detects a method not allowed
@@ -38,7 +38,7 @@ func MethodNotAllowed(T engines.EngineContract) {
 // HttpErrorHandler > on this method, we handle the any returned AppError across all handlers
 //> once we received any errors.AppError, what we actually do is to print
 //> a pretty neat html (or if the requestor wanted a json, we respond accordingly)
-func HttpErrorHandler(T engines.EngineContract, appErr *errors.AppError) {
+func HttpErrorHandler(T engines.EngineContract, app_err *errors.AppError) {
 	engine := T.(engines.MuxEngine)
 	// w := engine.HttpResponseWriter
 	// r := engine.HttpRequest
@@ -48,11 +48,11 @@ func HttpErrorHandler(T engines.EngineContract, appErr *errors.AppError) {
 	//> assign a default message and code here
 	code := 500
 	message := "Something went wrong!"
-	if appErr.Code != nil && appErr.Code.(int) != 0 {
-		code = appErr.Code.(int)
+	if app_err.Code != nil && app_err.Code.(int) != 0 {
+		code = app_err.Code.(int)
 	}
-	if appErr.Message != nil && len(appErr.Message.(string)) > 0 {
-		message = appErr.Message.(string)
+	if app_err.Message != nil && len(app_err.Message.(string)) > 0 {
+		message = app_err.Message.(string)
 	}
 
 	//> initialize the data
@@ -63,7 +63,7 @@ func HttpErrorHandler(T engines.EngineContract, appErr *errors.AppError) {
 
 	//> don't provide the real error if the debug is not true!
 	if os.Getenv("APP_DEBUG") == "true" {
-		data["error"] = appErr.Error
+		data["error"] = app_err.Error
 	}
 
 	//> write a json format

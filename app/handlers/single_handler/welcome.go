@@ -1,13 +1,21 @@
-package handlers
+package single_handler
 
 import (
 	"net/http"
 
 	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/errors"
+	"github.com/lucidfy/lucid/pkg/facade/routes"
 )
 
-func Welcome(T engines.EngineContract) *errors.AppError {
+var WelcomeRoute = routes.Routing{
+	Path:    "/",
+	Name:    "welcome",
+	Method:  routes.Method{"GET"},
+	Handler: welcome,
+}
+
+func welcome(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	// w := engine.HttpResponseWriter
 	// r := engine.HttpRequest
@@ -16,9 +24,7 @@ func Welcome(T engines.EngineContract) *errors.AppError {
 
 	// prepare the data
 	data := map[string]interface{}{
-		"title":     "Lucid Rocks! ",
-		"IpAddress": req.GetIp(),
-		"userAgent": req.GetUserAgent(),
+		"title": "Lucid Rocks!",
 	}
 
 	// this is api request

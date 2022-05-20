@@ -2,13 +2,13 @@ package ##PACKAGE_NAME##
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/gorilla/csrf"
 	"github.com/lucidfy/lucid/app/models/##SMALL_CASE_NAME##"
 	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/errors"
 	"github.com/lucidfy/lucid/pkg/facade/session"
+	"github.com/lucidfy/lucid/pkg/helpers"
 	"github.com/lucidfy/lucid/pkg/paginate/searchable"
 )
 
@@ -17,7 +17,7 @@ const PER_PAGE = "5"
 const SORT_COLUMN = "id"
 const SORT_TYPE = "desc"
 
-func Lists(T engines.EngineContract) *errors.AppError {
+func lists(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.MuxEngine)
 	w := engine.ResponseWriter
 	r := engine.HttpRequest
@@ -26,15 +26,15 @@ func Lists(T engines.EngineContract) *errors.AppError {
 	res := engine.Response
 
 	//> prepare the searchable structure
-	searchable, err := prepare(T)
-	if errors.Handler("error preparing searchable table", err) {
-		return &errors.AppError{Error: err, Message: "error preparing searchable table", Code: http.StatusInternalServerError}
+	searchable, app_err := prepare(T)
+	if app_err != nil {
+		return app_err
 	}
 
 	//> fetch the searchable
-	err = ##SMALL_CASE_NAME##.Lists(searchable)
-	if errors.Handler("error fetching ##SMALL_CASE_NAME## list", err) {
-		return &errors.AppError{Error: err, Message: "error fetching ##SMALL_CASE_NAME## list", Code: http.StatusInternalServerError}
+	app_err = ##SMALL_CASE_NAME##.Lists(searchable)
+	if app_err != nil {
+		return app_err
 	}
 
 	data := map[string]interface{}{
@@ -62,24 +62,26 @@ func Lists(T engines.EngineContract) *errors.AppError {
 	)
 }
 
-func prepare(T engines.EngineContract) (*searchable.Table, error) {
+func prepare(T engines.EngineContract) (*searchable.Table, *errors.AppError) {
 	engine := T.(engines.MuxEngine)
 	req := engine.Request
 	url := engine.Url
 
 	//> get the current "page", literally the default of each current page should always be 1
-	currentPage, err := strconv.Atoi(req.Input("page", PAGE).(string))
-	if err != nil {
-		return nil, err
+	currentPage, app_err := helpers.StringToInt(req.Input("page", PAGE).(string))
+	if app_err != nil {
+		return nil, app_err
 	}
 
 	//> get the "per-page", though the default will be relying to defaultPerPage
 	//> then check if the per page reaches the cap of 20 records per page
 	//> if ever someone tries to bypass the value, we over-write it to 20
-	perPage, err := strconv.Atoi(req.Input("per-page", PER_PAGE).(string))
-	if err != nil {
-		return nil, err
+	perPage, app_err := helpers.StringToInt(req.Input("per-page", PER_PAGE).(string))
+
+	if app_err != nil {
+		return nil, app_err
 	}
+
 	if perPage > 20 {
 		perPage = 20
 	}
@@ -105,36 +107,25 @@ func table(T engines.EngineContract, st *searchable.Table) *searchable.Table {
 
 	st.Headers = []searchable.Header{
 		{
-			Name: "column1",
+			Name: "name",
 			Input: searchable.Input{
 				Visible:       true,
 				Placeholder:   "Name*",
-				Value:         req.Input("search[column1]", "").(string),
+				Value:         req.Input("search[name]", "").(string),
 				CanSearch:     true,
-				SearchColumn:  []string{"column1"},
+				SearchColumn:  []string{"name"},
 				SearchPattern: "->",
 			},
 		},
 		{
-			Name: "column2",
+			Name: "email",
 			Input: searchable.Input{
 				Visible:       true,
 				Placeholder:   "Email",
-				Value:         req.Input("search[column2]", "").(string),
+				Value:         req.Input("search[email]", "").(string),
 				CanSearch:     true,
-				SearchColumn:  []string{"column2"},
+				SearchColumn:  []string{"email"},
 				SearchPattern: "-",
-			},
-		},
-		{
-			Name: "column3",
-			Input: searchable.Input{
-				Visible:       true,
-				Placeholder:   "Email",
-				Value:         req.Input("search[column3]", "").(string),
-				CanSearch:     true,
-				SearchColumn:  []string{"column3"},
-				SearchPattern: "<-",
 			},
 		},
 		{
@@ -160,7 +151,7 @@ func table(T engines.EngineContract, st *searchable.Table) *searchable.Table {
 				Placeholder:   "*Search*",
 				Value:         req.Input("search", "").(string),
 				CanSearch:     true,
-				SearchColumn:  []string{"column1", "column2", "column3"},
+				SearchColumn:  []string{"email", "name"},
 				SearchPattern: "<->",
 			},
 		},
