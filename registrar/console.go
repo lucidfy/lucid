@@ -29,4 +29,5 @@ var Commands = &[]*cli.Command{
 	commands.MakeResource().Command,
 	commands.MakeModel().Command,
 	commands.MakeValidation().Command,
+	commands.Migrate().Command,
 }

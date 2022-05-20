@@ -85,19 +85,5 @@ func (cc *MakeHandlerCommand) Generate(name string) error {
 	fmt.Printf("       single_handler.%sRoute,\n", strcase.ToCamel(name))
 	fmt.Println("    }")
 
-	// fmt.Println("    var Routes = &[]routes.Routing{")
-	// fmt.Println("    	...,")
-	// fmt.Printf(`        {
-	// 	Path:    "/%s",
-	// 	Name:    "%s",
-	// 	Method:  routes.Method{"GET"}, // defaulting to "GET"
-	// 	Handler: handlers.%s,
-	// },`,
-	// 	strcase.ToKebab(name),
-	// 	strcase.ToKebab(name),
-	// 	strcase.ToCamel(name),
-	// )
-	// fmt.Println("\n    }")
-
 	return nil
 }
