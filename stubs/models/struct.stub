@@ -1,7 +1,6 @@
 package ##PACKAGE_NAME##
 
 import (
-	"database/sql"
 	"time"
 
 	"github.com/golang-module/carbon"
@@ -15,12 +14,12 @@ var Updatables = []string{
 }
 
 type Model struct {
-	ID              uint           `gorm:"primarykey;auto_increment;not_null" json:"id"`
+	ID uint `gorm:"primarykey;auto_increment;not_null" json:"id"`
 
 	// add your columns here...
 
-	CreatedAt       time.Time      `gorm:"column:created_at" json:"created_at"`
-	UpdatedAt       time.Time      `gorm:"column:updated_at" json:"updated_at"`
+	CreatedAt time.Time `gorm:"column:created_at" json:"created_at"`
+	UpdatedAt time.Time `gorm:"column:updated_at" json:"updated_at"`
 }
 
 func (Model) TableName() string { // https://gorm.io/docs/conventions.html#TableName

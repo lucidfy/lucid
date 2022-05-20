@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/iancoleman/strcase"
 	"github.com/lucidfy/lucid/pkg/facade/path"
 	"github.com/lucidfy/lucid/pkg/functions/php"
 	cli "github.com/urfave/cli/v2"
@@ -62,15 +63,16 @@ func (cc *MakeModelCommand) Handle(c *cli.Context) error {
 }
 
 func (cc *MakeModelCommand) Generate(name string, table string) error {
+	folder := strcase.ToSnake(name)
 	files := map[string]string{
-		path.Load().ModelsPath(name + "/model_test.go"): "stubs/models/model_test.stub",
-		path.Load().ModelsPath(name + "/model.go"):      "stubs/models/model.stub",
-		path.Load().ModelsPath(name + "/struct.go"):     "stubs/models/struct.stub",
+		path.Load().ModelsPath(folder + "/model_test.go"): "stubs/models/model_test.stub",
+		path.Load().ModelsPath(folder + "/model.go"):      "stubs/models/model.stub",
+		path.Load().ModelsPath(folder + "/struct.go"):     "stubs/models/struct.stub",
 	}
 
 	//> create the directory
 	app_err := php.Mkdir(
-		path.Load().ModelsPath(name),
+		path.Load().ModelsPath(folder),
 		os.ModePerm,
 		true,
 	)
@@ -91,7 +93,7 @@ func (cc *MakeModelCommand) Generate(name string, table string) error {
 
 		content := string(stubContent)
 		content = strings.Replace(content, "##TABLE_NAME##", table, -1)
-		content = strings.Replace(content, "##PACKAGE_NAME##", table, -1)
+		content = strings.Replace(content, "##PACKAGE_NAME##", strcase.ToSnake(table), -1)
 
 		//> create a file and write the content
 		app_err := php.FilePutContents(orig, content, 0755)
