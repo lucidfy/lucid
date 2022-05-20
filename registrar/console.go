@@ -51,7 +51,7 @@ func migrate() *cli.Command {
 				Usage: `Show the current database`,
 			},
 			&cli.BoolFlag{
-				Name:  "auto-migrate",
+				Name:  "auto",
 				Value: false,
 				Usage: `To automatically migrate the tables / columns`,
 			},
@@ -67,7 +67,9 @@ func migrate() *cli.Command {
 			},
 		},
 		Action: func(c *cli.Context) error {
-			commands.Migrate(c, Migrations)
+			cmd := commands.MigrateCommand{Command: c, Migrations: Migrations}
+			cmd.Handle()
+
 			return nil
 		},
 	}
