@@ -1,4 +1,4 @@
-package commands
+package lucid_commands
 
 import (
 	"os"
@@ -10,30 +10,45 @@ import (
 	cli "github.com/urfave/cli/v2"
 )
 
-func DefinedRoutes(c *cli.Context, r *[]routes.Routing) error {
-	defined := defined(r)
+func RouteDefined(r *[]routes.Routing) *cli.Command {
+	return &cli.Command{
+		Name:    "route:defined",
+		Aliases: []string{"show:rd"},
+		Usage:   "Get the lists of defined routes",
+		Action: func(c *cli.Context) error {
+			defined := defined(r)
 
-	t := table.NewWriter()
-	t.SetOutputMirror(os.Stdout)
-	t.AppendHeader(table.Row{"#", "Name", "Path", "Methods", "Middlewares", "Queries"})
-	for _, routing := range defined {
-		t.AppendRow(table.Row{routing.counter, routing.name, routing.path, routing.methods, routing.middlewares, routing.queries})
+			t := table.NewWriter()
+			t.SetOutputMirror(os.Stdout)
+			t.AppendHeader(table.Row{"#", "Name", "Path", "Methods", "Middlewares", "Queries"})
+			for _, routing := range defined {
+				t.AppendRow(table.Row{routing.counter, routing.name, routing.path, routing.methods, routing.middlewares, routing.queries})
+			}
+			t.Render()
+			return nil
+		},
 	}
-	t.Render()
-	return nil
 }
 
-func RegisteredRoutes(c *cli.Context, r *[]routes.Routing) error {
-	registered := registered(r)
+func RouteRegistered(r *[]routes.Routing) *cli.Command {
+	return &cli.Command{
+		Name:    "route:registered",
+		Aliases: []string{"show:rr"},
+		Usage:   "Get the lists of registered routes",
+		Action: func(c *cli.Context) error {
 
-	t := table.NewWriter()
-	t.SetOutputMirror(os.Stdout)
-	t.AppendHeader(table.Row{"#", "Path", "Methods", "Path Regexp", "Queries", "Queries Regexp"})
-	for _, routing := range registered {
-		t.AppendRow(table.Row{routing.counter, routing.path, routing.methods, routing.pathregexp, routing.queries, routing.queriesregexp})
+			registered := registered(r)
+
+			t := table.NewWriter()
+			t.SetOutputMirror(os.Stdout)
+			t.AppendHeader(table.Row{"#", "Path", "Methods", "Path Regexp", "Queries", "Queries Regexp"})
+			for _, routing := range registered {
+				t.AppendRow(table.Row{routing.counter, routing.path, routing.methods, routing.pathregexp, routing.queries, routing.queriesregexp})
+			}
+			t.Render()
+			return nil
+		},
 	}
-	t.Render()
-	return nil
 }
 
 type Registered struct {

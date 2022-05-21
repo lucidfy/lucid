@@ -1,4 +1,4 @@
-package commands
+package lucid_commands
 
 import (
 	"fmt"
@@ -11,28 +11,28 @@ import (
 	cli "github.com/urfave/cli/v2"
 )
 
-type MakeInitCommand struct {
+type MakeHandlerCommand struct {
 	Command *cli.Command
 }
 
-func MakeInit() *MakeInitCommand {
-	var cc MakeInitCommand
+func MakeHandler() *MakeHandlerCommand {
+	var cc MakeHandlerCommand
 	cc.Command = &cli.Command{
-		Name:   "make:init",
-		Usage:  "Initializes a new crafter",
+		Name:   "make:handler",
+		Usage:  "Creates a handler file",
 		Action: cc.Handle,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  "name",
 				Value: "",
-				Usage: `The crafter name, (i.e: "middleware")`,
+				Usage: `The handler name, (i.e: "healthcheck")`,
 			},
 		},
 	}
 	return &cc
 }
 
-func (cc *MakeInitCommand) Handle(c *cli.Context) error {
+func (cc *MakeHandlerCommand) Handle(c *cli.Context) error {
 	shortcut := c.Args().First()
 	name := c.String("name")
 
@@ -40,7 +40,7 @@ func (cc *MakeInitCommand) Handle(c *cli.Context) error {
 		name = shortcut
 	} else {
 		if len(name) == 0 {
-			fmt.Println("\nPlease provide the crafter name, for example: --name middleware")
+			fmt.Println("\nPlease provide the handler name, for example: --name healthcheck")
 			return nil
 		}
 	}
@@ -48,12 +48,12 @@ func (cc *MakeInitCommand) Handle(c *cli.Context) error {
 	return cc.Generate(name)
 }
 
-func (cc *MakeInitCommand) Generate(name string) error {
+func (cc *MakeHandlerCommand) Generate(name string) error {
 	files := map[string]string{
-		path.Load().ConsolePath(strcase.ToSnake("make_"+name) + ".go"): "stubs/make_init.stub",
+		path.Load().HandlersPath("single_handler/" + strcase.ToSnake(name) + ".go"): "stubs/handler/single.stub",
 	}
 
-	fmt.Println("Created a crafter, located at:")
+	fmt.Println("Created handler, located at:")
 
 	for orig, stub := range files {
 		//> read the stub and parse it
@@ -66,10 +66,7 @@ func (cc *MakeInitCommand) Generate(name string) error {
 		content := string(stubContent)
 		content = strings.Replace(content, "##CAMEL_CASE_NAME##", strcase.ToCamel(name), -1)
 		content = strings.Replace(content, "##SNAKE_CASE_NAME##", strcase.ToSnake(name), -1)
-
-		// replace those string replacers back to their original key
-		content = strings.Replace(content, "--SNAKE_CASE_NAME--", "##SNAKE_CASE_NAME##", -1)
-		content = strings.Replace(content, "--CAMEL_CASE_NAME--", "##CAMEL_CASE_NAME##", -1)
+		content = strings.Replace(content, "##KEBAB_CASE_NAME##", strcase.ToKebab(name), -1)
 
 		//> create a file and write the content
 		app_err := php.FilePutContents(orig, content, 0755)
@@ -80,7 +77,13 @@ func (cc *MakeInitCommand) Generate(name string) error {
 		fmt.Printf(" > %s\n", orig)
 	}
 
-	fmt.Println("")
+	fmt.Println("\nGo to registrar/routes.go and paste this:")
+	fmt.Println()
+	fmt.Println()
+	fmt.Println("    var Routes = &[]routes.Routing{")
+	fmt.Println("    	...,")
+	fmt.Printf("       single_handler.%sRoute,\n", strcase.ToCamel(name))
+	fmt.Println("    }")
 
 	return nil
 }

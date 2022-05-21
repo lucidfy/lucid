@@ -1,4 +1,4 @@
-package commands
+package lucid_commands
 
 import (
 	"fmt"
@@ -11,28 +11,28 @@ import (
 	cli "github.com/urfave/cli/v2"
 )
 
-type MakeValidationCommand struct {
+type MakeInitCommand struct {
 	Command *cli.Command
 }
 
-func MakeValidation() *MakeValidationCommand {
-	var cc MakeValidationCommand
+func MakeInit() *MakeInitCommand {
+	var cc MakeInitCommand
 	cc.Command = &cli.Command{
-		Name:   "make:validation",
-		Usage:  "Creates a validation file",
+		Name:   "make:init",
+		Usage:  "Creates a new make:{custom-crafter}",
 		Action: cc.Handle,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  "name",
 				Value: "",
-				Usage: `The validation name, (i.e: "reports")`,
+				Usage: `The crafter name, (i.e: "middleware")`,
 			},
 		},
 	}
 	return &cc
 }
 
-func (cc *MakeValidationCommand) Handle(c *cli.Context) error {
+func (cc *MakeInitCommand) Handle(c *cli.Context) error {
 	shortcut := c.Args().First()
 	name := c.String("name")
 
@@ -40,7 +40,7 @@ func (cc *MakeValidationCommand) Handle(c *cli.Context) error {
 		name = shortcut
 	} else {
 		if len(name) == 0 {
-			fmt.Println("\nPlease provide the validation name, for example: --name reports")
+			fmt.Println("\nPlease provide the crafter name, for example: --name middleware")
 			return nil
 		}
 	}
@@ -48,12 +48,12 @@ func (cc *MakeValidationCommand) Handle(c *cli.Context) error {
 	return cc.Generate(name)
 }
 
-func (cc *MakeValidationCommand) Generate(name string) error {
+func (cc *MakeInitCommand) Generate(name string) error {
 	files := map[string]string{
-		path.Load().BasePath("app/validations/" + strcase.ToSnake(name) + ".go"): "stubs/validation.stub",
+		path.Load().ConsolePath(strcase.ToSnake("make_"+name) + ".go"): "stubs/make_init.stub",
 	}
 
-	fmt.Println("Created validation, located at:")
+	fmt.Println("Created a crafter, located at:")
 
 	for orig, stub := range files {
 		//> read the stub and parse it
@@ -65,6 +65,11 @@ func (cc *MakeValidationCommand) Generate(name string) error {
 
 		content := string(stubContent)
 		content = strings.Replace(content, "##CAMEL_CASE_NAME##", strcase.ToCamel(name), -1)
+		content = strings.Replace(content, "##SNAKE_CASE_NAME##", strcase.ToSnake(name), -1)
+
+		// replace those string replacers back to their original key
+		content = strings.Replace(content, "--SNAKE_CASE_NAME--", "##SNAKE_CASE_NAME##", -1)
+		content = strings.Replace(content, "--CAMEL_CASE_NAME--", "##CAMEL_CASE_NAME##", -1)
 
 		//> create a file and write the content
 		app_err := php.FilePutContents(orig, content, 0755)

@@ -5,6 +5,7 @@ import (
 
 	"github.com/lucidfy/lucid/pkg/env"
 	"github.com/lucidfy/lucid/pkg/errors"
+	"github.com/lucidfy/lucid/pkg/lucid_commands"
 	"github.com/lucidfy/lucid/registrar"
 	cli "github.com/urfave/cli/v2"
 )
@@ -12,10 +13,13 @@ import (
 func ConsoleApplication() {
 	env.LoadEnv()
 
+	cmds := lucid_commands.Commands
+	cmds = append(cmds, registrar.Commands...)
+
 	app := &cli.App{
 		Name:     "Run",
 		Usage:    "A console command runner for lucid!",
-		Commands: *registrar.Commands,
+		Commands: cmds,
 	}
 
 	err := app.Run(os.Args)

@@ -8,7 +8,6 @@ import (
 )
 
 const Table = "users"
-const PrimaryKey = "id"
 
 var Updatables = []string{
 	"name",

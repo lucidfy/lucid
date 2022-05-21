@@ -1,4 +1,4 @@
-package commands
+package lucid_commands
 
 import (
 	"database/sql"
@@ -10,6 +10,40 @@ import (
 	cli "github.com/urfave/cli/v2"
 	"gorm.io/gorm"
 )
+
+func DatabaseMigration(m []interface{}) *cli.Command {
+	return &cli.Command{
+		Name:  "migrate",
+		Usage: "To build your tables",
+		Flags: []cli.Flag{
+			&cli.BoolFlag{
+				Name:  "current-database",
+				Value: false,
+				Usage: `Show the current database`,
+			},
+			&cli.BoolFlag{
+				Name:  "auto",
+				Value: false,
+				Usage: `To automatically migrate the tables / columns`,
+			},
+			&cli.BoolFlag{
+				Name:  "up",
+				Value: false,
+				Usage: `To increment migration`,
+			},
+			&cli.BoolFlag{
+				Name:  "down",
+				Value: false,
+				Usage: `To rollback migration`,
+			},
+		},
+		Action: func(c *cli.Context) error {
+			cmd := MigrateCommand{Command: c, Migrations: m}
+			cmd.Handle()
+			return nil
+		},
+	}
+}
 
 type MigrateCommand struct {
 	Command    *cli.Context

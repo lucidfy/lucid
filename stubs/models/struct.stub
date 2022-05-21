@@ -7,7 +7,6 @@ import (
 )
 
 const Table = "##PACKAGE_NAME##"
-const PrimaryKey = "id"
 
 var Updatables = []string{
 	// add the columns you want to be updatable

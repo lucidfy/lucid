@@ -3,17 +3,9 @@ package migrations_model
 import (
 	"database/sql"
 	"time"
-
-	"github.com/golang-module/carbon"
 )
 
 const Table = "migrations"
-const PrimaryKey = "id"
-
-var Updatables = []string{
-	"migrator",
-	"sequence",
-}
 
 type Model struct {
 	ID        uint          `gorm:"primarykey;auto_increment;not_null" json:"id"`
@@ -25,12 +17,4 @@ type Model struct {
 
 func (Model) TableName() string {
 	return Table
-}
-
-func (m Model) ReadableCreatedAt() string {
-	return carbon.Time2Carbon(m.CreatedAt).ToDayDateTimeString()
-}
-
-func (m Model) ReadableUpdatedAt() string {
-	return carbon.Time2Carbon(m.UpdatedAt).ToDayDateTimeString()
 }

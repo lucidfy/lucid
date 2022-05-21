@@ -1,4 +1,4 @@
-package commands
+package lucid_commands
 
 import (
 	"fmt"
@@ -11,28 +11,28 @@ import (
 	cli "github.com/urfave/cli/v2"
 )
 
-type MakeHandlerCommand struct {
+type MakeValidationCommand struct {
 	Command *cli.Command
 }
 
-func MakeHandler() *MakeHandlerCommand {
-	var cc MakeHandlerCommand
+func MakeValidation() *MakeValidationCommand {
+	var cc MakeValidationCommand
 	cc.Command = &cli.Command{
-		Name:   "make:handler",
-		Usage:  "Creates a handler file",
+		Name:   "make:validation",
+		Usage:  "Creates a validation file",
 		Action: cc.Handle,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  "name",
 				Value: "",
-				Usage: `The handler name, (i.e: "healthcheck")`,
+				Usage: `The validation name, (i.e: "reports")`,
 			},
 		},
 	}
 	return &cc
 }
 
-func (cc *MakeHandlerCommand) Handle(c *cli.Context) error {
+func (cc *MakeValidationCommand) Handle(c *cli.Context) error {
 	shortcut := c.Args().First()
 	name := c.String("name")
 
@@ -40,7 +40,7 @@ func (cc *MakeHandlerCommand) Handle(c *cli.Context) error {
 		name = shortcut
 	} else {
 		if len(name) == 0 {
-			fmt.Println("\nPlease provide the handler name, for example: --name healthcheck")
+			fmt.Println("\nPlease provide the validation name, for example: --name reports")
 			return nil
 		}
 	}
@@ -48,12 +48,12 @@ func (cc *MakeHandlerCommand) Handle(c *cli.Context) error {
 	return cc.Generate(name)
 }
 
-func (cc *MakeHandlerCommand) Generate(name string) error {
+func (cc *MakeValidationCommand) Generate(name string) error {
 	files := map[string]string{
-		path.Load().HandlersPath("single_handler/" + strcase.ToSnake(name) + ".go"): "stubs/handler/single.stub",
+		path.Load().BasePath("app/validations/" + strcase.ToSnake(name) + ".go"): "stubs/validation.stub",
 	}
 
-	fmt.Println("Created handler, located at:")
+	fmt.Println("Created validation, located at:")
 
 	for orig, stub := range files {
 		//> read the stub and parse it
@@ -65,8 +65,6 @@ func (cc *MakeHandlerCommand) Generate(name string) error {
 
 		content := string(stubContent)
 		content = strings.Replace(content, "##CAMEL_CASE_NAME##", strcase.ToCamel(name), -1)
-		content = strings.Replace(content, "##SNAKE_CASE_NAME##", strcase.ToSnake(name), -1)
-		content = strings.Replace(content, "##KEBAB_CASE_NAME##", strcase.ToKebab(name), -1)
 
 		//> create a file and write the content
 		app_err := php.FilePutContents(orig, content, 0755)
@@ -77,13 +75,7 @@ func (cc *MakeHandlerCommand) Generate(name string) error {
 		fmt.Printf(" > %s\n", orig)
 	}
 
-	fmt.Println("\nGo to registrar/routes.go and paste this:")
-	fmt.Println()
-	fmt.Println()
-	fmt.Println("    var Routes = &[]routes.Routing{")
-	fmt.Println("    	...,")
-	fmt.Printf("       single_handler.%sRoute,\n", strcase.ToCamel(name))
-	fmt.Println("    }")
+	fmt.Println("")
 
 	return nil
 }

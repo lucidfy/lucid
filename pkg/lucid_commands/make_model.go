@@ -1,4 +1,4 @@
-package commands
+package lucid_commands
 
 import (
 	"fmt"
@@ -18,10 +18,9 @@ type MakeModelCommand struct {
 func MakeModel() *MakeModelCommand {
 	var cc MakeModelCommand
 	cc.Command = &cli.Command{
-		Name:    "make:model",
-		Aliases: []string{"m:m"},
-		Usage:   "Creates a model",
-		Action:  cc.Handle,
+		Name:   "make:model",
+		Usage:  "Creates a model",
+		Action: cc.Handle,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  "name",

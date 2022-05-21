@@ -1,4 +1,4 @@
-package commands
+package lucid_commands
 
 import (
 	"fmt"
