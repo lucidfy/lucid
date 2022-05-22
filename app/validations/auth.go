@@ -21,15 +21,21 @@ func Auth() *AuthValidator {
 	}
 }
 
+// Login, by default we will only require the email
+// and password
 func (v AuthValidator) Login() *must.SetOfRules {
 	return v.Rules
 }
 
+// SignUp, when signing up, we must append
+// the "confirm_password" and the rule must
+// match with field "password"
 func (v AuthValidator) SignUp() *must.SetOfRules {
 	sets := *v.Rules
 
 	sets["confirm_password"] = []must.Rule{
 		&must.Required{},
+		&must.Matches{TargetField: "password"},
 	}
 
 	return &sets
