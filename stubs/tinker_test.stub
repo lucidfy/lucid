@@ -1,3 +1,5 @@
+// it is intentional that we put this file inside .gitignore, if ever you're working in an organization
+// better yet to update the one inside stubs/tinker_test.stub
 package lucid
 
 import (
