@@ -1,0 +1,38 @@
+package migrations
+
+import (
+	"github.com/lucidfy/lucid/app/models/##SNAKE_CASE_NAME##"
+	"gorm.io/gorm"
+)
+
+type ##CAMEL_CASE_NAME##Migration struct{}
+
+// Auto, to migrate the table / columns automatically
+// by running `./run migrate --auto-migrate`
+func (u ##CAMEL_CASE_NAME##Migration) Auto(db *gorm.DB) (err error) {
+	err = db.AutoMigrate(&##SNAKE_CASE_NAME##.Model{})
+
+	return err
+}
+
+// Up, to increment your migration
+func (u ##CAMEL_CASE_NAME##Migration) Up(m gorm.Migrator) (err error) {
+	if !u.modelExists(m) {
+		err = m.CreateTable(&##SNAKE_CASE_NAME##.Model{})
+	}
+
+	return err
+}
+
+// Down, to drop a group of migrations
+func (u ##CAMEL_CASE_NAME##Migration) Down(m gorm.Migrator) (err error) {
+	if u.modelExists(m) {
+		err = m.DropTable(&##SNAKE_CASE_NAME##.Model{})
+	}
+
+	return err
+}
+
+func (u ##CAMEL_CASE_NAME##Migration) modelExists(m gorm.Migrator) bool {
+	return m.HasTable(&##SNAKE_CASE_NAME##.Model{})
+}

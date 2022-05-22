@@ -17,7 +17,7 @@ func (u UserMigration) Auto(db *gorm.DB) (err error) {
 
 // Up, to increment your migration
 func (u UserMigration) Up(m gorm.Migrator) (err error) {
-	if !u.model_exists(m) {
+	if !u.modelExists(m) {
 		err = m.CreateTable(&users.Model{})
 	}
 
@@ -26,13 +26,13 @@ func (u UserMigration) Up(m gorm.Migrator) (err error) {
 
 // Down, to drop a group of migrations
 func (u UserMigration) Down(m gorm.Migrator) (err error) {
-	if u.model_exists(m) {
+	if u.modelExists(m) {
 		err = m.DropTable(&users.Model{})
 	}
 
 	return err
 }
 
-func (u UserMigration) model_exists(m gorm.Migrator) bool {
+func (u UserMigration) modelExists(m gorm.Migrator) bool {
 	return m.HasTable(&users.Model{})
 }

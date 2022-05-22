@@ -6,6 +6,8 @@ require (
 	github.com/Masterminds/squirrel v1.5.2
 	github.com/dchest/uniuri v0.0.0-20200228104902-7aecb25e1fe5
 	github.com/forgoer/openssl v1.2.1
+	github.com/gofiber/adaptor/v2 v2.1.23
+	github.com/gofiber/fiber/v2 v2.33.0
 	github.com/golang-module/carbon v1.6.6
 	github.com/gomarkdown/markdown v0.0.0-20220510115730-2372b9aa33e5
 	github.com/gorilla/csrf v1.7.1
@@ -15,8 +17,13 @@ require (
 	github.com/joho/godotenv v1.4.0
 	github.com/techoner/gophp v0.2.0
 	github.com/urfave/cli/v2 v2.6.0
+	github.com/valyala/fasthttp v1.35.0
 	golang.org/x/crypto v0.0.0-20220513210258-46612604a0f9
+	gorm.io/driver/clickhouse v0.3.2
+	gorm.io/driver/mysql v1.3.3
+	gorm.io/driver/postgres v1.3.5
 	gorm.io/driver/sqlite v1.3.2
+	gorm.io/driver/sqlserver v1.3.2
 	gorm.io/gorm v1.23.5
 )
 
@@ -30,8 +37,6 @@ require (
 	github.com/gobuffalo/envy v1.10.1 // indirect
 	github.com/gobuffalo/packd v1.0.1 // indirect
 	github.com/gobuffalo/packr v1.30.1 // indirect
-	github.com/gofiber/adaptor/v2 v2.1.23 // indirect
-	github.com/gofiber/fiber/v2 v2.33.0 // indirect
 	github.com/gofiber/utils v0.1.2 // indirect
 	github.com/golang-sql/civil v0.0.0-20190719163853-cb61b32ac6fe // indirect
 	github.com/golang-sql/sqlexp v0.0.0-20170517235910-f1bb20e5a188 // indirect
@@ -57,13 +62,8 @@ require (
 	github.com/rogpeppe/go-internal v1.8.1 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.35.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	golang.org/x/sys v0.0.0-20220513210249-45d2b4557a2a // indirect
 	golang.org/x/text v0.3.7 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20220512140231-539c8e751b99 // indirect
-	gorm.io/driver/clickhouse v0.3.2 // indirect
-	gorm.io/driver/mysql v1.3.3 // indirect
-	gorm.io/driver/postgres v1.3.5 // indirect
-	gorm.io/driver/sqlserver v1.3.2 // indirect
 )

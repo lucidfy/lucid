@@ -10,4 +10,6 @@ var Commands = []*cli.Command{
 	MakeResource().Command,
 	MakeModel().Command,
 	MakeValidation().Command,
+	MakeMigrator().Command,
+	MakeTinker().Command,
 }

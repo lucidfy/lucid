@@ -1,3 +1,4 @@
 .build/
 .functions/
+tinker_test.go
 !.gitignore

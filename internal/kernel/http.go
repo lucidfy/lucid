@@ -27,25 +27,22 @@ func New() *App {
 	flag.DurationVar(&wait, "graceful-timeout", time.Second*15, "the duration for which the server gracefully wait for existing connections to finish - e.g. 15s or 1m")
 	flag.Parse()
 
-	var handler http.Handler
-
 	engine := helpers.Getenv("LUCID_ROUTER_ENGINE", "mux")
 	engine_handler, ok := registrar.Engines[engine]
 	if !ok {
 		panic(fmt.Errorf(`%s engine does not exists`, engine))
 	}
-	handler = engine_handler()
 
 	write_timeout, _ := strconv.Atoi(helpers.Getenv("LUCID_WRITE_TIMEOUT", "10"))
 	read_timeout, _ := strconv.Atoi(helpers.Getenv("LUCID_READ_TIMEOUT", "10"))
 	idle_timeout, _ := strconv.Atoi(helpers.Getenv("LUCID_IDLE_TIMEOUT", "60"))
 
 	srv := &http.Server{
-		Addr:         urls.GetAddr(),
 		WriteTimeout: time.Second * time.Duration(write_timeout),
 		ReadTimeout:  time.Second * time.Duration(read_timeout),
 		IdleTimeout:  time.Second * time.Duration(idle_timeout),
-		Handler:      handler,
+		Addr:         urls.GetAddr(),
+		Handler:      engine_handler(),
 	}
 
 	return &App{

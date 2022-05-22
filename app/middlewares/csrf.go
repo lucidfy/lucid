@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/gorilla/csrf"
+	"github.com/lucidfy/lucid/pkg/facade/request"
 )
 
 // CsrfShouldSkipMiddleware here, we determine if we should skip the csrf
@@ -12,9 +13,16 @@ import (
 // returns true, basically if the request wanted a json response
 func CsrfShouldSkipMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if IsJsonRequest(w, r) {
+		is_json := func(w http.ResponseWriter, r *http.Request) (is_json bool) {
+			rp := request.NetHttp(w, r, nil)
+			is_json = rp.IsJson() || rp.WantsJson()
+			return
+		}(w, r)
+
+		if is_json {
 			r = csrf.UnsafeSkipCheck(r)
 		}
+
 		next.ServeHTTP(w, r)
 	})
 }

@@ -1,0 +1,29 @@
+package lucid
+
+import (
+	"testing"
+
+	"github.com/lucidfy/lucid/app/models/users"
+	"github.com/lucidfy/lucid/databases"
+	"github.com/lucidfy/lucid/pkg/env"
+)
+
+func init() {
+	env.LoadEnv()
+}
+
+func TestMyThing(t *testing.T) {
+	t.Logf("Hello World!")
+}
+
+func TestDatabaseQuery(t *testing.T) {
+	stmt := `select * from users limit 10`
+	db := databases.Resolve()
+
+	var records []users.Model
+	db.Raw(stmt).Scan(&records)
+
+	for _, record := range records {
+		t.Logf("%+v", record)
+	}
+}
