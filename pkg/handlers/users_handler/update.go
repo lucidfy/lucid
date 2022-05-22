@@ -34,18 +34,18 @@ func show(T engines.EngineContract) *errors.AppError {
 	record := data.Model
 
 	//> determine which template to be provided
-	isShow := true
-	viewFile := "show"
+	is_show := true
+	view_file := "show"
 	if strings.Contains(r.URL.Path, "/edit") {
-		isShow = false
-		// viewFile = "edit"
+		is_show = false
+		// view_file = "edit"
 	}
 
 	respData := map[string]interface{}{
 		"title":          record.Name + "'s Info",
 		"previousUrl":    url.PreviousUrl(),
 		"record":         record,
-		"isShow":         isShow,
+		"isShow":         is_show,
 		csrf.TemplateTag: csrf.TemplateField(r),
 
 		"success": ses.GetFlash("success"),
@@ -57,9 +57,9 @@ func show(T engines.EngineContract) *errors.AppError {
 		return res.Json(respData, http.StatusOK)
 	}
 
-	//> for form based, show the "viewFile"
+	//> for form based, show the "view_file"
 	return res.View(
-		[]string{"base", fmt.Sprintf("users/%s", viewFile)},
+		[]string{"base", fmt.Sprintf("users/%s", view_file)},
 		respData,
 	)
 }
@@ -91,6 +91,6 @@ func update(T engines.EngineContract) *errors.AppError {
 	}
 
 	//> for form based, just redirect
-	ses.SetFlash("success", message)
+	ses.PutFlash("success", message)
 	return url.RedirectPrevious()
 }

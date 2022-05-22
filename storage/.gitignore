@@ -1,2 +1,3 @@
-!.gitignore
 logs/*.log
+cache.json
+!.gitignore

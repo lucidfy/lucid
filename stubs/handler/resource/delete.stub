@@ -45,6 +45,6 @@ func delete(T engines.EngineContract) *errors.AppError {
 	}
 
 	//> response: for form based, just redirect
-	ses.SetFlash("success", message)
+	ses.PutFlash("success", message)
 	return url.RedirectPrevious()
 }

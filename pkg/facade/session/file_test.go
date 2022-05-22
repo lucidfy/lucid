@@ -13,9 +13,10 @@ func init() {
 func TestFileSessionFlash(t *testing.T) {
 	ses := &FileSession{
 		SessionKey: "golangtest",
+		FileMode:   0744,
 	}
 
-	ses.SetFlashMap("data", map[string]interface{}{
+	ses.PutFlashMap("data", map[string]interface{}{
 		"key1": true,
 		"key2": "key2 is string",
 		"key3": 100.99,

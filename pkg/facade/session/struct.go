@@ -1,13 +1,25 @@
 package session
 
-type SesionContract interface {
-	Put(name string, value string) (bool, error)
-	Set(name string, value string) (bool, error)
-	Get(name string) (*string, error)
-	Destroy(name string) error
+import (
+	"net/http"
 
-	SetFlash(name string, value string)
-	GetFlash(name string) *string
-	SetFlashMap(name string, values interface{})
+	"github.com/lucidfy/lucid/pkg/errors"
+)
+
+type SessionContract interface {
+	Put(name string, value interface{}) (bool, *errors.AppError)
+	Get(name string) (interface{}, *errors.AppError)
+	Flush(name string) (interface{}, *errors.AppError)
+	PutFlash(name string, value interface{})
+	GetFlash(name string) interface{}
+	PutFlashMap(name string, value interface{})
 	GetFlashMap(name string) *map[string]interface{}
+}
+
+func Driver(key string, w http.ResponseWriter, r *http.Request) SessionContract {
+	switch key {
+	case "file":
+		return File(w, r)
+	}
+	return nil
 }

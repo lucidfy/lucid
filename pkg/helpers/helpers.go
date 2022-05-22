@@ -1,10 +1,12 @@
 package helpers
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"reflect"
 	"strconv"
 
 	"github.com/lucidfy/lucid/pkg/errors"
@@ -38,4 +40,20 @@ func Getenv(key string, dflt string) string {
 		return v
 	}
 	return dflt
+}
+
+func Stringify(data interface{}) string {
+	var content string
+	switch reflect.TypeOf(data).Kind() {
+	case reflect.Map:
+		j, err := json.Marshal(data)
+		if err != nil {
+			panic(err)
+		}
+		content = string(j)
+	case reflect.String:
+		content = data.(string)
+	}
+
+	return content
 }

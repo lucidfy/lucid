@@ -13,12 +13,14 @@ import (
 	"github.com/lucidfy/lucid/pkg/facade/crypt"
 	"github.com/lucidfy/lucid/pkg/facade/path"
 	"github.com/lucidfy/lucid/pkg/functions/php"
+	"github.com/lucidfy/lucid/pkg/helpers"
 )
 
 type FileSession struct {
 	SessionKey     interface{}
 	ResponseWriter http.ResponseWriter
 	HttpRequest    *http.Request
+	FileMode       os.FileMode
 }
 
 func File(w http.ResponseWriter, r *http.Request) *FileSession {
@@ -29,11 +31,12 @@ func File(w http.ResponseWriter, r *http.Request) *FileSession {
 	}
 	s := FileSession{
 		SessionKey: sessionKey,
+		FileMode:   0644,
 	}
 	return &s
 }
 
-func (s *FileSession) getSessionFile() string {
+func (s *FileSession) getFile() string {
 	return path.Load().StoragePath("framework/sessions/" + s.SessionKey.(string))
 }
 
@@ -47,21 +50,21 @@ func (s *FileSession) initializeFile(filepath string) string {
 }
 
 func (s *FileSession) updateContent(content interface{}) *errors.AppError {
-	filepath := s.getSessionFile()
-	if app_err := php.FilePutContents(filepath, content, 0644); app_err != nil {
+	filepath := s.getFile()
+	if app_err := php.FilePutContents(filepath, content, s.FileMode); app_err != nil {
 		return app_err
 	}
 	return nil
 }
 
-func (s *FileSession) Set(name string, value interface{}) (bool, *errors.AppError) {
+func (s *FileSession) Put(name string, value interface{}) (bool, *errors.AppError) {
 	if s.SessionKey == nil {
 		return false, errors.InternalServerError("s.SessionKey error", fmt.Errorf("session [%s] does not exists", name))
 	}
 
-	filepath := s.initializeFile(s.getSessionFile())
+	filepath := s.initializeFile(s.getFile())
 	content := *php.JsonDecode(string(*php.FileGetContents(filepath)))
-	value, err := crypt.Encrypt(value)
+	value, err := crypt.Encrypt(helpers.Stringify(value))
 	if err != nil {
 		return false, err
 	}
@@ -77,7 +80,7 @@ func (s *FileSession) Get(name string) (interface{}, *errors.AppError) {
 		return nil, errors.InternalServerError("s.SessionKey error", fmt.Errorf("session [%s] does not exists", name))
 	}
 
-	filepath := s.initializeFile(s.getSessionFile())
+	filepath := s.initializeFile(s.getFile())
 	content := *php.JsonDecode(string(*php.FileGetContents(filepath)))
 
 	if content[name] != nil {
@@ -91,12 +94,12 @@ func (s *FileSession) Get(name string) (interface{}, *errors.AppError) {
 	return nil, errors.InternalServerError("s.SessionKey error", fmt.Errorf("session [%s] does not exists", name))
 }
 
-func (s *FileSession) Destroy(name string) (interface{}, *errors.AppError) {
+func (s *FileSession) Flush(name string) (interface{}, *errors.AppError) {
 	if s.SessionKey == nil {
 		return nil, errors.InternalServerError("s.SessionKey error", fmt.Errorf("session [%s] does not exists", name))
 	}
 
-	filepath := s.initializeFile(s.getSessionFile())
+	filepath := s.initializeFile(s.getFile())
 	content := *php.JsonDecode(string(*php.FileGetContents(filepath)))
 	delete(content, name)
 	if err := s.updateContent(content); err != nil {
@@ -105,9 +108,9 @@ func (s *FileSession) Destroy(name string) (interface{}, *errors.AppError) {
 	return true, nil
 }
 
-func (s *FileSession) SetFlash(name string, value interface{}) {
+func (s *FileSession) PutFlash(name string, value interface{}) {
 	name = "flash-" + name
-	s.Set(name, value)
+	s.Put(name, value)
 }
 
 func (s *FileSession) GetFlash(name string) interface{} {
@@ -116,28 +119,27 @@ func (s *FileSession) GetFlash(name string) interface{} {
 	if err != nil || value == nil {
 		return nil
 	}
-	s.Destroy(name)
+	s.Flush(name)
 	return value
 }
 
-// SetFlashMap sets a session flash based on json format
+// PutFlashMap sets a session flash based on json format
 // make sure the values you're providing is set as map[string]interface{}
 // therefore, we can stringify it into json format
-func (s *FileSession) SetFlashMap(name string, value interface{}) {
+func (s *FileSession) PutFlashMap(name string, value interface{}) {
 	j, err := json.Marshal(value)
 	if err != nil {
 		panic(err)
 	}
-	s.SetFlash(name, string(j))
+	s.PutFlash(name, string(j))
 }
 
-// GetFlashMap this pulls a session flash from SetFlashMap, in which
+// GetFlashMap this pulls a session flash from PutFlashMap, in which
 // it will reverse the json into a map
 func (s *FileSession) GetFlashMap(name string) *map[string]interface{} {
 	ret := &map[string]interface{}{}
 	flash := s.GetFlash(name)
 	if flash != nil {
-		// flashStr := (*flash.(*interface{})).(string)
 		flashStr := flash.(string)
 		json.Unmarshal([]byte(flashStr), ret)
 	}

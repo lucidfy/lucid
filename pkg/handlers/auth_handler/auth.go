@@ -58,7 +58,7 @@ func login_attempt(T engines.EngineContract) *errors.AppError {
 	record := data.Model
 
 	if hash.Check(password, record.Password) {
-		ses.Set("authenticated", record.ID)
+		ses.Put("authenticated", record.ID)
 	}
 
 	message := "Successfully Logged In!"
@@ -71,6 +71,6 @@ func login_attempt(T engines.EngineContract) *errors.AppError {
 		}, status)
 	}
 
-	ses.SetFlash("success", message)
+	ses.PutFlash("success", message)
 	return url.RedirectPrevious()
 }

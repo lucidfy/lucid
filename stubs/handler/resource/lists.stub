@@ -68,7 +68,7 @@ func prepare(T engines.EngineContract) (*searchable.Table, *errors.AppError) {
 	url := engine.Url
 
 	//> get the current "page", literally the default of each current page should always be 1
-	currentPage, app_err := helpers.StringToInt(req.Input("page", PAGE).(string))
+	current_page, app_err := helpers.StringToInt(req.Input("page", PAGE).(string))
 	if app_err != nil {
 		return nil, app_err
 	}
@@ -76,27 +76,28 @@ func prepare(T engines.EngineContract) (*searchable.Table, *errors.AppError) {
 	//> get the "per-page", though the default will be relying to defaultPerPage
 	//> then check if the per page reaches the cap of 20 records per page
 	//> if ever someone tries to bypass the value, we over-write it to 20
-	perPage, app_err := helpers.StringToInt(req.Input("per-page", PER_PAGE).(string))
+	per_page, app_err := helpers.StringToInt(req.Input("per-page", PER_PAGE).(string))
 
 	if app_err != nil {
 		return nil, app_err
 	}
 
-	if perPage > 20 {
-		perPage = 20
+	if per_page > 20 {
+		per_page = 20
 	}
 
 	var st searchable.Table
 	st = *table(T, &st)
 
-	st.Paginate.CurrentPage = currentPage
-	st.Paginate.PerPage = perPage
+	st.Paginate.CurrentPage = current_page
+	st.Paginate.PerPage = per_page
 	st.Paginate.BaseUrl = req.Input("pagination_url", url.FullUrl()).(string)
 
-	orderByCol := req.Input("sort-column", SORT_COLUMN).(string)
-	orderBySort := req.Input("sort-type", SORT_TYPE).(string)
-	st.OrderByCol = &orderByCol
-	st.OrderBySort = &orderBySort
+	order_by_col := req.Input("sort-column", SORT_COLUMN).(string)
+	st.OrderByCol = &order_by_col
+
+	order_by_sort := req.Input("sort-type", SORT_TYPE).(string)
+	st.OrderBySort = &order_by_sort
 
 	return &st, nil
 }

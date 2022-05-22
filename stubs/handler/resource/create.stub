@@ -53,16 +53,15 @@ func store(T engines.EngineContract) *errors.AppError {
 	url := engine.Url
 
 	//> validate the inputs
-	validator := req.Validator(validations.##CAMEL_CASE_NAME##().Create())
-	if validator != nil {
+	if validator := req.Validator(validations.##CAMEL_CASE_NAME##().Create()); validator != nil {
 		if req.WantsJson() {
 			return res.Json(map[string]interface{}{
 				"fails": validator.ValidationError,
 			}, http.StatusUnauthorized)
 		}
 
-		ses.SetFlashMap("fails", validator.ValidationError)
-		ses.SetFlashMap("inputs", req.All())
+		ses.PutFlashMap("fails", validator.ValidationError)
+		ses.PutFlashMap("inputs", req.All())
 		return url.RedirectPrevious()
 	}
 
@@ -85,6 +84,6 @@ func store(T engines.EngineContract) *errors.AppError {
 	}
 
 	//> for form based, just redirect
-	ses.SetFlash("success", message)
+	ses.PutFlash("success", message)
 	return url.RedirectPrevious()
 }

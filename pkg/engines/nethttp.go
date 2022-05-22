@@ -22,15 +22,13 @@ func NetHttp(w http.ResponseWriter, r *http.Request) *NetHttpEngine {
 	url := urls.NetHttp(w, r)
 	req := request.NetHttp(w, r, url)
 
-	eg := NetHttpEngine{
+	return &NetHttpEngine{
 		ResponseWriter: w,
 		HttpRequest:    r,
 		Response:       *res,
 		Request:        *req,
 		Url:            *url,
 	}
-
-	return &eg
 }
 
 func (m NetHttpEngine) GetRequest() interface{} {
