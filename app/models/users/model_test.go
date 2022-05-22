@@ -17,7 +17,7 @@ func TestLists(t *testing.T) {
 
 	var s searchable.Table
 	s.Paginate.CurrentPage = 1
-	s.Paginate.BaseUrl = ""
+	s.Paginate.BaseURL = ""
 	s.Paginate.PerPage = 3
 	s.OrderByCol = &id
 	s.OrderBySort = &desc

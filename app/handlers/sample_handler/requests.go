@@ -14,10 +14,10 @@ var RequestRoute = routes.Routing{
 	Path:    "/samples/requests",
 	Name:    "",
 	Method:  routes.Method{"GET", "POST"},
-	Handler: sample_requests,
+	Handler: sampleRequests,
 }
 
-func sample_requests(T engines.EngineContract) *errors.AppError {
+func sampleRequests(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.NetHttpEngine)
 	req := engine.Request
 	res := engine.Response

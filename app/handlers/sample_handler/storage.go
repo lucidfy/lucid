@@ -15,10 +15,10 @@ var StorageRoute = routes.Routing{
 	Path:    "/samples/storage",
 	Name:    "",
 	Method:  routes.Method{"POST"},
-	Handler: sample_file_storage,
+	Handler: sampleFileStorage,
 }
 
-func sample_file_storage(T engines.EngineContract) *errors.AppError {
+func sampleFileStorage(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.NetHttpEngine)
 	req := engine.Request
 	res := engine.Response

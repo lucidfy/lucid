@@ -16,7 +16,7 @@ func delete(T engines.EngineContract) *errors.AppError {
 	ses := session.File(w, r)
 	req := engine.Request
 	res := engine.Response
-	url := engine.Url
+	url := engine.URL
 
 	//> prepare message and status
 	message := "Successfully Deleted!"

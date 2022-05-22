@@ -4,10 +4,10 @@ import (
 	"os"
 )
 
-type UrlContract interface {
-	CurrentUrl() string
-	FullUrl() string
-	PreviousUrl() string
+type URLContract interface {
+	CurrentURL() string
+	FullURL() string
+	PreviousURL() string
 	RedirectPrevious()
 }
 
@@ -19,7 +19,7 @@ func GetAddr() string {
 	return os.Getenv("HOST") + port
 }
 
-func BaseUrl(uri *string) string {
+func BaseURL(uri *string) string {
 	var u string = ""
 	if uri != nil {
 		u = *uri

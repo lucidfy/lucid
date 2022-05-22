@@ -18,17 +18,17 @@ import (
 type NetHttpRequest struct {
 	ResponseWriter     http.ResponseWriter
 	HttpRequest        *http.Request
-	Url                *urls.NetHttpUrl
+	URL                *urls.NetHttpURL
 	MaxMultipartMemory int64
 
 	ParsedParams map[string]interface{}
 }
 
-func NetHttp(w http.ResponseWriter, r *http.Request, u *urls.NetHttpUrl) *NetHttpRequest {
+func NetHttp(w http.ResponseWriter, r *http.Request, u *urls.NetHttpURL) *NetHttpRequest {
 	t := NetHttpRequest{
 		ResponseWriter:     w,
 		HttpRequest:        r,
-		Url:                u,
+		URL:                u,
 		MaxMultipartMemory: 32 << 20, // 32MB
 	}
 	return &t

@@ -19,7 +19,7 @@ func show(T engines.EngineContract) *errors.AppError {
 	ses := session.File(w, r)
 	req := engine.Request
 	res := engine.Response
-	url := engine.Url
+	url := engine.URL
 
 	id := req.Input("id", nil).(string)
 	if app_err := ##SMALL_CASE_NAME##.Exists("id", &id); app_err != nil {
@@ -43,7 +43,7 @@ func show(T engines.EngineContract) *errors.AppError {
 
 	respData := map[string]interface{}{
 		"title":          record.Name + "'s Info",
-		"previousUrl":    url.PreviousUrl(),
+		"previousURL":    url.PreviousURL(),
 		"record":         record,
 		"isShow":         is_show,
 		csrf.TemplateTag: csrf.TemplateField(r),
@@ -71,7 +71,7 @@ func update(T engines.EngineContract) *errors.AppError {
 	ses := session.File(w, r)
 	req := engine.Request
 	res := engine.Response
-	url := engine.Url
+	url := engine.URL
 
 	message := "Successfully Updated!"
 	status := http.StatusOK

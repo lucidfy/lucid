@@ -7,7 +7,7 @@ type Window struct {
 	last     map[int]string
 }
 
-func UrlWindow(p Paginate) *Window {
+func URLWindow(p Paginate) *Window {
 	return &Window{paginate: p}
 }
 
@@ -16,24 +16,24 @@ func (w *Window) Get() *Window {
 	if w.paginate.LastPage < (onEachSide*2)+8 {
 		return w.getSmallSlider()
 	}
-	return w.getUrlSlider(onEachSide)
+	return w.getURLSlider(onEachSide)
 }
 
-func (w *Window) GetAdjacentUrlRange(onEachSide int) map[int]string {
+func (w *Window) GetAdjacentURLRange(onEachSide int) map[int]string {
 	cp := w.paginate.CurrentPage
-	return w.paginate.GetUrlRange(
+	return w.paginate.GetURLRange(
 		cp-onEachSide,
 		cp+onEachSide,
 	)
 }
 
 func (w *Window) GetStart() map[int]string {
-	return w.paginate.GetUrlRange(1, 2)
+	return w.paginate.GetURLRange(1, 2)
 }
 
 func (w *Window) GetFinish() map[int]string {
 	lp := w.paginate.LastPage
-	return w.paginate.GetUrlRange(
+	return w.paginate.GetURLRange(
 		lp-1,
 		lp,
 	)
@@ -44,13 +44,13 @@ func (w *Window) HasPages() bool {
 }
 
 func (w *Window) getSmallSlider() *Window {
-	w.first = w.paginate.GetUrlRange(1, w.paginate.LastPage)
+	w.first = w.paginate.GetURLRange(1, w.paginate.LastPage)
 	w.slider = make(map[int]string)
 	w.last = make(map[int]string)
 	return w
 }
 
-func (w *Window) getUrlSlider(onEachSide int) *Window {
+func (w *Window) getURLSlider(onEachSide int) *Window {
 	window := onEachSide + 4
 
 	if !w.HasPages() {
@@ -79,7 +79,7 @@ func (w *Window) getUrlSlider(onEachSide int) *Window {
 }
 
 func (w *Window) getSliderTooCloseToBeginning(window int, onEachSide int) *Window {
-	w.first = w.paginate.GetUrlRange(1, window+onEachSide)
+	w.first = w.paginate.GetURLRange(1, window+onEachSide)
 	w.slider = make(map[int]string)
 	w.last = w.GetFinish()
 	return w
@@ -87,7 +87,7 @@ func (w *Window) getSliderTooCloseToBeginning(window int, onEachSide int) *Windo
 
 func (w *Window) getSliderTooCloseToEnding(window int, onEachSide int) *Window {
 	lp := w.paginate.LastPage
-	last := w.paginate.GetUrlRange(
+	last := w.paginate.GetURLRange(
 		lp-(window+(onEachSide-1)),
 		lp,
 	)
@@ -100,7 +100,7 @@ func (w *Window) getSliderTooCloseToEnding(window int, onEachSide int) *Window {
 
 func (w *Window) getFullSlider(onEachSide int) *Window {
 	w.first = w.GetStart()
-	w.slider = w.GetAdjacentUrlRange(onEachSide)
+	w.slider = w.GetAdjacentURLRange(onEachSide)
 	w.last = w.GetFinish()
 	return w
 }

@@ -50,7 +50,7 @@ func store(T engines.EngineContract) *errors.AppError {
 	ses := session.File(w, r)
 	req := engine.Request
 	res := engine.Response
-	url := engine.Url
+	url := engine.URL
 
 	//> validate the inputs
 	if validator := req.Validator(validations.##CAMEL_CASE_NAME##().Create()); validator != nil {

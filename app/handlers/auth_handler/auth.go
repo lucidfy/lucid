@@ -32,14 +32,14 @@ func user(T engines.EngineContract) *errors.AppError {
 	}, http.StatusOK)
 }
 
-func login_attempt(T engines.EngineContract) *errors.AppError {
+func loginAttempt(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.NetHttpEngine)
 	w := engine.ResponseWriter
 	r := engine.HttpRequest
 	ses := session.File(w, r)
 	req := engine.Request
 	res := engine.Response
-	url := engine.Url
+	url := engine.URL
 
 	email := req.Input("email", nil).(string)
 	password := req.Input("password", nil).(string)

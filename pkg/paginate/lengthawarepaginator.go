@@ -52,9 +52,9 @@ func (p *Paginate) Render(view *string /*, data array*/) string {
 			"hasMorePages":    p.HasMorePages(),
 			"hasPages":        p.HasPages(),
 			"lastItem":        p.LastItem(),
-			"nextPageUrl":     p.NextPageUrl(),
+			"nextPageURL":     p.NextPageURL(),
 			"onFirstPage":     p.OnFirstPage(),
-			"previousPageUrl": p.PreviousPageUrl(),
+			"previousPageURL": p.PreviousPageURL(),
 
 			// here we provide the $elements
 			"elements": p.Elements(),
@@ -71,9 +71,9 @@ func (p *Paginate) HasMorePages() bool {
 	return p.CurrentPage < p.LastPage
 }
 
-func (p *Paginate) NextPageUrl() *string {
+func (p *Paginate) NextPageURL() *string {
 	if p.HasMorePages() {
-		s := p.Url(p.CurrentPage + 1)
+		s := p.URL(p.CurrentPage + 1)
 		return &s
 	}
 	return nil
@@ -92,20 +92,20 @@ func (p *Paginate) ToArray() map[string]interface{} {
 		// default data
 		"current_page":   p.CurrentPage,
 		"data":           p.Items,
-		"first_page_url": p.Url(1),
+		"first_page_url": p.URL(1),
 		"from":           p.FirstItem(),
 		"last_page":      p.LastPage,
-		"last_page_url":  p.Url(p.LastPage),
-		"next_page_url":  p.NextPageUrl(),
+		"last_page_url":  p.URL(p.LastPage),
+		"next_page_url":  p.NextPageURL(),
 		"per_page":       p.PerPage,
-		"prev_page_url":  p.PreviousPageUrl(),
+		"prev_page_url":  p.PreviousPageURL(),
 		"to":             p.LastItem(),
 		"total":          p.Total,
 	}
 }
 
 func (p *Paginate) Elements() map[int]string {
-	window := UrlWindow(*p).Get()
+	window := URLWindow(*p).Get()
 	elems := window.first
 	p.elementsLoop(&elems, window.slider)
 	p.elementsLoop(&elems, window.last)
@@ -123,24 +123,24 @@ func (p *Paginate) elementsLoop(elems *map[int]string, m map[int]string) map[int
 	return *elems
 }
 
-func (p Paginate) PreviousPageUrl() *string {
+func (p Paginate) PreviousPageURL() *string {
 	if p.CurrentPage > 1 {
-		url := p.Url(p.CurrentPage - 1)
+		url := p.URL(p.CurrentPage - 1)
 		return &url
 	}
 	return nil
 }
 
-func (p Paginate) GetUrlRange(start int, end int) map[int]string {
+func (p Paginate) GetURLRange(start int, end int) map[int]string {
 	r := map[int]string{}
 	for i := start; i <= end; i++ {
-		r[i] = p.Url(i)
+		r[i] = p.URL(i)
 	}
 	return r
 }
 
-func (p *Paginate) Url(page int) string {
-	URL, err := url.Parse(p.BaseUrl)
+func (p *Paginate) URL(page int) string {
+	URL, err := url.Parse(p.BaseURL)
 	if errors.Handler("url.Parse error", err) {
 		return ""
 	}
@@ -232,8 +232,8 @@ func (p *Paginate) GetLastPage() int {
 	return p.LastPage
 }
 
-func (p *Paginate) GetBaseUrl() string {
-	return p.BaseUrl
+func (p *Paginate) GetBaseURL() string {
+	return p.BaseURL
 }
 
 func (p *Paginate) GetItems() interface{} {

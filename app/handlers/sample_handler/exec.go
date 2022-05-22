@@ -20,14 +20,14 @@ var ExecSampleRoute = routes.Routing{
 	Path:                 "/exec-sample",
 	Name:                 "exec-sample",
 	Method:               routes.Method{"GET", "POST", "DELETE", "PUT", "PATCH"},
-	Handler:              ExecSample,
+	Handler:              execSample,
 	WithGlobalMiddleware: false,
 }
 
 // ExecSample is a sample way to run a command via handler
 // as an example below, it will execute a php file containing
 // all the helpful variables.
-func ExecSample(T engines.EngineContract) *errors.AppError {
+func execSample(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.NetHttpEngine)
 	w := engine.ResponseWriter
 	r := engine.HttpRequest

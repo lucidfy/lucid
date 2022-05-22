@@ -6,7 +6,7 @@ type Paginate struct {
 	CurrentPage int `json:"current_page"`
 	LastPage    int `json:"last_page"`
 
-	BaseUrl string      `json:"base_url"`
+	BaseURL string      `json:"base_url"`
 	Items   interface{} `json:"items"`
 
 	OnEachSide int     `json:"on_each_side"`

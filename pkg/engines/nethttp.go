@@ -14,7 +14,7 @@ type NetHttpEngine struct {
 
 	Response response.NetHttpResponse
 	Request  request.NetHttpRequest
-	Url      urls.NetHttpUrl
+	URL      urls.NetHttpURL
 }
 
 func NetHttp(w http.ResponseWriter, r *http.Request) *NetHttpEngine {
@@ -27,7 +27,7 @@ func NetHttp(w http.ResponseWriter, r *http.Request) *NetHttpEngine {
 		HttpRequest:    r,
 		Response:       *res,
 		Request:        *req,
-		Url:            *url,
+		URL:            *url,
 	}
 }
 
@@ -39,6 +39,6 @@ func (m NetHttpEngine) GetResponse() interface{} {
 	return m.Response
 }
 
-func (m NetHttpEngine) GetUrl() interface{} {
-	return m.Url
+func (m NetHttpEngine) GetURL() interface{} {
+	return m.URL
 }

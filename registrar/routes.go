@@ -1,11 +1,11 @@
 package registrar
 
 import (
+	"github.com/lucidfy/lucid/app/handlers/auth_handler"
+	"github.com/lucidfy/lucid/app/handlers/sample_handler"
+	"github.com/lucidfy/lucid/app/handlers/single_handler"
+	"github.com/lucidfy/lucid/app/handlers/users_handler"
 	"github.com/lucidfy/lucid/pkg/facade/routes"
-	"github.com/lucidfy/lucid/pkg/handlers/auth_handler"
-	"github.com/lucidfy/lucid/pkg/handlers/sample_handler"
-	"github.com/lucidfy/lucid/pkg/handlers/single_handler"
-	"github.com/lucidfy/lucid/pkg/handlers/users_handler"
 )
 
 var Routes = []routes.Routing{

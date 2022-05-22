@@ -7,20 +7,20 @@ import (
 	"github.com/lucidfy/lucid/pkg/errors"
 )
 
-type NetHttpUrl struct {
+type NetHttpURL struct {
 	ResponseWriter http.ResponseWriter
 	HttpRequest    *http.Request
 }
 
-func NetHttp(w http.ResponseWriter, r *http.Request) *NetHttpUrl {
-	u := NetHttpUrl{
+func NetHttp(w http.ResponseWriter, r *http.Request) *NetHttpURL {
+	u := NetHttpURL{
 		ResponseWriter: w,
 		HttpRequest:    r,
 	}
 	return &u
 }
 
-func (u *NetHttpUrl) CurrentUrl() string {
+func (u *NetHttpURL) CurrentURL() string {
 	h := u.HttpRequest.URL.Host
 	if len(h) > 0 {
 		return h
@@ -38,18 +38,18 @@ func (u *NetHttpUrl) CurrentUrl() string {
 
 	//> if ever we can't resolve the Host from net/http, we can still base
 	//> from our env config
-	return BaseUrl(nil)
+	return BaseURL(nil)
 }
 
-func (u *NetHttpUrl) FullUrl() string {
-	return u.CurrentUrl() + u.HttpRequest.URL.RequestURI()
+func (u *NetHttpURL) FullURL() string {
+	return u.CurrentURL() + u.HttpRequest.URL.RequestURI()
 }
 
-func (u *NetHttpUrl) PreviousUrl() string {
+func (u *NetHttpURL) PreviousURL() string {
 	return u.HttpRequest.Referer()
 }
 
-func (u *NetHttpUrl) RedirectPrevious() *errors.AppError {
-	http.Redirect(u.ResponseWriter, u.HttpRequest, u.PreviousUrl(), http.StatusFound)
+func (u *NetHttpURL) RedirectPrevious() *errors.AppError {
+	http.Redirect(u.ResponseWriter, u.HttpRequest, u.PreviousURL(), http.StatusFound)
 	return nil
 }

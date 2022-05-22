@@ -65,7 +65,7 @@ func lists(T engines.EngineContract) *errors.AppError {
 func prepare(T engines.EngineContract) (*searchable.Table, *errors.AppError) {
 	engine := T.(engines.NetHttpEngine)
 	req := engine.Request
-	url := engine.Url
+	url := engine.URL
 
 	//> get the current "page", literally the default of each current page should always be 1
 	current_page, app_err := helpers.StringToInt(req.Input("page", PAGE).(string))
@@ -91,7 +91,7 @@ func prepare(T engines.EngineContract) (*searchable.Table, *errors.AppError) {
 
 	st.Paginate.CurrentPage = current_page
 	st.Paginate.PerPage = per_page
-	st.Paginate.BaseUrl = req.Input("pagination_url", url.FullUrl()).(string)
+	st.Paginate.BaseURL = req.Input("pagination_url", url.FullURL()).(string)
 
 	order_by_col := req.Input("sort-column", SORT_COLUMN).(string)
 	st.OrderByCol = &order_by_col

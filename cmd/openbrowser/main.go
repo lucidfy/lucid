@@ -15,7 +15,7 @@ func main() {
 	var u string
 
 	env.LoadEnv()
-	flag.StringVar(&u, "url", urls.BaseUrl(nil), "URL to Open")
+	flag.StringVar(&u, "url", urls.BaseURL(nil), "URL to Open")
 	flag.Parse()
 
 	logger.Info("Serving at " + u)
