@@ -18,7 +18,7 @@ const SORT_COLUMN = "id"
 const SORT_TYPE = "desc"
 
 func lists(T engines.EngineContract) *errors.AppError {
-	engine := T.(engines.MuxEngine)
+	engine := T.(engines.NetHttpEngine)
 	w := engine.ResponseWriter
 	r := engine.HttpRequest
 	ses := session.File(w, r)
@@ -63,7 +63,7 @@ func lists(T engines.EngineContract) *errors.AppError {
 }
 
 func prepare(T engines.EngineContract) (*searchable.Table, *errors.AppError) {
-	engine := T.(engines.MuxEngine)
+	engine := T.(engines.NetHttpEngine)
 	req := engine.Request
 	url := engine.Url
 
@@ -102,7 +102,7 @@ func prepare(T engines.EngineContract) (*searchable.Table, *errors.AppError) {
 }
 
 func table(T engines.EngineContract, st *searchable.Table) *searchable.Table {
-	engine := T.(engines.MuxEngine)
+	engine := T.(engines.NetHttpEngine)
 	req := engine.Request
 
 	st.Headers = []searchable.Header{

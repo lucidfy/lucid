@@ -8,7 +8,7 @@ import (
 
 var Commands = []*cli.Command{
 	commands.Inspire().Command,
-	lucid_commands.RouteDefined(Routes),
-	lucid_commands.RouteRegistered(Routes),
+	lucid_commands.RouteDefined(&Routes),
+	lucid_commands.RouteRegistered(&Routes),
 	lucid_commands.DatabaseMigration(Migrations),
 }

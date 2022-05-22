@@ -39,7 +39,7 @@ func MethodNotAllowed(T engines.EngineContract) {
 //> once we received any errors.AppError, what we actually do is to print
 //> a pretty neat html (or if the requestor wanted a json, we respond accordingly)
 func HttpErrorHandler(T engines.EngineContract, app_err *errors.AppError) {
-	engine := T.(engines.MuxEngine)
+	engine := T.(engines.NetHttpEngine)
 	// w := engine.HttpResponseWriter
 	// r := engine.HttpRequest
 	req := engine.Request

@@ -42,19 +42,19 @@ func New(prefix string) (*log.Logger, *os.File) {
 }
 
 func Debug(title string, data ...interface{}) {
-	text("[%s] [debug] ", title, data...)
+	text("[%s] [debug] ", title, data)
 }
 
 func Info(title string, data ...interface{}) {
-	text("[%s] [info] ", title, data...)
+	text("[%s] [info] ", title, data)
 }
 
 func Warning(title string, data ...interface{}) {
-	text("[%s] [warning] ", title, data...)
+	text("[%s] [warning] ", title, data)
 }
 
 func Error(title string, data ...interface{}) {
-	text("[%s] [error] ", title, data...)
+	text("[%s] [error] ", title, data)
 }
 
 func text(txt string, title string, data ...interface{}) {

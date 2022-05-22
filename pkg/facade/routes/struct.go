@@ -2,6 +2,7 @@ package routes
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/errors"
@@ -38,6 +39,12 @@ type Routing struct {
 
 func resources(route Routing) []Routing {
 	routings := []Routing{}
+
+	id_regex := "{id:[0-9]+}"
+	if os.Getenv("LUCID_ROUTER_ENGINE") == "fiber" {
+		id_regex = ":id"
+	}
+
 	for action, handler := range route.Resources {
 		switch action {
 		case "index":
@@ -66,7 +73,7 @@ func resources(route Routing) []Routing {
 			})
 		case "show":
 			routings = append(routings, Routing{
-				Path:        route.Path + "/{id:[0-9]+}",
+				Path:        route.Path + "/" + id_regex,
 				Handler:     handler,
 				Method:      Method{"GET"},
 				Middlewares: route.Middlewares,
@@ -74,7 +81,7 @@ func resources(route Routing) []Routing {
 			})
 		case "edit":
 			routings = append(routings, Routing{
-				Path:        route.Path + "/{id:[0-9]+}/edit",
+				Path:        route.Path + "/" + id_regex + "/edit",
 				Handler:     handler,
 				Method:      Method{"GET"},
 				Middlewares: route.Middlewares,
@@ -84,14 +91,14 @@ func resources(route Routing) []Routing {
 			routings = append(
 				routings,
 				Routing{
-					Path:        route.Path + "/{id:[0-9]+}",
+					Path:        route.Path + "/" + id_regex,
 					Handler:     handler,
 					Method:      Method{"PUT"},
 					Middlewares: route.Middlewares,
 					Name:        route.Name + ".update",
 				},
 				Routing{
-					Path:        route.Path + "/{id:[0-9]+}/update",
+					Path:        route.Path + "/" + id_regex + "/update",
 					Handler:     handler,
 					Method:      Method{"POST"},
 					Middlewares: route.Middlewares,
@@ -102,14 +109,14 @@ func resources(route Routing) []Routing {
 			routings = append(
 				routings,
 				Routing{
-					Path:        route.Path + "/{id:[0-9]+}",
+					Path:        route.Path + "/" + id_regex,
 					Handler:     handler,
 					Method:      Method{"DELETE"},
 					Middlewares: route.Middlewares,
 					Name:        route.Name + ".destroy",
 				},
 				Routing{
-					Path:        route.Path + "/{id:[0-9]+}/delete",
+					Path:        route.Path + "/" + id_regex + "/delete",
 					Handler:     handler,
 					Method:      Method{"POST"},
 					Middlewares: route.Middlewares,

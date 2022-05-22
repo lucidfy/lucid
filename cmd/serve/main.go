@@ -11,11 +11,17 @@ import (
 func init() {
 	env.LoadEnv()
 
+	var scheme string
 	var host string
 	var port string
+	flag.StringVar(&scheme, "scheme", os.Getenv("SCHEME"), "Scheme to use")
 	flag.StringVar(&host, "host", os.Getenv("HOST"), "Host to use")
 	flag.StringVar(&port, "port", os.Getenv("PORT"), "Port to use")
 	flag.Parse()
+
+	if len(scheme) > 0 {
+		os.Setenv("SCHEME", scheme)
+	}
 
 	if len(host) > 0 {
 		os.Setenv("HOST", host)
@@ -27,8 +33,5 @@ func init() {
 }
 
 func main() {
-	kernel.
-		Init().
-		Run().
-		WithGracefulShutdown()
+	kernel.New().Run().WithGracefulShutdown()
 }

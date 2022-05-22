@@ -16,7 +16,7 @@ var WelcomeRoute = routes.Routing{
 }
 
 func welcome(T engines.EngineContract) *errors.AppError {
-	engine := T.(engines.MuxEngine)
+	engine := T.(engines.NetHttpEngine)
 	// w := engine.HttpResponseWriter
 	// r := engine.HttpRequest
 	req := engine.Request

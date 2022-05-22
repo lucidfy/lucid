@@ -10,20 +10,20 @@ import (
 	"github.com/lucidfy/lucid/pkg/facade/path"
 )
 
-type MuxResponse struct {
+type NetHttpResponse struct {
 	ResponseWriter http.ResponseWriter
 	HttpRequest    *http.Request
 }
 
-func Mux(w http.ResponseWriter, r *http.Request) *MuxResponse {
-	m := MuxResponse{
+func NetHttp(w http.ResponseWriter, r *http.Request) *NetHttpResponse {
+	m := NetHttpResponse{
 		ResponseWriter: w,
 		HttpRequest:    r,
 	}
 	return &m
 }
 
-func (m *MuxResponse) ViewWithStatus(filepaths []string, data interface{}, status *int) *errors.AppError {
+func (m *NetHttpResponse) ViewWithStatus(filepaths []string, data interface{}, status *int) *errors.AppError {
 	m.ResponseWriter.WriteHeader(*status)
 
 	for idx, filepath := range filepaths {
@@ -61,12 +61,12 @@ func (m *MuxResponse) ViewWithStatus(filepaths []string, data interface{}, statu
 	return nil
 }
 
-func (m *MuxResponse) View(filepaths []string, data interface{}) *errors.AppError {
+func (m *NetHttpResponse) View(filepaths []string, data interface{}) *errors.AppError {
 	httpOk := 200
 	return m.ViewWithStatus(filepaths, data, &httpOk)
 }
 
-func (m *MuxResponse) Json(data interface{}, status int) *errors.AppError {
+func (m *NetHttpResponse) Json(data interface{}, status int) *errors.AppError {
 	m.ResponseWriter.Header().Set("Content-Type", "application/json")
 	m.ResponseWriter.WriteHeader(status)
 	err := json.NewEncoder(m.ResponseWriter).Encode(data)
@@ -80,7 +80,7 @@ func (m *MuxResponse) Json(data interface{}, status int) *errors.AppError {
 	return nil
 }
 
-func (m *MuxResponse) constructDataFromHeader(data interface{}, val string, key string) interface{} {
+func (m *NetHttpResponse) constructDataFromHeader(data interface{}, val string, key string) interface{} {
 	if len(val) > 0 {
 		if m, ok := (data).(map[string]interface{}); ok {
 			m[key] = val

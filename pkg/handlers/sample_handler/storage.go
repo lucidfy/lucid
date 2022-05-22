@@ -19,7 +19,7 @@ var StorageRoute = routes.Routing{
 }
 
 func sample_file_storage(T engines.EngineContract) *errors.AppError {
-	engine := T.(engines.MuxEngine)
+	engine := T.(engines.NetHttpEngine)
 	req := engine.Request
 	res := engine.Response
 

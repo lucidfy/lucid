@@ -28,7 +28,7 @@ var ExecSampleRoute = routes.Routing{
 // as an example below, it will execute a php file containing
 // all the helpful variables.
 func ExecSample(T engines.EngineContract) *errors.AppError {
-	engine := T.(engines.MuxEngine)
+	engine := T.(engines.NetHttpEngine)
 	w := engine.ResponseWriter
 	r := engine.HttpRequest
 

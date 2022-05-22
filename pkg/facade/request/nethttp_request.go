@@ -15,17 +15,17 @@ import (
 	"github.com/lucidfy/lucid/pkg/rules/must"
 )
 
-type MuxRequest struct {
+type NetHttpRequest struct {
 	ResponseWriter     http.ResponseWriter
 	HttpRequest        *http.Request
-	Url                *urls.MuxUrl
+	Url                *urls.NetHttpUrl
 	MaxMultipartMemory int64
 
 	ParsedParams map[string]interface{}
 }
 
-func Mux(w http.ResponseWriter, r *http.Request, u *urls.MuxUrl) *MuxRequest {
-	t := MuxRequest{
+func NetHttp(w http.ResponseWriter, r *http.Request, u *urls.NetHttpUrl) *NetHttpRequest {
+	t := NetHttpRequest{
 		ResponseWriter:     w,
 		HttpRequest:        r,
 		Url:                u,
@@ -34,8 +34,21 @@ func Mux(w http.ResponseWriter, r *http.Request, u *urls.MuxUrl) *MuxRequest {
 	return &t
 }
 
+type contextKey int
+
+const (
+	VarsKey contextKey = iota
+)
+
+func (t NetHttpRequest) Vars() map[string]string {
+	if rv := t.HttpRequest.Context().Value(VarsKey); rv != nil {
+		return rv.(map[string]string)
+	}
+	return mux.Vars(t.HttpRequest)
+}
+
 // All returns available http queries
-func (t *MuxRequest) All() interface{} {
+func (t *NetHttpRequest) All() interface{} {
 	// put a singleton, we don't need to parse
 	// the request over and over again.
 	if len(t.ParsedParams) > 0 {
@@ -45,7 +58,7 @@ func (t *MuxRequest) All() interface{} {
 	params := map[string]interface{}{}
 
 	// initialize inputs from route params
-	for idx, val := range mux.Vars(t.HttpRequest) {
+	for idx, val := range t.Vars() {
 		params[idx] = val
 	}
 
@@ -81,7 +94,7 @@ func (t *MuxRequest) All() interface{} {
 }
 
 // Get returns the specific value from the provided key
-func (t *MuxRequest) Get(k string) interface{} {
+func (t *NetHttpRequest) Get(k string) interface{} {
 	// check the queries if exists
 	val, ok := t.All().(map[string]interface{})[k]
 	if ok {
@@ -91,7 +104,7 @@ func (t *MuxRequest) Get(k string) interface{} {
 }
 
 // GetFirst returns the specifc value provided with default value
-func (t *MuxRequest) GetFirst(k string, dfault interface{}) interface{} {
+func (t *NetHttpRequest) GetFirst(k string, dfault interface{}) interface{} {
 	val := t.Get(k)
 	if val == nil {
 		return dfault
@@ -100,42 +113,42 @@ func (t *MuxRequest) GetFirst(k string, dfault interface{}) interface{} {
 }
 
 // Input ist meant as proxy for GetFirst(...)
-func (t *MuxRequest) Input(k string, dfault interface{}) interface{} {
+func (t *NetHttpRequest) Input(k string, dfault interface{}) interface{} {
 	return t.GetFirst(k, dfault)
 }
 
 // HasContentType checks if the string exists in the header
-func (t *MuxRequest) HasContentType(substr string) bool {
+func (t *NetHttpRequest) HasContentType(substr string) bool {
 	contentType := t.HttpRequest.Header.Get("Content-Type")
 	return strings.Contains(contentType, substr)
 }
 
-func (t *MuxRequest) HasAccept(substr string) bool {
+func (t *NetHttpRequest) HasAccept(substr string) bool {
 	accept := t.HttpRequest.Header.Get("Accept")
 	return strings.Contains(accept, substr)
 }
 
 // IsForm checks if the request is an http form
-func (t *MuxRequest) IsForm() bool {
+func (t *NetHttpRequest) IsForm() bool {
 	return t.HasContentType("application/x-www-form-urlencoded")
 }
 
 // IsJson checks if the content type contains json
-func (t *MuxRequest) IsJson() bool {
+func (t *NetHttpRequest) IsJson() bool {
 	return t.HasContentType("json")
 }
 
 // IsMultipart checks if the content type contains multipart
-func (t *MuxRequest) IsMultipart() bool {
+func (t *NetHttpRequest) IsMultipart() bool {
 	return t.HasContentType("multipart")
 }
 
-func (t *MuxRequest) WantsJson() bool {
+func (t *NetHttpRequest) WantsJson() bool {
 	return t.HasAccept("json")
 }
 
 // Validator
-func (t *MuxRequest) Validator(setOfRules *must.SetOfRules) *errors.AppError {
+func (t *NetHttpRequest) Validator(setOfRules *must.SetOfRules) *errors.AppError {
 	inputValues := t.All().(map[string]interface{})
 
 	validationErrors := rules.GetErrors(
@@ -145,7 +158,7 @@ func (t *MuxRequest) Validator(setOfRules *must.SetOfRules) *errors.AppError {
 
 	if len(validationErrors) > 0 {
 		return &errors.AppError{
-			Error:           fmt.Errorf("pkg.facade.request.muxrequest@Validator: Request validation error"),
+			Error:           fmt.Errorf("pkg.facade.request.NetHttprequest@Validator: Request validation error"),
 			Message:         "Request validation error",
 			Code:            http.StatusUnprocessableEntity,
 			ValidationError: validationErrors,
@@ -159,7 +172,7 @@ func (t *MuxRequest) Validator(setOfRules *must.SetOfRules) *errors.AppError {
 // it resolves first from "x-forwarded-for"
 // or else it goes check if "x-real-ip" exists
 // or else we pull based on the remoteaddr under net/http
-func (t *MuxRequest) GetIp() string {
+func (t *NetHttpRequest) GetIp() string {
 	ip := t.HttpRequest.Header.Get("X-Forwarded-For")
 	if len(ip) == 0 {
 		ip = t.HttpRequest.Header.Get("X-Real-Ip")
@@ -171,12 +184,12 @@ func (t *MuxRequest) GetIp() string {
 }
 
 // GetUserAgent returns the user agent
-func (t *MuxRequest) GetUserAgent() string {
+func (t *NetHttpRequest) GetUserAgent() string {
 	return t.HttpRequest.Header.Get("User-Agent")
 }
 
 // GetFileByName returns the first file for the provided form key.
-func (t *MuxRequest) GetFileByName(name string) (*multipart.FileHeader, *errors.AppError) {
+func (t *NetHttpRequest) GetFileByName(name string) (*multipart.FileHeader, *errors.AppError) {
 	if t.HttpRequest.MultipartForm == nil {
 		if err := t.HttpRequest.ParseMultipartForm(t.MaxMultipartMemory); err != nil {
 			return nil, errors.InternalServerError("t.HttpRequest.ParseMultipartForm() error", err)
@@ -194,7 +207,7 @@ func (t *MuxRequest) GetFileByName(name string) (*multipart.FileHeader, *errors.
 }
 
 // GetFiles is the parsed multipart form files
-func (t *MuxRequest) GetFiles() (map[string][]*multipart.FileHeader, *errors.AppError) {
+func (t *NetHttpRequest) GetFiles() (map[string][]*multipart.FileHeader, *errors.AppError) {
 	err := t.HttpRequest.ParseMultipartForm(t.MaxMultipartMemory)
 	return t.HttpRequest.MultipartForm.File, errors.InternalServerError("t.HttpRequest.ParseMultipartForm() error", err)
 }

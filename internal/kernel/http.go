@@ -3,16 +3,17 @@ package kernel
 import (
 	"context"
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"time"
 
-	"github.com/gorilla/mux"
 	"github.com/lucidfy/lucid/pkg/facade/logger"
-	"github.com/lucidfy/lucid/pkg/facade/routes"
 	"github.com/lucidfy/lucid/pkg/facade/urls"
+	"github.com/lucidfy/lucid/pkg/helpers"
 	"github.com/lucidfy/lucid/registrar"
 )
 
@@ -21,20 +22,29 @@ type App struct {
 	Deadline time.Duration
 }
 
-func Init() *App {
+func New() *App {
 	var wait time.Duration
 	flag.DurationVar(&wait, "graceful-timeout", time.Second*15, "the duration for which the server gracefully wait for existing connections to finish - e.g. 15s or 1m")
 	flag.Parse()
 
-	handler := routes.Mux().Register(registrar.Routes).(*mux.Router)
+	var handler http.Handler
+
+	engine := helpers.Getenv("LUCID_ROUTER_ENGINE", "mux")
+	engine_handler, ok := registrar.Engines[engine]
+	if !ok {
+		panic(fmt.Errorf(`%s engine does not exists`, engine))
+	}
+	handler = engine_handler()
+
+	write_timeout, _ := strconv.Atoi(helpers.Getenv("LUCID_WRITE_TIMEOUT", "10"))
+	read_timeout, _ := strconv.Atoi(helpers.Getenv("LUCID_READ_TIMEOUT", "10"))
+	idle_timeout, _ := strconv.Atoi(helpers.Getenv("LUCID_IDLE_TIMEOUT", "60"))
 
 	srv := &http.Server{
-		Addr: urls.GetAddr(),
-
-		// Good practice to set timeouts to avoid Slow-loris attacks.
-		WriteTimeout: time.Second * 15,
-		ReadTimeout:  time.Second * 15,
-		IdleTimeout:  time.Second * 60,
+		Addr:         urls.GetAddr(),
+		WriteTimeout: time.Second * time.Duration(write_timeout),
+		ReadTimeout:  time.Second * time.Duration(read_timeout),
+		IdleTimeout:  time.Second * time.Duration(idle_timeout),
 		Handler:      handler,
 	}
 

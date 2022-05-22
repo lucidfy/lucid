@@ -11,7 +11,7 @@ import (
 )
 
 func user(T engines.EngineContract) *errors.AppError {
-	engine := T.(engines.MuxEngine)
+	engine := T.(engines.NetHttpEngine)
 	w := engine.ResponseWriter
 	r := engine.HttpRequest
 	ses := session.File(w, r)
@@ -33,7 +33,7 @@ func user(T engines.EngineContract) *errors.AppError {
 }
 
 func login_attempt(T engines.EngineContract) *errors.AppError {
-	engine := T.(engines.MuxEngine)
+	engine := T.(engines.NetHttpEngine)
 	w := engine.ResponseWriter
 	r := engine.HttpRequest
 	ses := session.File(w, r)

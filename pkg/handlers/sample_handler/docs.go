@@ -23,7 +23,7 @@ var DocsRoute = routes.Routing{
 }
 
 func docs(T engines.EngineContract) *errors.AppError {
-	engine := T.(engines.MuxEngine)
+	engine := T.(engines.NetHttpEngine)
 	r := engine.HttpRequest
 	req := engine.Request
 	res := engine.Response

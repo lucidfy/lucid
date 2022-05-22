@@ -13,7 +13,7 @@ import (
 )
 
 func show(T engines.EngineContract) *errors.AppError {
-	engine := T.(engines.MuxEngine)
+	engine := T.(engines.NetHttpEngine)
 	w := engine.ResponseWriter
 	r := engine.HttpRequest
 	ses := session.File(w, r)
@@ -65,7 +65,7 @@ func show(T engines.EngineContract) *errors.AppError {
 }
 
 func update(T engines.EngineContract) *errors.AppError {
-	engine := T.(engines.MuxEngine)
+	engine := T.(engines.NetHttpEngine)
 	w := engine.ResponseWriter
 	r := engine.HttpRequest
 	ses := session.File(w, r)

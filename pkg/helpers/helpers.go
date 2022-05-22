@@ -31,3 +31,11 @@ func StringToInt(s string) (i int, app_err *errors.AppError) {
 	}
 	return i, nil
 }
+
+func Getenv(key string, dflt string) string {
+	v := os.Getenv(key)
+	if v != "" {
+		return v
+	}
+	return dflt
+}

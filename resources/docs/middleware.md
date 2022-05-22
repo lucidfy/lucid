@@ -58,7 +58,7 @@ func AuthenticateMiddleware(next http.Handler) http.Handler {
         _, err := ses.Get("authenticated")
 
         if err != nil {
-            handlers.HttpErrorHandler(engines.Mux(w, r), &errors.AppError{
+            handlers.HttpErrorHandler(engines.NetHttp(w, r), &errors.AppError{
                 Code:    http.StatusForbidden,
                 Message: "Forbidden!",
                 Error:   err,

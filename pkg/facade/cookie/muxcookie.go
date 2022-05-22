@@ -10,13 +10,13 @@ import (
 	"github.com/lucidfy/lucid/pkg/helpers"
 )
 
-type MuxCookie struct {
+type NetHttpCookie struct {
 	ResponseWriter http.ResponseWriter
 	HttpRequest    *http.Request
 }
 
-func New(w http.ResponseWriter, r *http.Request) *MuxCookie {
-	s := MuxCookie{
+func New(w http.ResponseWriter, r *http.Request) *NetHttpCookie {
+	s := NetHttpCookie{
 		ResponseWriter: w,
 		HttpRequest:    r,
 	}
@@ -24,13 +24,13 @@ func New(w http.ResponseWriter, r *http.Request) *MuxCookie {
 	return &s
 }
 
-func (s *MuxCookie) CreateSessionCookie() interface{} {
+func (s *NetHttpCookie) CreateSessionCookie() interface{} {
 	sessionKey := crypt.GenerateRandomString(20)
 	s.Set(os.Getenv("SESSION_NAME"), sessionKey)
 	return sessionKey
 }
 
-func (s *MuxCookie) Set(name string, value interface{}) (bool, *errors.AppError) {
+func (s *NetHttpCookie) Set(name string, value interface{}) (bool, *errors.AppError) {
 	encoded, err := crypt.Encrypt(value)
 	if err == nil {
 		lifetime, err := helpers.StringToInt(os.Getenv("SESSION_LIFETIME"))
@@ -52,7 +52,7 @@ func (s *MuxCookie) Set(name string, value interface{}) (bool, *errors.AppError)
 	return false, err
 }
 
-func (s *MuxCookie) Get(name string) (interface{}, *errors.AppError) {
+func (s *NetHttpCookie) Get(name string) (interface{}, *errors.AppError) {
 	if s.HttpRequest == nil {
 		return nil, nil
 	}
@@ -70,7 +70,7 @@ func (s *MuxCookie) Get(name string) (interface{}, *errors.AppError) {
 	return decoded, nil
 }
 
-func (s *MuxCookie) Expire(name string) {
+func (s *NetHttpCookie) Expire(name string) {
 	cookie := &http.Cookie{Name: name, Value: "", Path: "/", MaxAge: -1}
 	http.SetCookie(s.ResponseWriter, cookie)
 }

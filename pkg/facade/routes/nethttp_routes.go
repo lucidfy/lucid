@@ -9,13 +9,13 @@ import (
 	"github.com/lucidfy/lucid/pkg/engines"
 )
 
-type MuxRoutes struct {
+type NetHttpRoutes struct {
 	Router   *mux.Router
 	Routings *[]Routing
 }
 
-func Mux() MuxRoutes {
-	mr := MuxRoutes{}
+func NetHttp() NetHttpRoutes {
+	mr := NetHttpRoutes{}
 	mr.Router = mux.NewRouter().StrictSlash(true)
 	mr.setUpDefaultErrors()
 
@@ -25,12 +25,12 @@ func Mux() MuxRoutes {
 // Here, you can find how we iterate the routes() function,
 // we're using gorilla/mux package to serve our routing with
 // extensive support with http requests + middlewares.
-func (mr MuxRoutes) Register(base *[]Routing) interface{} {
+func (mr NetHttpRoutes) Register(base *[]Routing) *mux.Router {
 	// each routing should be interpreted as subrouter
 	// the subrouter in mux isolates each path with
 	// a way to register a repetitive middlewares
-	for _, routing := range *mr.Explain(base).(*[]Routing) {
-		submr := MuxRoutes{}
+	for _, routing := range *mr.Explain(base) {
+		submr := NetHttpRoutes{}
 		submr.Router = mr.Router.NewRoute().Subrouter()
 		submr.register(routing)
 	}
@@ -38,7 +38,7 @@ func (mr MuxRoutes) Register(base *[]Routing) interface{} {
 	return mr.Router
 }
 
-func (mr MuxRoutes) Explain(base *[]Routing) interface{} {
+func (mr NetHttpRoutes) Explain(base *[]Routing) *[]Routing {
 	routings := []Routing{}
 	for _, route := range *base {
 		if len(route.Resources) != 0 {
@@ -53,7 +53,7 @@ func (mr MuxRoutes) Explain(base *[]Routing) interface{} {
 	return &routings
 }
 
-func (mr MuxRoutes) register(route Routing) {
+func (mr NetHttpRoutes) register(route Routing) {
 	// serve static
 	if len(route.Static) != 0 {
 		serve := http.FileServer(http.Dir(route.Static))
@@ -65,7 +65,7 @@ func (mr MuxRoutes) register(route Routing) {
 
 	// serving handler based
 	handler := func(w http.ResponseWriter, r *http.Request) {
-		engine := *engines.Mux(w, r)
+		engine := *engines.NetHttp(w, r)
 		e := route.Handler(engine)
 		if e != nil {
 			handlers.HttpErrorHandler(engine, e)
@@ -85,15 +85,22 @@ func (mr MuxRoutes) register(route Routing) {
 	}
 
 	if route.WithGlobalMiddleware == nil || route.WithGlobalMiddleware == true {
-		mr.routeUse(app.GlobalMiddleware...)
+		for _, mid := range app.GlobalMiddleware {
+			mr.routeUse(mid.(func(http.Handler) http.Handler))
+		}
+	}
+
+	mids := make(map[string]func(http.Handler) http.Handler)
+	for k, mid := range app.RouteMiddleware {
+		mids[k] = mid.(func(http.Handler) http.Handler)
 	}
 
 	for _, v := range route.Middlewares {
-		mr.routeUse(app.RouteMiddleware[v])
+		mr.routeUse(mids[v])
 	}
 }
 
-func (mr MuxRoutes) routeUse(middlewares ...mux.MiddlewareFunc) {
+func (mr NetHttpRoutes) routeUse(middlewares ...mux.MiddlewareFunc) {
 	for _, middleware := range middlewares {
 		mr.Router.Use(middleware)
 	}
@@ -101,14 +108,14 @@ func (mr MuxRoutes) routeUse(middlewares ...mux.MiddlewareFunc) {
 
 // on this function, we setup the default 404 and 405 error page
 // this will go thru under the app/handlers/error.go
-func (mr MuxRoutes) setUpDefaultErrors() {
+func (mr NetHttpRoutes) setUpDefaultErrors() {
 	mr.Router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		engine := *engines.Mux(w, r)
+		engine := *engines.NetHttp(w, r)
 		handlers.PageNotFound(engine)
 	})
 
 	mr.Router.MethodNotAllowedHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		engine := *engines.Mux(w, r)
+		engine := *engines.NetHttp(w, r)
 		handlers.MethodNotAllowed(engine)
 	})
 }

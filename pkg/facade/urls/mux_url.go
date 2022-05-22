@@ -7,20 +7,20 @@ import (
 	"github.com/lucidfy/lucid/pkg/errors"
 )
 
-type MuxUrl struct {
+type NetHttpUrl struct {
 	ResponseWriter http.ResponseWriter
 	HttpRequest    *http.Request
 }
 
-func Mux(w http.ResponseWriter, r *http.Request) *MuxUrl {
-	u := MuxUrl{
+func NetHttp(w http.ResponseWriter, r *http.Request) *NetHttpUrl {
+	u := NetHttpUrl{
 		ResponseWriter: w,
 		HttpRequest:    r,
 	}
 	return &u
 }
 
-func (u *MuxUrl) CurrentUrl() string {
+func (u *NetHttpUrl) CurrentUrl() string {
 	h := u.HttpRequest.URL.Host
 	if len(h) > 0 {
 		return h
@@ -41,15 +41,15 @@ func (u *MuxUrl) CurrentUrl() string {
 	return BaseUrl(nil)
 }
 
-func (u *MuxUrl) FullUrl() string {
+func (u *NetHttpUrl) FullUrl() string {
 	return u.CurrentUrl() + u.HttpRequest.URL.RequestURI()
 }
 
-func (u *MuxUrl) PreviousUrl() string {
+func (u *NetHttpUrl) PreviousUrl() string {
 	return u.HttpRequest.Referer()
 }
 
-func (u *MuxUrl) RedirectPrevious() *errors.AppError {
+func (u *NetHttpUrl) RedirectPrevious() *errors.AppError {
 	http.Redirect(u.ResponseWriter, u.HttpRequest, u.PreviousUrl(), http.StatusFound)
 	return nil
 }

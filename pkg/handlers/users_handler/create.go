@@ -12,7 +12,7 @@ import (
 )
 
 func create(T engines.EngineContract) *errors.AppError {
-	engine := T.(engines.MuxEngine)
+	engine := T.(engines.NetHttpEngine)
 	w := engine.ResponseWriter
 	r := engine.HttpRequest
 	ses := session.File(w, r)
@@ -44,7 +44,7 @@ func create(T engines.EngineContract) *errors.AppError {
 }
 
 func store(T engines.EngineContract) *errors.AppError {
-	engine := T.(engines.MuxEngine)
+	engine := T.(engines.NetHttpEngine)
 	w := engine.ResponseWriter
 	r := engine.HttpRequest
 	ses := session.File(w, r)

@@ -22,7 +22,7 @@ Handlers are the one responding to any http requests, the function will only be 
 
 ```go
 func Sample(T engines.EngineContract) *errors.AppError {
-    engine := T.(engines.MuxEngine)
+    engine := T.(engines.NetHttpEngine)
 }
 ```
 
@@ -39,7 +39,7 @@ As of writing, we're currently using [gorilla/mux](https://github.com/gorilla/mu
 ### [#](#-request--response) Request & Response
 
 ```go
-engine := T.(engines.MuxEngine)
+engine := T.(engines.NetHttpEngine)
 w := engine.HttpResponseWriter
 r := engine.HttpRequest
 request := engine.Request
@@ -68,7 +68,7 @@ import (
 )
 
 func Welcome(T engines.EngineContract) *errors.AppError {
-    engine := T.(engines.MuxEngine)
+    engine := T.(engines.NetHttpEngine)
     request := engine.Request
     response := engine.Response
 
