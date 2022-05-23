@@ -31,13 +31,13 @@ func Render(filepaths []string, data interface{}) (string, *errors.AppError) {
 
 	t, err := text.ParseFiles(filepaths...)
 	if err != nil {
-		logger.Fatal(err)
+		logger.Error("text.ParseFiles error: ", err)
 		return "", errors.InternalServerError("text.ParseFiles() error", err)
 	}
 
 	var tpl bytes.Buffer
 	if err = t.Execute(&tpl, data); err != nil {
-		logger.Fatal(err)
+		logger.Error("t.Execute error: ", err)
 		return "", errors.InternalServerError("t.Execute() error", err)
 	}
 

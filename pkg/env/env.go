@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
+	"github.com/lucidfy/lucid/pkg/facade/logger"
 	"github.com/lucidfy/lucid/pkg/facade/path"
 )
 
@@ -24,6 +25,6 @@ func LoadEnvFrom(basepath string) {
 func LoadFile(filepath string) {
 	err := godotenv.Load(filepath)
 	if err != nil {
-		panic(err)
+		logger.Error("Cannot load .env file", err)
 	}
 }

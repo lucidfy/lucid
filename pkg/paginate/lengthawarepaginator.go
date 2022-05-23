@@ -61,7 +61,7 @@ func (p *Paginate) Render(view *string /*, data array*/) string {
 		},
 	)
 	if err != nil {
-		logger.Fatal(err)
+		logger.Error("lengthawarepaginator.Render error: ", err)
 	}
 	return result
 }

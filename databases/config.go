@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/lucidfy/lucid/pkg/errors"
+	"github.com/lucidfy/lucid/pkg/facade/logger"
 	"github.com/lucidfy/lucid/pkg/facade/path"
 	"gorm.io/driver/clickhouse"
 	"gorm.io/driver/mysql"
@@ -25,7 +26,9 @@ func Resolve() *gorm.DB {
 	})
 
 	if errors.Handler("SQL connection error", err) {
-		panic(err)
+		logger.Error("SQL connection error", err)
+		Close(db)
+		return nil
 	}
 
 	return db
