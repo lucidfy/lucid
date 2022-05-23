@@ -62,7 +62,6 @@ func (p *Paginate) Render(view *string /*, data array*/) string {
 	)
 	if err != nil {
 		logger.Fatal(err)
-		panic(err)
 	}
 	return result
 }
