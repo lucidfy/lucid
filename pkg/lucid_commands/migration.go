@@ -55,6 +55,7 @@ func (mc MigrateCommand) Handle() error {
 	migrations := mc.Migrations
 
 	db := databases.Resolve()
+	defer databases.Close(db)
 	db.AutoMigrate(&migrations_model.Model{})
 
 	if c.Bool("current-database") {
@@ -127,6 +128,7 @@ func (mc MigrateCommand) Handle() error {
 // CheckStructNameIfExists, check if the struct name ever existed
 func (mc MigrateCommand) CheckStructNameIfExists(struct_name string) bool {
 	db := databases.Resolve()
+	defer databases.Close(db)
 
 	stmt, args, _ := sq.Select("1").From(migrations_model.Table).Where(sq.Eq{"name": struct_name}).ToSql()
 	stmt, args, _ = sq.Expr("select exists("+stmt+") as found", args).ToSql()
@@ -140,6 +142,7 @@ func (mc MigrateCommand) CheckStructNameIfExists(struct_name string) bool {
 // we check if the struct name is on the current sequence
 func (mc MigrateCommand) CheckStructNameOnCurrentSequence(struct_name string) bool {
 	db := databases.Resolve()
+	defer databases.Close(db)
 	stmt, args, _ := sq.Select("1").
 		From(migrations_model.Table).
 		Where(sq.Eq{"name": struct_name}).
@@ -154,6 +157,7 @@ func (mc MigrateCommand) CheckStructNameOnCurrentSequence(struct_name string) bo
 // Save, stores the struct name inside migrations table
 func (mc MigrateCommand) Save(struct_name string, seq uint) {
 	db := databases.Resolve()
+	defer databases.Close(db)
 
 	db.Create(&migrations_model.Model{
 		Name: struct_name,
@@ -167,6 +171,7 @@ func (mc MigrateCommand) Save(struct_name string, seq uint) {
 // Delete, deletes the struct name inside migrations table
 func (mc MigrateCommand) Delete(struct_name string) {
 	db := databases.Resolve()
+	defer databases.Close(db)
 	db.Where("name = ?", struct_name).Delete(&migrations_model.Model{})
 }
 
@@ -174,6 +179,7 @@ func (mc MigrateCommand) Delete(struct_name string) {
 // if there is no record inside migrations table, the default will be 0
 func (mc MigrateCommand) GetCurrentSequence() uint {
 	db := databases.Resolve()
+	defer databases.Close(db)
 
 	stmt := fmt.Sprintf(
 		`select sequence from %s order by id desc limit 1`,

@@ -23,8 +23,8 @@ func NetHttp(w http.ResponseWriter, r *http.Request) *NetHttpResponse {
 	return &m
 }
 
-func (m *NetHttpResponse) ViewWithStatus(filepaths []string, data interface{}, status *int) *errors.AppError {
-	m.ResponseWriter.WriteHeader(*status)
+func (m *NetHttpResponse) ViewWithStatus(filepaths []string, data interface{}, status int) *errors.AppError {
+	m.ResponseWriter.WriteHeader(status)
 
 	for idx, filepath := range filepaths {
 		if !strings.Contains(filepath, DEFAULT_VIEW_EXT) {
@@ -62,8 +62,7 @@ func (m *NetHttpResponse) ViewWithStatus(filepaths []string, data interface{}, s
 }
 
 func (m *NetHttpResponse) View(filepaths []string, data interface{}) *errors.AppError {
-	httpOk := 200
-	return m.ViewWithStatus(filepaths, data, &httpOk)
+	return m.ViewWithStatus(filepaths, data, http.StatusOK)
 }
 
 func (m *NetHttpResponse) Json(data interface{}, status int) *errors.AppError {

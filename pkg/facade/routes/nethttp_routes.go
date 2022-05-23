@@ -65,6 +65,8 @@ func (mr NetHttpRoutes) register(route Routing) {
 
 	// serving handler based
 	handler := func(w http.ResponseWriter, r *http.Request) {
+		defer r.Body.Close()
+
 		engine := *engines.NetHttp(w, r)
 		e := route.Handler(engine)
 		if e != nil {

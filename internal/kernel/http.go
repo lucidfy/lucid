@@ -3,7 +3,6 @@ package kernel
 import (
 	"context"
 	"flag"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -14,7 +13,6 @@ import (
 	"github.com/lucidfy/lucid/pkg/facade/logger"
 	"github.com/lucidfy/lucid/pkg/facade/urls"
 	"github.com/lucidfy/lucid/pkg/helpers"
-	"github.com/lucidfy/lucid/registrar"
 )
 
 type App struct {
@@ -22,16 +20,10 @@ type App struct {
 	Deadline time.Duration
 }
 
-func New() *App {
+func New(handler http.Handler) *App {
 	var wait time.Duration
 	flag.DurationVar(&wait, "graceful-timeout", time.Second*15, "the duration for which the server gracefully wait for existing connections to finish - e.g. 15s or 1m")
 	flag.Parse()
-
-	engine := helpers.Getenv("LUCID_ROUTER_ENGINE", "mux")
-	engine_handler, ok := registrar.Engines[engine]
-	if !ok {
-		panic(fmt.Errorf(`%s engine does not exists`, engine))
-	}
 
 	write_timeout, _ := strconv.Atoi(helpers.Getenv("LUCID_WRITE_TIMEOUT", "10"))
 	read_timeout, _ := strconv.Atoi(helpers.Getenv("LUCID_READ_TIMEOUT", "10"))
@@ -42,7 +34,7 @@ func New() *App {
 		ReadTimeout:  time.Second * time.Duration(read_timeout),
 		IdleTimeout:  time.Second * time.Duration(idle_timeout),
 		Addr:         urls.GetAddr(),
-		Handler:      engine_handler(),
+		Handler:      handler,
 	}
 
 	return &App{

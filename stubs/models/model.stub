@@ -16,6 +16,7 @@ import (
 
 func Lists(st *searchable.Table) *errors.AppError {
 	db := databases.Resolve()
+	defer databases.Close(db)
 
 	// fetch counts
 	var total int
@@ -48,6 +49,7 @@ func Exists(column string, value *string) *errors.AppError {
 	}
 
 	db := databases.Resolve()
+	defer databases.Close(db)
 
 	stmt, args, _ := sq.Select("1").From(Table).Where(sq.Eq{column: *value}).ToSql()
 	stmt, args, _ = sq.Expr("select exists("+stmt+") as found", args).ToSql()
@@ -67,6 +69,7 @@ func Exists(column string, value *string) *errors.AppError {
 
 func Create(i interface{}) (*Finder, *errors.AppError) {
 	db := databases.Resolve()
+	defer databases.Close(db)
 
 	// here, we call the sanitizer function
 	i, app_err := sanitize(i)
@@ -118,6 +121,7 @@ type Finder struct {
 
 func Find(id interface{}, col interface{}) (*Finder, *errors.AppError) {
 	db := databases.Resolve()
+	defer databases.Close(db)
 	record := new(Model)
 
 	if col == nil || col.(string) == "" {
@@ -138,6 +142,7 @@ func Find(id interface{}, col interface{}) (*Finder, *errors.AppError) {
 
 func (f *Finder) Updates(i interface{}) *errors.AppError {
 	db := databases.Resolve()
+	defer databases.Close(db)
 
 	// here, we call the sanitizer function
 	i, app_err := sanitize(i)
@@ -154,6 +159,7 @@ func (f *Finder) Updates(i interface{}) *errors.AppError {
 
 func (f *Finder) Delete() bool {
 	db := databases.Resolve()
+	defer databases.Close(db)
 	db.Delete(f.Model)
 	return true
 }

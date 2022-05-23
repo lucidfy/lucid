@@ -1,6 +1,7 @@
 # Contribution Guide
 
 - [# Folder Structure](#-folder-structure)
+- [# Encapsulation](#-encapsulation)
 - [# For Security Issues](#-for-security-issues)
 
 ---
@@ -30,6 +31,41 @@ We welcome all developers to contribute to this project, this documentation will
   - It is the place we store all configurations, the `.env` holds the default config, while the `env.{APP_ENV` will be loaded after we are able to capture the `APP_ENV`
 - `/serve, /build, /preview, & /run`
   - These are shell commands to help you **serve**, **build**, **preview** or **run** a console command.
+
+{#-encapsulation}
+
+## [#](#-encapsulation) Encapsulation
+
+Variables must be declared as `snake_case`, for example:
+
+```go
+var first_name string = "John"
+last_name := "Doe"
+```
+
+Functions with scoped access should be in `lowerCamelCase`, for example:
+
+```go
+func getMethod() {
+  // ...
+}
+
+func (ms *MyStruct) getFiles() {
+  // ...
+}
+```
+
+Functions with wide access should be in `UpperCamelCase`, for example:
+
+```go
+func GetKey() {
+  // ...
+}
+
+func (ms *MyStruct) District() {
+  // ...
+}
+```
 
 {#-for-security-issues}
 

@@ -21,6 +21,7 @@ func TestMyThing(t *testing.T) {
 func TestDatabaseQuery(t *testing.T) {
 	stmt := `select * from users limit 10`
 	db := databases.Resolve()
+	defer databases.Close(db)
 
 	var records []users.Model
 	db.Raw(stmt).Scan(&records)

@@ -73,5 +73,5 @@ func HttpErrorHandler(T engines.EngineContract, app_err *errors.AppError) {
 	}
 
 	//> write html format
-	res.ViewWithStatus([]string{"pkg/error/default"}, data, &code)
+	res.ViewWithStatus([]string{"pkg/error/default"}, data, code)
 }

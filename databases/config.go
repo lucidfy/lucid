@@ -31,6 +31,11 @@ func Resolve() *gorm.DB {
 	return db
 }
 
+func Close(db *gorm.DB) {
+	d, _ := db.DB()
+	d.Close()
+}
+
 func Dialector() *gorm.Dialector {
 	var dialect *gorm.Dialector
 	switch os.Getenv("DB_CONNECTION") {

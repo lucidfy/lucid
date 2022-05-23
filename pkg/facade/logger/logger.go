@@ -23,7 +23,7 @@ func MakeWriter() (io.Writer, *os.File) {
 	)
 	if err != nil {
 		log.Fatalf("Error opening file: %v", err)
-		defer f.Close()
+		f.Close()
 	}
 	wrt := io.MultiWriter(os.Stdout, f)
 	return wrt, f
