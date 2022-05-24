@@ -3,8 +3,8 @@ package must
 import (
 	"unicode"
 
+	"github.com/lucidfy/lucid/pkg/facade/lang"
 	"github.com/lucidfy/lucid/pkg/helpers"
-	"github.com/lucidfy/lucid/resources/translations"
 )
 
 type StrictPassword struct {
@@ -20,6 +20,8 @@ type StrictPassword struct {
 	ErrorMessageNoUpperCase   func(string, string) string
 	ErrorMessageNoLowerCase   func(string, string) string
 	ErrorMessageNoDigit       func(string, string) string
+
+	Translation *lang.Translations
 }
 
 func (r *StrictPassword) ErrorMessage(inputField string, inputValue string) string {
@@ -46,7 +48,7 @@ func (r *StrictPassword) Valid(inputField string, inputValue string) bool {
 		if r.ErrorMessageNoSpecialChar != nil {
 			r.message = r.ErrorMessageNoSpecialChar(inputField, inputValue)
 		} else {
-			r.message = translations.T("validations.strictpassword.special", helpers.MS{
+			r.message = r.Translation.Get("validations.strictpassword.special", helpers.MS{
 				":field": inputField,
 				":value": inputValue,
 			})
@@ -59,7 +61,7 @@ func (r *StrictPassword) Valid(inputField string, inputValue string) bool {
 		if r.ErrorMessageNoUpperCase != nil {
 			r.message = r.ErrorMessageNoUpperCase(inputField, inputValue)
 		} else {
-			r.message = translations.T("validations.strictpassword.uppercase", helpers.MS{
+			r.message = r.Translation.Get("validations.strictpassword.uppercase", helpers.MS{
 				":field": inputField,
 				":value": inputValue,
 			})
@@ -71,7 +73,7 @@ func (r *StrictPassword) Valid(inputField string, inputValue string) bool {
 		if r.ErrorMessageNoLowerCase != nil {
 			r.message = r.ErrorMessageNoLowerCase(inputField, inputValue)
 		} else {
-			r.message = translations.T("validations.strictpassword.lowercase", helpers.MS{
+			r.message = r.Translation.Get("validations.strictpassword.lowercase", helpers.MS{
 				":field": inputField,
 				":value": inputValue,
 			})
@@ -83,7 +85,7 @@ func (r *StrictPassword) Valid(inputField string, inputValue string) bool {
 		if r.ErrorMessageNoDigit != nil {
 			r.message = r.ErrorMessageNoDigit(inputField, inputValue)
 		} else {
-			r.message = translations.T("validations.strictpassword.digit", helpers.MS{
+			r.message = r.Translation.Get("validations.strictpassword.digit", helpers.MS{
 				":field": inputField,
 				":value": inputValue,
 			})
@@ -92,4 +94,8 @@ func (r *StrictPassword) Valid(inputField string, inputValue string) bool {
 	}
 
 	return true
+}
+
+func (r *StrictPassword) SetTranslation(t *lang.Translations) {
+	r.Translation = t
 }

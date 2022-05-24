@@ -71,18 +71,23 @@ After placing the lucidfy/setup into your machine, we then need to download the 
 after setting up all the folders, therefore execute the `./setup-container`
 
 ```bash
-> ./setup-container
+> sudo ./setup-container
 ```
 
 After that, once you've successfully built your own container, to tail the console stdout for both go and sveltekit, try below command.
 
 ```bash
-> docker logs -f lucid-container
+> ./tail
 ```
 
-To **stop** or **start** again the docker container
+To `restart` your container
+
+```bash
+> ./restart
+```
+
+To `stop` your container
 
 ```bash
 > docker container stop lucid-container
-> docker container start lucid-container
 ```

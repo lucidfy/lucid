@@ -1,8 +1,6 @@
 package validations
 
-import (
-	"github.com/lucidfy/lucid/pkg/rules/must"
-)
+import "github.com/lucidfy/lucid/pkg/rules/must"
 
 type UsersValidator struct {
 	Rules *must.SetOfRules

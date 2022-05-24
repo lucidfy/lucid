@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/lucidfy/lucid/pkg/env"
+	"github.com/lucidfy/lucid/pkg/facade/lang"
 )
 
 func init() {
@@ -12,7 +13,7 @@ func init() {
 }
 
 func TestMaxValid(t *testing.T) {
-	rule := Max{Value: 10}
+	rule := Max{Value: 10, Translation: lang.Load(TestLanguages)}
 
 	if !rule.Valid("input_name", "a") {
 		t.Errorf(`Should be valid since the letter is only "a" is at least 10`)
@@ -24,7 +25,7 @@ func TestMaxValid(t *testing.T) {
 }
 
 func TestMaxInvalid(t *testing.T) {
-	rule := Max{Value: 10}
+	rule := Max{Value: 10, Translation: lang.Load(TestLanguages)}
 
 	if rule.Valid("input_name", "Nisi ad ex labore reprehenderit.") {
 		t.Errorf(`Should be invalid since the letter is beyond 10 length`)
@@ -36,7 +37,7 @@ func TestMaxInvalid(t *testing.T) {
 }
 
 func TestMaxWithDefaultErrorMessage(t *testing.T) {
-	rule := Max{Value: 10}
+	rule := Max{Value: 10, Translation: lang.Load(TestLanguages)}
 
 	wantedErrMsg := "input_name is set to maximum of 10 length!"
 	gotErrMsg := rule.ErrorMessage("input_name", "1234567890a")
@@ -47,7 +48,8 @@ func TestMaxWithDefaultErrorMessage(t *testing.T) {
 
 func TestMaxWithCustomErrorMessage(t *testing.T) {
 	rule := Max{
-		Value: 10,
+		Translation: lang.Load(TestLanguages),
+		Value:       10,
 		CustomErrorMessage: func(field string, value string, length int) string {
 			return fmt.Sprintf("This %s field is invalid!!! with value %s", field, value)
 		},

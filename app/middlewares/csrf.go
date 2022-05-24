@@ -5,7 +5,9 @@ import (
 	"os"
 
 	"github.com/gorilla/csrf"
+	"github.com/lucidfy/lucid/pkg/facade/lang"
 	"github.com/lucidfy/lucid/pkg/facade/request"
+	"github.com/lucidfy/lucid/resources/translations"
 )
 
 // CsrfShouldSkipMiddleware here, we determine if we should skip the csrf
@@ -14,7 +16,8 @@ import (
 func CsrfShouldSkipMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		is_json := func(w http.ResponseWriter, r *http.Request) (is_json bool) {
-			rp := request.NetHttp(w, r, nil)
+			t := lang.Load(translations.Languages)
+			rp := request.NetHttp(w, r, t, nil)
 			is_json = rp.IsJson() || rp.WantsJson()
 			return
 		}(w, r)

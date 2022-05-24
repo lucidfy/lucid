@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/lucidfy/lucid/pkg/env"
+	"github.com/lucidfy/lucid/pkg/facade/lang"
 )
 
 func init() {
@@ -12,7 +13,7 @@ func init() {
 }
 
 func TestEmail(t *testing.T) {
-	rule := Email{}
+	rule := Email{Translation: lang.Load(TestLanguages)}
 
 	if rule.Valid("email", "johndoe") == true {
 		t.Errorf(`Email should be invalid as we used "johndoe"`)
@@ -26,7 +27,7 @@ func TestEmail(t *testing.T) {
 }
 
 func TestEmailWithAtSign(t *testing.T) {
-	rule := Email{}
+	rule := Email{Translation: lang.Load(TestLanguages)}
 
 	if rule.Valid("email", "johndoe@") == true {
 		t.Errorf(`Email should be invalid as we used "johndoe@"`)
@@ -40,7 +41,7 @@ func TestEmailWithAtSign(t *testing.T) {
 }
 
 func TestEmailWithUserDomain(t *testing.T) {
-	rule := Email{}
+	rule := Email{Translation: lang.Load(TestLanguages)}
 
 	if rule.Valid("email", "johndoe@domain") {
 		t.Errorf(`Email should be invalid as we used "johndoe@domain"`)
@@ -54,7 +55,7 @@ func TestEmailWithUserDomain(t *testing.T) {
 }
 
 func TestEmailWithFullDomain(t *testing.T) {
-	rule := Email{}
+	rule := Email{Translation: lang.Load(TestLanguages)}
 
 	if !rule.Valid("email", "johndoe@domain.com") {
 		t.Errorf(`Email should be valid as we used "johndoe@domain.com"`)
@@ -68,7 +69,7 @@ func TestEmailWithFullDomain(t *testing.T) {
 }
 
 func TestEmailWithPlusAndFullDomain(t *testing.T) {
-	rule := Email{}
+	rule := Email{Translation: lang.Load(TestLanguages)}
 
 	if !rule.Valid("email", "johndoe+test1@domain.com") {
 		t.Errorf(`Email should be valid as we used "johndoe+test1@domain.com"`)
@@ -77,6 +78,7 @@ func TestEmailWithPlusAndFullDomain(t *testing.T) {
 
 func TestEmailWithCustomErrorMessage(t *testing.T) {
 	rule := Email{
+		Translation: lang.Load(TestLanguages),
 		CustomErrorMessage: func(field string, value string) string {
 			return fmt.Sprintf("This %s field is invalid!!! with value %s", field, value)
 		},

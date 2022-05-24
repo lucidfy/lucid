@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/lucidfy/lucid/pkg/env"
+	"github.com/lucidfy/lucid/pkg/facade/lang"
 	"github.com/lucidfy/lucid/pkg/rules/must"
 )
 
@@ -44,7 +45,8 @@ func TestGetErrors(t *testing.T) {
 		"confirm_password": "1234qwerASDF!@#$",
 	}
 
-	validationErrors := GetErrors(setOfRules, inputValues)
+	trans := lang.Load(must.TestLanguages)
+	validationErrors := New(trans, inputValues).GetErrors(setOfRules)
 	if len(validationErrors) != 0 {
 		t.Error("Validation error should be empty!")
 	}
@@ -57,7 +59,8 @@ func TestGetErrors(t *testing.T) {
 		"password":         "1234qwerASDF!@#$",
 		"confirm_password": "1q3rZo4ogF!t4$",
 	}
-	validationErrors = GetErrors(setOfRules, inputValues)
+
+	validationErrors = New(trans, inputValues).GetErrors(setOfRules)
 
 	got := validationErrors["confirm_password"]
 	expect := "confirm_password did not match with password!"

@@ -6,5 +6,7 @@ import (
 )
 
 func main() {
-	kernel.ConsoleApplication(registrar.Commands)
+	cmds := registrar.Commands
+	cmds = append(cmds, registrar.LucidCommands...)
+	kernel.ConsoleApplication(cmds...)
 }

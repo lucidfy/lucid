@@ -1,6 +1,8 @@
 package paginate
 
 type Paginate struct {
+	Template string
+
 	Total       int `json:"total"`
 	PerPage     int `json:"per_page"`
 	CurrentPage int `json:"current_page"`

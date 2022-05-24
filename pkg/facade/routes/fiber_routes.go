@@ -6,23 +6,40 @@ import (
 
 	"github.com/gofiber/adaptor/v2"
 	"github.com/gofiber/fiber/v2"
-	"github.com/lucidfy/lucid/app"
-	"github.com/lucidfy/lucid/app/handlers"
 	"github.com/lucidfy/lucid/pkg/engines"
+	"github.com/lucidfy/lucid/pkg/errors"
+	"github.com/lucidfy/lucid/pkg/facade/lang"
 	"github.com/lucidfy/lucid/pkg/facade/request"
 	"github.com/valyala/fasthttp"
 	"github.com/valyala/fasthttp/fasthttpadaptor"
 )
 
 type FiberRoutes struct {
-	App *fiber.App
+	App               *fiber.App
+	GlobalMiddlewares []interface{}
+	RouteMiddlewares  map[string]interface{}
+	HttpErrorHandler  func(engines.EngineContract, *errors.AppError)
+	Translation       *lang.Translations
+}
+
+func Fiber(t *lang.Translations) *FiberRoutes {
+	return &FiberRoutes{Translation: t}
+}
+
+func (fr *FiberRoutes) AddGlobalMiddlewares(base []interface{}) *FiberRoutes {
+	fr.GlobalMiddlewares = base
+	return fr
+}
+
+func (fr *FiberRoutes) AddRouteMiddlewares(base map[string]interface{}) *FiberRoutes {
+	fr.RouteMiddlewares = base
+	return fr
 }
 
 // Here, you can find how we iterate the routes() function,
 // we're using gorilla/mux package to serve our routing with
 // extensive support with http requests + middlewares.
-func Fiber(routings *[]Routing) FiberRoutes {
-	fr := FiberRoutes{}
+func (fr *FiberRoutes) Register(routings *[]Routing) *FiberRoutes {
 	fr.App = fiber.New()
 
 	for _, routing := range *fr.Explain(routings) {
@@ -57,7 +74,7 @@ func (fr *FiberRoutes) register(route Routing) {
 	// collate all middlewares into slice
 	var mids []func(*fiber.Ctx) error
 	if route.WithGlobalMiddleware == nil || route.WithGlobalMiddleware == true {
-		for _, v := range app.GlobalMiddleware {
+		for _, v := range fr.GlobalMiddlewares {
 			mids = append(mids, adaptor.HTTPMiddleware(
 				v.(func(http.Handler) http.Handler),
 			))
@@ -65,16 +82,16 @@ func (fr *FiberRoutes) register(route Routing) {
 	}
 	for _, v := range route.Middlewares {
 		mids = append(mids, adaptor.HTTPMiddleware(
-			app.RouteMiddleware[v].(func(http.Handler) http.Handler),
+			fr.RouteMiddlewares[v].(func(http.Handler) http.Handler),
 		))
 	}
 
 	// get handler
 	fiber_handle := adaptorToHttpHandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		engine := *engines.NetHttp(w, r)
+		engine := *engines.NetHttp(w, r, fr.Translation)
 		e := route.Handler(engine)
 		if e != nil {
-			handlers.HttpErrorHandler(engine, e)
+			fr.HttpErrorHandler(engine, e)
 		}
 	})
 

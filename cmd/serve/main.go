@@ -7,10 +7,16 @@ import (
 	"os"
 
 	"github.com/gofiber/adaptor/v2"
+	"github.com/lucidfy/lucid/app"
+	"github.com/lucidfy/lucid/app/handlers"
 	"github.com/lucidfy/lucid/internal/kernel"
+	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/env"
+	"github.com/lucidfy/lucid/pkg/errors"
+	"github.com/lucidfy/lucid/pkg/facade/lang"
 	"github.com/lucidfy/lucid/pkg/facade/routes"
 	"github.com/lucidfy/lucid/registrar"
+	"github.com/lucidfy/lucid/resources/translations"
 )
 
 func init() {
@@ -41,12 +47,46 @@ func init() {
 }
 
 func defaultRouterEngines() map[string]func() http.Handler {
+	trans := lang.Load(translations.Languages)
+
 	return map[string]func() http.Handler{
 		"mux": func() http.Handler {
-			return routes.NetHttp().Register(&registrar.Routes)
+
+			nethttp := routes.NetHttp(trans).
+				AddGlobalMiddlewares(app.GlobalMiddleware).
+				AddRouteMiddlewares(app.RouteMiddleware)
+
+			nethttp.HttpErrorHandler = handlers.HttpErrorHandler
+
+			nethttp.Router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				engine := *engines.NetHttp(w, r, trans)
+				handlers.HttpErrorHandler(engine, &errors.AppError{
+					Code:    http.StatusNotFound,
+					Message: "Page not found",
+					Error:   fmt.Errorf("404 page not found"),
+				})
+			})
+
+			nethttp.Router.MethodNotAllowedHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				engine := *engines.NetHttp(w, r, trans)
+				handlers.HttpErrorHandler(engine, &errors.AppError{
+					Code:    http.StatusMethodNotAllowed,
+					Message: "Method not allowed",
+					Error:   fmt.Errorf("405 method not allowed"),
+				})
+			})
+
+			return nethttp.Register(&registrar.Routes)
 		},
+
 		"fiber": func() http.Handler {
-			return adaptor.FiberApp(routes.Fiber(&registrar.Routes).App)
+			fiber := routes.Fiber(trans).
+				AddGlobalMiddlewares(app.GlobalMiddleware).
+				AddRouteMiddlewares(app.RouteMiddleware)
+
+			fiber.HttpErrorHandler = handlers.HttpErrorHandler
+
+			return adaptor.FiberApp(fiber.Register(&registrar.Routes).App)
 		},
 	}
 }

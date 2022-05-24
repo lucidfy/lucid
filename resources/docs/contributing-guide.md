@@ -1,70 +1,35 @@
 # Contribution Guide
 
-- [# Folder Structure](#-folder-structure)
-- [# Encapsulation](#-encapsulation)
+- [# Standards](#-standards)
+  - [# Encapsulation](#-encapsulation)
 - [# For Security Issues](#-for-security-issues)
 
 ---
 
 We welcome all developers to contribute to this project, this documentation will help us achieve to work on the same standards.
 
-{#-folder-structure}
+{#-standards}
 
-## [#](#-folder-structure) Folder Structure
-
-- `/.build/`
-- `/.vscode/`
-- `/app/`
-- `/cmd/`
-- `/databases/`
-- `/internal/`
-- `/pkg/`
-- `/registrar/`
-- `/resources/`
-- `/storage/`
-  - `/framework`
-    - ...
-  - `/logs`
-    - ...
-- `/stubs/`
-- `/env & /env.local`
-  - It is the place we store all configurations, the `.env` holds the default config, while the `env.{APP_ENV` will be loaded after we are able to capture the `APP_ENV`
-- `/serve, /build, /preview, & /run`
-  - These are shell commands to help you **serve**, **build**, **preview** or **run** a console command.
+## [#](#-standards) Standards
 
 {#-encapsulation}
 
-## [#](#-encapsulation) Encapsulation
+### [#](#-encapsulation) Encapsulation
 
-Variables must be declared as `snake_case`, for example:
+Scoped variables shall be declared as `snake_case`, while functions shall be in `lowerCamelCase`, for example:
 
 ```go
 var first_name string = "John"
 last_name := "Doe"
+func getMethod() {}
+func (ms *MyStruct) getFiles() {}
 ```
 
-Functions with scoped access should be in `lowerCamelCase`, for example:
+Accessible variables & functions shall be in `UpperCamelCase`, for example:
 
 ```go
-func getMethod() {
-  // ...
-}
-
-func (ms *MyStruct) getFiles() {
-  // ...
-}
-```
-
-Functions with wide access should be in `UpperCamelCase`, for example:
-
-```go
-func GetKey() {
-  // ...
-}
-
-func (ms *MyStruct) District() {
-  // ...
-}
+func GetKey() {}
+func (ms *MyStruct) District() {}
 ```
 
 {#-for-security-issues}

@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/lucidfy/lucid/pkg/env"
+	"github.com/lucidfy/lucid/pkg/facade/lang"
 )
 
 func init() {
@@ -12,7 +13,7 @@ func init() {
 }
 
 func TestMinValid(t *testing.T) {
-	rule := Min{Value: 5}
+	rule := Min{Value: 5, Translation: lang.Load(TestLanguages)}
 
 	if !rule.Valid("input_name", "12345") {
 		t.Errorf(`Should be valid`)
@@ -24,7 +25,7 @@ func TestMinValid(t *testing.T) {
 }
 
 func TestMinInvalid(t *testing.T) {
-	rule := Min{Value: 5}
+	rule := Min{Value: 5, Translation: lang.Load(TestLanguages)}
 
 	if rule.Valid("input_name", "Nis4") {
 		t.Errorf(`Should be invalid`)
@@ -40,7 +41,7 @@ func TestMinInvalid(t *testing.T) {
 }
 
 func TestMinWithDefaultErrorMessage(t *testing.T) {
-	rule := Min{Value: 5}
+	rule := Min{Value: 5, Translation: lang.Load(TestLanguages)}
 
 	wantedErrMsg := "input_name is set to minimum of 5 length!"
 	gotErrMsg := rule.ErrorMessage("input_name", "1234567890a")
@@ -51,7 +52,8 @@ func TestMinWithDefaultErrorMessage(t *testing.T) {
 
 func TestMinWithCustomErrorMessage(t *testing.T) {
 	rule := Min{
-		Value: 10,
+		Translation: lang.Load(TestLanguages),
+		Value:       10,
 		CustomErrorMessage: func(field string, value string, length int) string {
 			return fmt.Sprintf("This %s field is invalid!!! with value %s", field, value)
 		},

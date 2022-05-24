@@ -9,7 +9,7 @@ import (
 	cli "github.com/urfave/cli/v2"
 )
 
-func ConsoleApplication(cmds []*cli.Command) {
+func ConsoleApplication(cmds ...*cli.Command) {
 	env.LoadEnv()
 	cmds = append(cmds, lucid_commands.Commands...)
 

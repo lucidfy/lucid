@@ -4,23 +4,37 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/lucidfy/lucid/pkg/facade/lang"
 	"github.com/lucidfy/lucid/pkg/rules/must"
 )
 
-func Validate(
+type Validator struct {
+	Translation *lang.Translations
+	InputValues map[string]interface{}
+}
+
+func New(t *lang.Translations, values map[string]interface{}) *Validator {
+	return &Validator{
+		Translation: t,
+		InputValues: values,
+	}
+}
+
+func (v *Validator) Validate(
 	inputField string,
-	inputValues map[string]interface{},
 	rule must.Rule,
 	err chan map[string]string,
 	wg *sync.WaitGroup,
 ) {
 	defer wg.Done()
-	inputValue := fmt.Sprint(inputValues[inputField])
+	inputValue := fmt.Sprint(v.InputValues[inputField])
 
 	i, ok := rule.(interface{ Inputs(map[string]interface{}) })
 	if ok {
-		i.Inputs(inputValues)
+		i.Inputs(v.InputValues)
 	}
+
+	rule.SetTranslation(v.Translation)
 
 	if !rule.Valid(inputField, inputValue) {
 		err <- map[string]string{
@@ -29,7 +43,7 @@ func Validate(
 	}
 }
 
-func GetErrors(setOfRules *must.SetOfRules, inputValues map[string]interface{}) map[string]interface{} {
+func (v *Validator) GetErrors(setOfRules *must.SetOfRules) map[string]interface{} {
 	var errsChan = make(chan map[string]string)
 
 	var wg sync.WaitGroup
@@ -37,9 +51,8 @@ func GetErrors(setOfRules *must.SetOfRules, inputValues map[string]interface{}) 
 	for inputField, inputRules := range *setOfRules {
 		for _, inputRule := range inputRules {
 			wg.Add(1)
-			go Validate(
+			go v.Validate(
 				inputField,
-				inputValues,
 				inputRule,
 				errsChan,
 				&wg,

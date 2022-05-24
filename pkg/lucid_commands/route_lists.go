@@ -10,7 +10,7 @@ import (
 	cli "github.com/urfave/cli/v2"
 )
 
-func RouteDefined(r *[]routes.Routing) *cli.Command {
+func RouteDefined(r func() *[]routes.Routing) *cli.Command {
 	return &cli.Command{
 		Name:    "route:defined",
 		Aliases: []string{"show:rd"},
@@ -30,13 +30,12 @@ func RouteDefined(r *[]routes.Routing) *cli.Command {
 	}
 }
 
-func RouteRegistered(r *[]routes.Routing) *cli.Command {
+func RouteRegistered(r func() *mux.Router) *cli.Command {
 	return &cli.Command{
 		Name:    "route:registered",
 		Aliases: []string{"show:rr"},
 		Usage:   "Get the lists of registered routes",
 		Action: func(c *cli.Context) error {
-
 			registered := registered(r)
 
 			t := table.NewWriter()
@@ -69,10 +68,10 @@ type Defined struct {
 	queries     string
 }
 
-func registered(r *[]routes.Routing) []Registered {
+func registered(r func() *mux.Router) []Registered {
 	routings := []Registered{}
 
-	handlers := routes.NetHttp().Register(r)
+	handlers := r()
 	handlers.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
 		path, err := route.GetPathTemplate()
 		if err != nil {
@@ -114,10 +113,10 @@ func registered(r *[]routes.Routing) []Registered {
 	return routings
 }
 
-func defined(r *[]routes.Routing) []Defined {
+func defined(r func() *[]routes.Routing) []Defined {
 	routings := []Defined{}
 
-	routes := *routes.NetHttp().Explain(r)
+	routes := *r()
 	for _, route := range routes {
 		routings = append(routings, Defined{
 			counter:     len(routings) + 1,

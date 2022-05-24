@@ -11,7 +11,7 @@ import (
 	"github.com/lucidfy/lucid/pkg/facade/response"
 )
 
-const DefaultView = "pkg/pagination/tailwind.go.html"
+const DefaultTemplate = "pkg/pagination/tailwind.go.html"
 
 func Construct(items interface{}, total int, perPage int, currentPage int) *Paginate {
 	p := Paginate{
@@ -19,6 +19,7 @@ func Construct(items interface{}, total int, perPage int, currentPage int) *Pagi
 		CurrentPage: currentPage,
 	}
 	p.Reconstruct(items, total)
+	p.Template = DefaultTemplate
 	return &p
 }
 
@@ -29,6 +30,7 @@ func (p *Paginate) Reconstruct(items interface{}, total int) *Paginate {
 
 	p.OnEachSide = 3
 	p.Fragment = nil
+	p.Template = DefaultTemplate
 
 	return p
 }
@@ -37,9 +39,14 @@ func (p *Paginate) Links() string {
 	return p.Render(nil)
 }
 
+func (p *Paginate) ChangeTemplate(t string) *Paginate {
+	p.Template = t
+	return p
+}
+
 func (p *Paginate) Render(view *string /*, data array*/) string {
 	if view == nil {
-		dv := DefaultView
+		dv := p.Template
 		view = &dv
 	}
 

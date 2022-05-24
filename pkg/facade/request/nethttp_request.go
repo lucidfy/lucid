@@ -10,6 +10,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/lucidfy/lucid/pkg/errors"
+	"github.com/lucidfy/lucid/pkg/facade/lang"
 	"github.com/lucidfy/lucid/pkg/facade/urls"
 	"github.com/lucidfy/lucid/pkg/rules"
 	"github.com/lucidfy/lucid/pkg/rules/must"
@@ -18,20 +19,22 @@ import (
 type NetHttpRequest struct {
 	ResponseWriter     http.ResponseWriter
 	HttpRequest        *http.Request
+	Translation        *lang.Translations
 	URL                *urls.NetHttpURL
 	MaxMultipartMemory int64
 
 	ParsedParams map[string]interface{}
 }
 
-func NetHttp(w http.ResponseWriter, r *http.Request, u *urls.NetHttpURL) *NetHttpRequest {
-	t := NetHttpRequest{
+func NetHttp(w http.ResponseWriter, r *http.Request, t *lang.Translations, u *urls.NetHttpURL) *NetHttpRequest {
+	n := NetHttpRequest{
 		ResponseWriter:     w,
 		HttpRequest:        r,
+		Translation:        t,
 		URL:                u,
 		MaxMultipartMemory: 32 << 20, // 32MB
 	}
-	return &t
+	return &n
 }
 
 type contextKey int
@@ -151,10 +154,9 @@ func (t *NetHttpRequest) WantsJson() bool {
 func (t *NetHttpRequest) Validator(setOfRules *must.SetOfRules) *errors.AppError {
 	inputValues := t.All().(map[string]interface{})
 
-	validationErrors := rules.GetErrors(
-		setOfRules,
-		inputValues,
-	)
+	validationErrors := rules.
+		New(t.Translation, inputValues).
+		GetErrors(setOfRules)
 
 	if len(validationErrors) > 0 {
 		return &errors.AppError{
