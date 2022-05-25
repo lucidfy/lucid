@@ -11,6 +11,6 @@ var Languages = map[string]helpers.MS{
 	"zh-TW": ChineseTraditional,
 }
 
-func T(key string, values helpers.MS) string {
+func Get(key string, values helpers.MS) string {
 	return lang.Load(Languages).Get(key, values)
 }

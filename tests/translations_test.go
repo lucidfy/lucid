@@ -9,7 +9,7 @@ import (
 )
 
 func TestTranslateWithNoEnv(t *testing.T) {
-	got := translations.T("validations.email", helpers.MS{
+	got := translations.Get("validations.email", helpers.MS{
 		":field": "Email",
 	})
 	expect := "Email is not a valid email address!"
@@ -22,7 +22,7 @@ func TestTranslateWithNoEnv(t *testing.T) {
 func TestTranslateUsingChineseSimplified(t *testing.T) {
 	os.Setenv("APP_LANGUAGE", "zh-CN")
 
-	got := translations.T("validations.email", helpers.MS{
+	got := translations.Get("validations.email", helpers.MS{
 		":field": "Email",
 	})
 	expect := "Email 不是有效的电子邮件地址"
@@ -35,7 +35,7 @@ func TestTranslateUsingChineseSimplified(t *testing.T) {
 func TestTranslateUsingChineseTraditional(t *testing.T) {
 	os.Setenv("APP_LANGUAGE", "zh-TW")
 
-	got := translations.T("validations.email", helpers.MS{
+	got := translations.Get("validations.email", helpers.MS{
 		":field": "Email",
 	})
 	expect := "Email 不是有效的電子郵件地址"

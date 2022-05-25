@@ -42,24 +42,30 @@ func New(prefix string) (*log.Logger, *os.File) {
 }
 
 func Debug(title string, data ...interface{}) {
-	text("[%s] [debug] ", title, data)
+	text("[%s] [debug] ", title, data...)
 }
 
 func Info(title string, data ...interface{}) {
-	text("[%s] [info] ", title, data)
+	text("[%s] [info] ", title, data...)
 }
 
 func Warning(title string, data ...interface{}) {
-	text("[%s] [warning] ", title, data)
+	text("[%s] [warning] ", title, data...)
 }
 
 func Error(title string, data ...interface{}) {
-	text("[%s] [error] ", title, data)
+	text("[%s] [error] ", title, data...)
 }
 
 func text(txt string, title string, data ...interface{}) {
 	l, file := New(fmt.Sprintf(txt, os.Getenv("APP_ENV")))
 	defer file.Close()
+
+	// check if data is empty, then hide that %MISSING
+	// when logging an interface variable
+	if len(data) == 0 {
+		data = append(data, "")
+	}
 	data = prepend(title, data...)
 	l.Printf("%s %+v\n", data...)
 }

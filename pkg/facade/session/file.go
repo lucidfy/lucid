@@ -25,7 +25,7 @@ type FileSession struct {
 
 func File(w http.ResponseWriter, r *http.Request) *FileSession {
 	coo := cookie.New(w, r)
-	sessionKey, app_err := coo.Get(os.Getenv("SESSION_NAME"))
+	sessionKey, app_err := coo.Get(helpers.Getenv("SESSION_NAME", "lucid_session"))
 	if app_err != nil && e.Is(app_err.Error, http.ErrNoCookie) {
 		return &FileSession{}
 	}

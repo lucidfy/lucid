@@ -5,8 +5,13 @@ import (
 	"os"
 
 	"github.com/gorilla/csrf"
+	"github.com/lucidfy/lucid/app/handlers"
+	"github.com/lucidfy/lucid/pkg/engines"
+	"github.com/lucidfy/lucid/pkg/errors"
 	"github.com/lucidfy/lucid/pkg/facade/lang"
+	"github.com/lucidfy/lucid/pkg/facade/logger"
 	"github.com/lucidfy/lucid/pkg/facade/request"
+	"github.com/lucidfy/lucid/pkg/helpers"
 	"github.com/lucidfy/lucid/resources/translations"
 )
 
@@ -33,22 +38,39 @@ func CsrfShouldSkipMiddleware(next http.Handler) http.Handler {
 // CsrfProtectMiddleware here, we initialize gorilla's csrf
 // by default we set the csrf_auth_key too
 func CsrfProtectMiddleware(next http.Handler) http.Handler {
-	protect := csrf.Protect(
-		// 1st param is the csrf auth key
-		[]byte(os.Getenv("CSRF_AUTH_KEY")),
-
-		// 2nd param is the option with variadic param
+	opts := []csrf.Option{
 		csrf.Path("/"),
 		csrf.RequestHeader("X-CSRF-Token"),
 		csrf.FieldName("csrf_token"),
 		csrf.TrustedOrigins([]string{os.Getenv("CSRF_TRUSTED_ORIGIN")}),
-	)
-	return protect(next)
+		csrf.CookieName(helpers.Getenv("CSRF_NAME", "lucid_csrf")),
+		csrf.ErrorHandler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			trans := lang.Load(translations.Languages)
+			engine := *engines.NetHttp(w, r, trans)
+			handlers.HttpErrorHandler(engine, &errors.AppError{
+				Message: "CSRF Failure",
+				Error:   csrf.FailureReason(r),
+				Code:    http.StatusForbidden,
+			})
+		})),
+	}
+
+	// for development purposes, we will allow the cookie to be
+	// added in http only and should be secured only
+	if helpers.Getenv("APP_ENV", "local") != "production" {
+		opts = append(opts, csrf.HttpOnly(true), csrf.Secure(false))
+	}
+
+	key := []byte(helpers.Getenv("CSRF_KEY", os.Getenv("APP_KEY")))
+
+	return csrf.Protect(key, opts...)(next)
 }
 
 // CsrfSetterMiddleware here, we pass the token as X-CSRF-Token via header
 func CsrfSetterMiddleware(next http.Handler) http.Handler {
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		logger.Info("hello world", r)
 		token := csrf.Token(r)
 		if len(token) > 0 {
 			w.Header().Set("X-CSRF-Token", token)

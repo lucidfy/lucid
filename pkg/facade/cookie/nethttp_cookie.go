@@ -26,7 +26,7 @@ func New(w http.ResponseWriter, r *http.Request) *NetHttpCookie {
 
 func (s *NetHttpCookie) CreateSessionCookie() interface{} {
 	sessionKey := crypt.GenerateRandomString(20)
-	s.Set(os.Getenv("SESSION_NAME"), sessionKey)
+	s.Set(helpers.Getenv("SESSION_NAME", "lucid_session"), sessionKey)
 	return sessionKey
 }
 
