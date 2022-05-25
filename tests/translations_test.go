@@ -44,3 +44,14 @@ func TestTranslateUsingChineseTraditional(t *testing.T) {
 		t.Errorf("got %q, expect %q", got, expect)
 	}
 }
+
+func TestDirect(t *testing.T) {
+	got := translations.Direct("zh-TW", "validations.email", helpers.MS{
+		":field": "Email",
+	})
+	expect := "Email 不是有效的電子郵件地址"
+
+	if got != expect {
+		t.Errorf("got %q, expect %q", got, expect)
+	}
+}

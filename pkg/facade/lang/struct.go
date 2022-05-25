@@ -23,10 +23,10 @@ func (t Translations) Get(key string, values helpers.MS) string {
 		lang = "en-US"
 	}
 
-	return t.GetLang(key, values, lang)
+	return t.Direct(lang, key, values)
 }
 
-func (t Translations) GetLang(key string, values helpers.MS, lang string) string {
+func (t Translations) Direct(lang string, key string, values helpers.MS) string {
 	sentence := t.langs[lang][key]
 	for k, v := range values {
 		sentence = strings.Replace(sentence, k, v, -1)
