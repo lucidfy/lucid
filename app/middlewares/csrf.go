@@ -9,7 +9,6 @@ import (
 	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/errors"
 	"github.com/lucidfy/lucid/pkg/facade/lang"
-	"github.com/lucidfy/lucid/pkg/facade/logger"
 	"github.com/lucidfy/lucid/pkg/facade/request"
 	"github.com/lucidfy/lucid/pkg/helpers"
 	"github.com/lucidfy/lucid/resources/translations"
@@ -68,9 +67,7 @@ func CsrfProtectMiddleware(next http.Handler) http.Handler {
 
 // CsrfSetterMiddleware here, we pass the token as X-CSRF-Token via header
 func CsrfSetterMiddleware(next http.Handler) http.Handler {
-
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		logger.Info("hello world", r)
 		token := csrf.Token(r)
 		if len(token) > 0 {
 			w.Header().Set("X-CSRF-Token", token)
