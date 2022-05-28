@@ -56,6 +56,10 @@ func NetHttp(w http.ResponseWriter, r *http.Request, t *lang.Translations) *NetH
 	}
 }
 
+func (m NetHttpEngine) GetTranslation() interface{} {
+	return m.Translation
+}
+
 func (m NetHttpEngine) GetRequest() interface{} {
 	return m.Request
 }
@@ -66,4 +70,12 @@ func (m NetHttpEngine) GetResponse() interface{} {
 
 func (m NetHttpEngine) GetURL() interface{} {
 	return m.URL
+}
+
+func (m NetHttpEngine) GetCookie() interface{} {
+	return m.Cookie
+}
+
+func (m NetHttpEngine) GetSession() interface{} {
+	return m.Session
 }

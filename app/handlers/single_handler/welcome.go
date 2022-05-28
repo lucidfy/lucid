@@ -17,7 +17,7 @@ var WelcomeRoute = routes.Routing{
 
 func welcome(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.NetHttpEngine)
-	// w := engine.HttpResponseWriter
+	// w := engine.ResponseWriter
 	// r := engine.HttpRequest
 	req := engine.Request
 	res := engine.Response
@@ -31,6 +31,7 @@ func welcome(T engines.EngineContract) *errors.AppError {
 	if req.WantsJson() {
 		return res.Json(data, http.StatusOK)
 	}
+
 	// render the template
 	return res.View(
 		// this example below, we're telling the compiler

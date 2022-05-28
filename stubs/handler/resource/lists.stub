@@ -2,13 +2,12 @@ package ##PACKAGE_NAME##
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/csrf"
 	"github.com/lucidfy/lucid/app/models/##SMALL_CASE_NAME##"
 	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/errors"
-	"github.com/lucidfy/lucid/pkg/facade/session"
-	"github.com/lucidfy/lucid/pkg/helpers"
 	"github.com/lucidfy/lucid/pkg/paginate/searchable"
 )
 
@@ -68,18 +67,17 @@ func prepare(T engines.EngineContract) (*searchable.Table, *errors.AppError) {
 	url := engine.URL
 
 	//> get the current "page", literally the default of each current page should always be 1
-	current_page, app_err := helpers.StringToInt(req.Input("page", PAGE).(string))
-	if app_err != nil {
-		return nil, app_err
+	current_page, err := strconv.Atoi(req.Input("page", PAGE).(string))
+	if err != nil {
+		return nil, errors.InternalServerError("atoi error: ", err)
 	}
 
 	//> get the "per-page", though the default will be relying to defaultPerPage
 	//> then check if the per page reaches the cap of 20 records per page
 	//> if ever someone tries to bypass the value, we over-write it to 20
-	per_page, app_err := helpers.StringToInt(req.Input("per-page", PER_PAGE).(string))
-
-	if app_err != nil {
-		return nil, app_err
+	per_page, err := strconv.Atoi(req.Input("per-page", PER_PAGE).(string))
+	if err != nil {
+		return nil, errors.InternalServerError("atoi error: ", err)
 	}
 
 	if per_page > 20 {

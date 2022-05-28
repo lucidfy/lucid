@@ -43,10 +43,10 @@ userID, err := ses.Get("authenticated")
 
 Adapter      | Implemented? | Example
 -------------|--------------|--------------------------
-File         | Yes          | `session.File(w, r)`
-~~Cookie~~   | Not yet      | `session.Cookie(w, r)`
-~~Database~~ | Not yet      | `session.Database(w, r)`
-~~Redis~~    | Not yet      | `session.Redis(w, r)`
+File         | Yes          | `session.File(sessionKey)`
+~~Cookie~~   | Not yet      | `session.Cookie(sessionKey)`
+~~Database~~ | Not yet      | `session.Database(sessionKey)`
+~~Redis~~    | Not yet      | `session.Redis(sessionKey)`
 
 {#-api}
 

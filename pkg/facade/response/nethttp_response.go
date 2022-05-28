@@ -16,14 +16,14 @@ type NetHttpResponse struct {
 }
 
 func NetHttp(w http.ResponseWriter, r *http.Request) *NetHttpResponse {
-	m := NetHttpResponse{
+	return &NetHttpResponse{
 		ResponseWriter: w,
 		HttpRequest:    r,
 	}
-	return &m
 }
 
 func (m *NetHttpResponse) ViewWithStatus(filepaths []string, data interface{}, status int) *errors.AppError {
+	m.ResponseWriter.Header().Set("Content-Type", "text/html")
 	m.ResponseWriter.WriteHeader(status)
 
 	for idx, filepath := range filepaths {
@@ -42,20 +42,12 @@ func (m *NetHttpResponse) ViewWithStatus(filepaths []string, data interface{}, s
 
 	t, err := text.ParseFiles(filepaths...)
 	if err != nil {
-		return &errors.AppError{
-			Error:   err,
-			Message: "Error parsing files",
-			Code:    http.StatusInternalServerError,
-		}
+		return errors.InternalServerError("Error text.ParseFiles()", err)
 	}
 
 	err = t.Execute(m.ResponseWriter, data)
 	if err != nil {
-		return &errors.AppError{
-			Error:   err,
-			Message: "Error executing template",
-			Code:    http.StatusInternalServerError,
-		}
+		return errors.InternalServerError("Error template.Execute()", err)
 	}
 
 	return nil
@@ -68,14 +60,12 @@ func (m *NetHttpResponse) View(filepaths []string, data interface{}) *errors.App
 func (m *NetHttpResponse) Json(data interface{}, status int) *errors.AppError {
 	m.ResponseWriter.Header().Set("Content-Type", "application/json")
 	m.ResponseWriter.WriteHeader(status)
+
 	err := json.NewEncoder(m.ResponseWriter).Encode(data)
 	if err != nil {
-		return &errors.AppError{
-			Error:   err,
-			Message: "Error encoding json data",
-			Code:    http.StatusInternalServerError,
-		}
+		return errors.InternalServerError("Error encoding json data", err)
 	}
+
 	return nil
 }
 

@@ -35,7 +35,7 @@ func ##SNAKE_CASE_NAME##(T engines.EngineContract) *errors.AppError {
 
 	// render the template
 	return res.View(
-		[]string{"base", "##SNAKE_CASE_NAME##"},
+		[]string{"empty"},
 		data,
 	)
 }

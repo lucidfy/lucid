@@ -40,7 +40,7 @@ As of writing, we're currently using [gorilla/mux](https://github.com/gorilla/mu
 
 ```go
 engine := T.(engines.NetHttpEngine)
-w := engine.HttpResponseWriter
+w := engine.ResponseWriter
 r := engine.HttpRequest
 request := engine.Request
 response := engine.Response

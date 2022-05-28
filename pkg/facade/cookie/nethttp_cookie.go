@@ -3,6 +3,7 @@ package cookie
 import (
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/golang-module/carbon"
 	"github.com/lucidfy/lucid/pkg/errors"
@@ -33,9 +34,9 @@ func (s *NetHttpCookie) CreateSessionCookie() interface{} {
 func (s *NetHttpCookie) Set(name string, value interface{}) (bool, *errors.AppError) {
 	encoded, err := crypt.Encrypt(value)
 	if err == nil {
-		lifetime, err := helpers.StringToInt(os.Getenv("SESSION_LIFETIME"))
+		lifetime, err := strconv.Atoi(os.Getenv("SESSION_LIFETIME"))
 		if err != nil {
-			return false, err
+			return false, errors.InternalServerError("atoi error: ", err)
 		}
 		cookie := &http.Cookie{
 			Name:    name,
