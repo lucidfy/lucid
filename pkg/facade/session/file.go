@@ -70,7 +70,16 @@ func (s *FileSession) Get(name string) (interface{}, *errors.AppError) {
 		return nil, errors.InternalServerError("s.SessionKey error", fmt.Errorf("session [%s] does not exists", name))
 	}
 
-	filepath := s.initializeFile(s.getFile())
+	filepath := s.getFile()
+
+	// check if the file exists, or else return nil
+	// we wont be initializing the file as it can flood
+	// our session files, session is meant for users
+	// that requires stateful data based on their session key
+	if !php.FileExists(filepath) {
+		return nil, nil
+	}
+
 	content := *php.JsonDecode(string(*php.FileGetContents(filepath)))
 
 	if content[name] != nil {
