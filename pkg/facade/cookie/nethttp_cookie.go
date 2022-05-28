@@ -15,7 +15,7 @@ type NetHttpCookie struct {
 	HttpRequest    *http.Request
 }
 
-func New(w http.ResponseWriter, r *http.Request) *NetHttpCookie {
+func NetHttp(w http.ResponseWriter, r *http.Request) *NetHttpCookie {
 	s := NetHttpCookie{
 		ResponseWriter: w,
 		HttpRequest:    r,
@@ -26,7 +26,7 @@ func New(w http.ResponseWriter, r *http.Request) *NetHttpCookie {
 
 func (s *NetHttpCookie) CreateSessionCookie() interface{} {
 	sessionKey := crypt.GenerateRandomString(20)
-	s.Set(helpers.Getenv("SESSION_NAME", "lucid_session"), sessionKey)
+	s.Set(helpers.SessionName(), sessionKey)
 	return sessionKey
 }
 

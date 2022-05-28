@@ -74,6 +74,7 @@ path.Load().TranslationPath("") // .../resources/translations
 path.Load().ViewPath("") // .../resources/views/go
 path.Load().RoutesPath("") // .../routes
 path.Load().StoragePath("") // .../storage
+path.Load().SessionPath("") // .../storage/framework/sessions
 ```
 
 {#-envlocal}

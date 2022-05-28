@@ -27,12 +27,12 @@ Please refer to the file at `handlers/auth_handler/auth.go` as a good example
 
 ```go
 // handlers/auth_handler/auth.go @ LoginAttempt
-ses := session.File(w, r)
+ses := engine.Session
 ses.Set("authenticated", record.ID)
 ...
 
 // handlers/auth_handler/auth.go @ User
-ses := session.File(w, r)
+ses := engine.Session
 userID, err := ses.Get("authenticated")
 ...
 ```

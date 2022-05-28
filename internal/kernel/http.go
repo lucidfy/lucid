@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"strconv"
 	"time"
 
 	"github.com/lucidfy/lucid/pkg/facade/logger"
@@ -25,9 +24,9 @@ func New(handler http.Handler) *App {
 	flag.DurationVar(&wait, "graceful-timeout", time.Second*15, "the duration for which the server gracefully wait for existing connections to finish - e.g. 15s or 1m")
 	flag.Parse()
 
-	write_timeout, _ := strconv.Atoi(helpers.Getenv("LUCID_WRITE_TIMEOUT", "10"))
-	read_timeout, _ := strconv.Atoi(helpers.Getenv("LUCID_READ_TIMEOUT", "10"))
-	idle_timeout, _ := strconv.Atoi(helpers.Getenv("LUCID_IDLE_TIMEOUT", "60"))
+	write_timeout, _ := helpers.StringToInt(helpers.Getenv("LUCID_WRITE_TIMEOUT", "10"))
+	read_timeout, _ := helpers.StringToInt(helpers.Getenv("LUCID_READ_TIMEOUT", "10"))
+	idle_timeout, _ := helpers.StringToInt(helpers.Getenv("LUCID_IDLE_TIMEOUT", "60"))
 
 	srv := &http.Server{
 		WriteTimeout: time.Second * time.Duration(write_timeout),

@@ -7,7 +7,6 @@ import (
 	"github.com/lucidfy/lucid/app/models/users"
 	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/errors"
-	"github.com/lucidfy/lucid/pkg/facade/session"
 	"github.com/lucidfy/lucid/pkg/helpers"
 	"github.com/lucidfy/lucid/pkg/paginate/searchable"
 )
@@ -19,9 +18,9 @@ const SORT_TYPE = "desc"
 
 func lists(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.NetHttpEngine)
-	w := engine.ResponseWriter
+	// w := engine.ResponseWriter
 	r := engine.HttpRequest
-	ses := session.File(w, r)
+	ses := engine.Session
 	req := engine.Request
 	res := engine.Response
 

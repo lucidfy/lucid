@@ -1,8 +1,6 @@
 package session
 
 import (
-	"net/http"
-
 	"github.com/lucidfy/lucid/pkg/errors"
 )
 
@@ -16,10 +14,10 @@ type SessionContract interface {
 	GetFlashMap(name string) *map[string]interface{}
 }
 
-func Driver(key string, w http.ResponseWriter, r *http.Request) SessionContract {
+func Driver(key string, sessionKey string) SessionContract {
 	switch key {
 	case "file":
-		return File(w, r)
+		return File(sessionKey)
 	}
 	return nil
 }

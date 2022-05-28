@@ -8,6 +8,7 @@ import (
 	"os"
 	"reflect"
 	"strconv"
+	"strings"
 
 	"github.com/lucidfy/lucid/pkg/errors"
 )
@@ -34,12 +35,12 @@ func StringToInt(s string) (i int, app_err *errors.AppError) {
 	return i, nil
 }
 
-func Getenv(key string, dflt string) string {
+func Getenv(key string, d string) string {
 	v := os.Getenv(key)
 	if v != "" {
 		return v
 	}
-	return dflt
+	return d
 }
 
 func Stringify(data interface{}) string {
@@ -56,4 +57,16 @@ func Stringify(data interface{}) string {
 	}
 
 	return content
+}
+
+func SessionName() string {
+	return Getenv("SESSION_NAME", "lucid_session")
+}
+
+func IsTrue(s string) bool {
+	s = strings.ToLower(s)
+	if s == "true" || s == "1" || s == "yes" {
+		return true
+	}
+	return false
 }

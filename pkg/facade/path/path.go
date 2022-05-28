@@ -17,6 +17,7 @@ type PathStruct struct {
 	VIEW_PATH        string
 	ROUTES_PATH      string
 	STORAGE_PATH     string
+	SESSION_PATH     string
 }
 
 func Load() *PathStruct {
@@ -36,6 +37,7 @@ func Load() *PathStruct {
 		VIEW_PATH:        PathTo(os.Getenv("VIEW_PATH")),
 		ROUTES_PATH:      PathTo(os.Getenv("ROUTES_PATH")),
 		STORAGE_PATH:     PathTo(os.Getenv("STORAGE_PATH")),
+		SESSION_PATH:     PathTo(os.Getenv("SESSION_PATH")),
 	}
 	return p
 }
@@ -69,6 +71,9 @@ func (p *PathStruct) RoutesPath(str string) string {
 }
 func (p *PathStruct) StoragePath(str string) string {
 	return append(p.STORAGE_PATH, str)
+}
+func (p *PathStruct) SessionPath(str string) string {
+	return append(p.SESSION_PATH, str)
 }
 
 func append(path string, str string) string {

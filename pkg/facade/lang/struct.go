@@ -3,31 +3,37 @@ package lang
 import (
 	"os"
 	"strings"
-
-	"github.com/lucidfy/lucid/pkg/helpers"
 )
 
 type Translations struct {
-	langs map[string]helpers.MS
+	language       string
+	languages_data map[string]map[string]string
 }
 
-func Load(langs map[string]helpers.MS) *Translations {
-	return &Translations{langs: langs}
+func Load(languages_data map[string]map[string]string) *Translations {
+	return &Translations{languages_data: languages_data}
+}
+
+func (t *Translations) SetLanguage(language string) {
+	t.language = language
 }
 
 // T translates based on the default language inside .env
 // or if not givem or such not loaded
-func (t Translations) Get(key string, values helpers.MS) string {
-	lang := os.Getenv("APP_LANGUAGE")
-	if lang == "" {
-		lang = "en-US"
+func (t Translations) Get(key string, values map[string]string) string {
+	lang := "en-US"
+
+	if t.language != "" {
+		lang = t.language
+	} else if os.Getenv("APP_LANGUAGE") != "" {
+		lang = os.Getenv("APP_LANGUAGE")
 	}
 
 	return t.Direct(lang, key, values)
 }
 
-func (t Translations) Direct(lang string, key string, values helpers.MS) string {
-	sentence := t.langs[lang][key]
+func (t Translations) Direct(lang string, key string, values map[string]string) string {
+	sentence := t.languages_data[lang][key]
 	for k, v := range values {
 		sentence = strings.Replace(sentence, k, v, -1)
 	}

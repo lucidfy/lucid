@@ -2,14 +2,11 @@ package session
 
 import (
 	"encoding/json"
-	e "errors"
 	"fmt"
-	"net/http"
 	"os"
 
 	"github.com/golang-module/carbon"
 	"github.com/lucidfy/lucid/pkg/errors"
-	"github.com/lucidfy/lucid/pkg/facade/cookie"
 	"github.com/lucidfy/lucid/pkg/facade/crypt"
 	"github.com/lucidfy/lucid/pkg/facade/path"
 	"github.com/lucidfy/lucid/pkg/functions/php"
@@ -17,18 +14,11 @@ import (
 )
 
 type FileSession struct {
-	SessionKey     interface{}
-	ResponseWriter http.ResponseWriter
-	HttpRequest    *http.Request
-	FileMode       os.FileMode
+	SessionKey interface{}
+	FileMode   os.FileMode
 }
 
-func File(w http.ResponseWriter, r *http.Request) *FileSession {
-	coo := cookie.New(w, r)
-	sessionKey, app_err := coo.Get(helpers.Getenv("SESSION_NAME", "lucid_session"))
-	if app_err != nil && e.Is(app_err.Error, http.ErrNoCookie) {
-		return &FileSession{}
-	}
+func File(sessionKey string) *FileSession {
 	s := FileSession{
 		SessionKey: sessionKey,
 		FileMode:   0644,
@@ -37,7 +27,7 @@ func File(w http.ResponseWriter, r *http.Request) *FileSession {
 }
 
 func (s *FileSession) getFile() string {
-	return path.Load().StoragePath("framework/sessions/" + s.SessionKey.(string))
+	return path.Load().SessionPath(s.SessionKey.(string))
 }
 
 func (s *FileSession) initializeFile(filepath string) string {

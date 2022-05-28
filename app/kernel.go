@@ -7,7 +7,6 @@ import (
 // Global Middleware
 var GlobalMiddleware = []interface{}{
 	middlewares.HttpAccessLogMiddleware,
-	middlewares.SessionPersistenceMiddleware,
 	middlewares.CsrfShouldSkipMiddleware,
 	middlewares.CsrfProtectMiddleware,
 	middlewares.CsrfSetterMiddleware,

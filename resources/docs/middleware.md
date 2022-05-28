@@ -54,7 +54,7 @@ If the session key isn't present, we then return a status `403 Forbidden`
 ```go
 func AuthenticateMiddleware(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        ses := session.File(w, r)
+        ses := engine.Session
         _, err := ses.Get("authenticated")
 
         if err != nil {
