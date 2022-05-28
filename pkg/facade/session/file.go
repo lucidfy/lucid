@@ -48,7 +48,7 @@ func (s *FileSession) updateContent(content interface{}) *errors.AppError {
 }
 
 func (s *FileSession) Put(name string, value interface{}) (bool, *errors.AppError) {
-	if s.SessionKey == nil {
+	if s.SessionKey.(string) == "" {
 		return false, errors.InternalServerError("s.SessionKey error", fmt.Errorf("session [%s] does not exists", name))
 	}
 
@@ -66,7 +66,7 @@ func (s *FileSession) Put(name string, value interface{}) (bool, *errors.AppErro
 }
 
 func (s *FileSession) Get(name string) (interface{}, *errors.AppError) {
-	if s.SessionKey == nil {
+	if s.SessionKey.(string) == "" {
 		return nil, errors.InternalServerError("s.SessionKey error", fmt.Errorf("session [%s] does not exists", name))
 	}
 
@@ -85,7 +85,7 @@ func (s *FileSession) Get(name string) (interface{}, *errors.AppError) {
 }
 
 func (s *FileSession) Flush(name string) (interface{}, *errors.AppError) {
-	if s.SessionKey == nil {
+	if s.SessionKey.(string) == "" {
 		return nil, errors.InternalServerError("s.SessionKey error", fmt.Errorf("session [%s] does not exists", name))
 	}
 
