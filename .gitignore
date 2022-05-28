@@ -1,4 +1,4 @@
-.build/
+.bin/
 .functions/
 tinker_test.go
 !.gitignore
