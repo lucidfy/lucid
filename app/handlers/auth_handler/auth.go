@@ -7,7 +7,17 @@ import (
 	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/errors"
 	"github.com/lucidfy/lucid/pkg/facade/hash"
+	"github.com/lucidfy/lucid/pkg/facade/routes"
 )
+
+var RouteResource = routes.Routing{
+	Path: "/auth/login",
+	Name: "auth-login",
+	Resources: routes.Resources{
+		"index": user,         //  GET    /auth/login
+		"store": loginAttempt, //  POST   /auth/login
+	},
+}
 
 func user(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.NetHttpEngine)
@@ -17,8 +27,8 @@ func user(T engines.EngineContract) *errors.AppError {
 	res := engine.Response
 
 	userID, app_err := ses.Get("authenticated")
-	if userID != nil || app_err != nil {
-		return res.Json(map[string]interface{}{}, http.StatusOK)
+	if userID == nil || app_err != nil {
+		return res.Json(map[string]string{}, http.StatusOK)
 	}
 
 	data, app_err := users.Find(userID, nil)
