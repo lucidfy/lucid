@@ -66,7 +66,7 @@ func defaultRouterEngines() map[string]func() http.Handler {
 					Code:    http.StatusNotFound,
 					Message: "Page not found",
 					Error:   fmt.Errorf("404 page not found"),
-				})
+				}, nil)
 			})
 
 			nethttp.Router.MethodNotAllowedHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -75,7 +75,7 @@ func defaultRouterEngines() map[string]func() http.Handler {
 					Code:    http.StatusMethodNotAllowed,
 					Message: "Method not allowed",
 					Error:   fmt.Errorf("405 method not allowed"),
-				})
+				}, nil)
 			})
 
 			return nethttp.Register(&registrar.Routes)

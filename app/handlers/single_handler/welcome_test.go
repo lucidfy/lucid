@@ -27,7 +27,7 @@ func TestWelcome(t *testing.T) {
 		engine := *engines.NetHttp(w, r, lang.Load(translations.Languages))
 		app_err := handler(engine)
 		if app_err != nil {
-			handlers.HttpErrorHandler(engine, app_err)
+			handlers.HttpErrorHandler(engine, app_err, nil)
 		}
 	}
 

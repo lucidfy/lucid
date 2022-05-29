@@ -6,4 +6,5 @@ type EngineContract interface {
 	GetURL() interface{}
 	GetCookie() interface{}
 	GetSession() interface{}
+	DD(data ...interface{})
 }

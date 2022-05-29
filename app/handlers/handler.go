@@ -9,10 +9,15 @@ import (
 
 // HttpErrorHandler,  we handle any returned errors.AppError under this
 // we serve html or a json format
-func HttpErrorHandler(T engines.EngineContract, app_err *errors.AppError) {
+func HttpErrorHandler(T engines.EngineContract, app_err *errors.AppError, tmplte interface{}) {
 	engine := T.(engines.NetHttpEngine)
 	req := engine.Request
 	res := engine.Response
+
+	view_file := "pkg/error/default"
+	if tmplte != nil {
+		view_file = tmplte.(string)
+	}
 
 	// assign a default message and code here
 	code := 500
@@ -42,5 +47,5 @@ func HttpErrorHandler(T engines.EngineContract, app_err *errors.AppError) {
 	}
 
 	// write html format
-	res.ViewWithStatus([]string{"pkg/error/default"}, data, code)
+	res.ViewWithStatus([]string{view_file}, data, code)
 }

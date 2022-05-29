@@ -18,7 +18,7 @@ type FiberRoutes struct {
 	App               *fiber.App
 	GlobalMiddlewares []interface{}
 	RouteMiddlewares  map[string]interface{}
-	HttpErrorHandler  func(engines.EngineContract, *errors.AppError)
+	HttpErrorHandler  func(engines.EngineContract, *errors.AppError, interface{})
 	Translation       *lang.Translations
 }
 
@@ -91,7 +91,7 @@ func (fr *FiberRoutes) register(route Routing) {
 		engine := *engines.NetHttp(w, r, fr.Translation)
 		e := route.Handler(engine)
 		if e != nil {
-			fr.HttpErrorHandler(engine, e)
+			fr.HttpErrorHandler(engine, e, nil)
 		}
 	})
 

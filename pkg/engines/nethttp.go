@@ -26,7 +26,7 @@ type NetHttpEngine struct {
 	Cookie   cookie.NetHttpCookie
 	Session  session.SessionContract
 
-	HttpErrorHandler func(EngineContract, *errors.AppError)
+	HttpErrorHandler func(EngineContract, *errors.AppError, interface{})
 }
 
 func NetHttp(w http.ResponseWriter, r *http.Request, t *lang.Translations) *NetHttpEngine {
@@ -86,10 +86,9 @@ func (m NetHttpEngine) GetSession() interface{} {
 
 func (m NetHttpEngine) DD(data ...interface{}) {
 	err_msg := fmt.Sprintf("%+v\n", data...)
-	app_err := &errors.AppError{
+	m.HttpErrorHandler(m, &errors.AppError{
 		Error:   fmt.Errorf("%s", err_msg),
 		Message: m.Translation.Get("Die Dump", nil),
 		Code:    http.StatusNotImplemented,
-	}
-	m.HttpErrorHandler(m, app_err)
+	}, nil)
 }

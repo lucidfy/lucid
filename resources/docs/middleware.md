@@ -62,7 +62,7 @@ func AuthenticateMiddleware(next http.Handler) http.Handler {
                 Code:    http.StatusForbidden,
                 Message: "Forbidden!",
                 Error:   err,
-            })
+            }, nil)
             return
         }
 

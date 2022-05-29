@@ -14,7 +14,7 @@ type NetHttpRoutes struct {
 	Routings          *[]Routing
 	GlobalMiddlewares []interface{}
 	RouteMiddlewares  map[string]interface{}
-	HttpErrorHandler  func(engines.EngineContract, *errors.AppError)
+	HttpErrorHandler  func(engines.EngineContract, *errors.AppError, interface{})
 	Translation       *lang.Translations
 }
 
@@ -83,7 +83,7 @@ func (mr *NetHttpRoutes) register(route Routing) {
 		engine.HttpErrorHandler = mr.HttpErrorHandler
 		e := route.Handler(engine)
 		if e != nil {
-			mr.HttpErrorHandler(engine, e)
+			mr.HttpErrorHandler(engine, e, nil)
 		}
 		r.Body.Close()
 	}

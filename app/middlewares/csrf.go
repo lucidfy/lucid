@@ -50,7 +50,7 @@ func CsrfProtectMiddleware(next http.Handler) http.Handler {
 				Message: "CSRF Failure",
 				Error:   csrf.FailureReason(r),
 				Code:    http.StatusForbidden,
-			})
+			}, nil)
 		})),
 	}
 
