@@ -12,9 +12,7 @@ const Table = "users"
 var Updatables = []string{
 	"name",
 	"email",
-	"email_verified_at",
 	"password",
-	"remember_token",
 }
 
 type Model struct {

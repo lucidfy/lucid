@@ -10,4 +10,5 @@ var ChineseTraditional = map[string]string{
 	"validations.strictpassword.uppercase": ":field 至少應包含 1 個大寫字符",
 	"validations.strictpassword.lowercase": ":field 至少應包含 1 個小寫字符",
 	"validations.strictpassword.digit":     ":field 至少應包含 1 位數字",
+	"Die Dump":                             "模具轉儲",
 }

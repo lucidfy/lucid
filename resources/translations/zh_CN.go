@@ -10,4 +10,5 @@ var ChineseSimplified = map[string]string{
 	"validations.strictpassword.uppercase": ":field 至少应包含 1 个大写字符",
 	"validations.strictpassword.lowercase": ":field 至少应包含 1 个小写字符",
 	"validations.strictpassword.digit":     ":field 至少应包含 1 位数字",
+	"Die Dump":                             "模具转储",
 }

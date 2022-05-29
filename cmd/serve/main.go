@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 
@@ -14,6 +15,7 @@ import (
 	"github.com/lucidfy/lucid/pkg/env"
 	"github.com/lucidfy/lucid/pkg/errors"
 	"github.com/lucidfy/lucid/pkg/facade/lang"
+	"github.com/lucidfy/lucid/pkg/facade/path"
 	"github.com/lucidfy/lucid/pkg/facade/routes"
 	"github.com/lucidfy/lucid/registrar"
 	"github.com/lucidfy/lucid/resources/translations"
@@ -91,7 +93,20 @@ func defaultRouterEngines() map[string]func() http.Handler {
 	}
 }
 
+func printEnvDefaults() {
+	log.Println("Defaults: ")
+	log.Println(fmt.Sprintf(` -> Lucid Root: %s`, path.Load().BasePath("")))
+	log.Println(fmt.Sprintf(` -> Environment: %s`, os.Getenv("APP_ENV")))
+	log.Println(fmt.Sprintf(` -> Timezone: %s`, os.Getenv("APP_TIMEZONE")))
+	log.Println(fmt.Sprintf(` -> Language: %s`, os.Getenv("APP_LANGUAGE")))
+	log.Println(fmt.Sprintf(` -> Scheme: %s`, os.Getenv("SCHEME")))
+	log.Println(fmt.Sprintf(` -> Host: %s`, os.Getenv("HOST")))
+	log.Println(fmt.Sprintf(` -> Port: %s`, os.Getenv("PORT")))
+}
+
 func main() {
+	printEnvDefaults()
+
 	lre := os.Getenv("LUCID_ROUTER_ENGINE")
 	handler, ok := defaultRouterEngines()[lre]
 

@@ -39,15 +39,12 @@ func (mr *NetHttpRoutes) AddRouteMiddlewares(base map[string]interface{}) *NetHt
 // Here, you can find how we iterate the routes() function,
 // we're using gorilla/mux package to serve our routing with
 // extensive support with http requests + middlewares.
-func (mr *NetHttpRoutes) Register(base *[]Routing) *mux.Router {
+func (mr NetHttpRoutes) Register(base *[]Routing) *mux.Router {
 	// each routing should be interpreted as subrouter
 	// the subrouter in mux isolates each path with
 	// a way to register a repetitive middlewares
 	for _, routing := range *mr.Explain(base) {
-		submr := NetHttp(mr.Translation).
-			AddGlobalMiddlewares(mr.GlobalMiddlewares).
-			AddRouteMiddlewares(mr.RouteMiddlewares)
-
+		submr := mr
 		submr.Router = mr.Router.NewRoute().Subrouter()
 		submr.register(routing)
 	}
@@ -82,13 +79,13 @@ func (mr *NetHttpRoutes) register(route Routing) {
 
 	// serving handler based
 	handler := func(w http.ResponseWriter, r *http.Request) {
-		defer r.Body.Close()
-
 		engine := *engines.NetHttp(w, r, mr.Translation)
+		engine.HttpErrorHandler = mr.HttpErrorHandler
 		e := route.Handler(engine)
 		if e != nil {
 			mr.HttpErrorHandler(engine, e)
 		}
+		r.Body.Close()
 	}
 
 	if route.Prefix {

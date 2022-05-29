@@ -2,8 +2,10 @@ package engines
 
 import (
 	e "errors"
+	"fmt"
 	"net/http"
 
+	"github.com/lucidfy/lucid/pkg/errors"
 	"github.com/lucidfy/lucid/pkg/facade/cookie"
 	"github.com/lucidfy/lucid/pkg/facade/lang"
 	"github.com/lucidfy/lucid/pkg/facade/request"
@@ -23,6 +25,8 @@ type NetHttpEngine struct {
 	URL      urls.NetHttpURL
 	Cookie   cookie.NetHttpCookie
 	Session  session.SessionContract
+
+	HttpErrorHandler func(EngineContract, *errors.AppError)
 }
 
 func NetHttp(w http.ResponseWriter, r *http.Request, t *lang.Translations) *NetHttpEngine {
@@ -78,4 +82,14 @@ func (m NetHttpEngine) GetCookie() interface{} {
 
 func (m NetHttpEngine) GetSession() interface{} {
 	return m.Session
+}
+
+func (m NetHttpEngine) DD(data ...interface{}) {
+	err_msg := fmt.Sprintf("%+v\n", data...)
+	app_err := &errors.AppError{
+		Error:   fmt.Errorf("%s", err_msg),
+		Message: m.Translation.Get("Die Dump", nil),
+		Code:    http.StatusNotImplemented,
+	}
+	m.HttpErrorHandler(m, app_err)
 }

@@ -10,4 +10,5 @@ var EnglishUnitedStates = map[string]string{
 	"validations.strictpassword.uppercase": ":field should contain at least 1 upper case character!",
 	"validations.strictpassword.lowercase": ":field should contain at least 1 lower case character!",
 	"validations.strictpassword.digit":     ":field should contain at least 1 digit!",
+	"Die Dump":                             "Die Dump",
 }
