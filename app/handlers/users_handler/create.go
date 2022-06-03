@@ -17,6 +17,7 @@ func create(T engines.EngineContract) *errors.AppError {
 	ses := engine.Session
 	req := engine.Request
 	res := engine.Response
+	url := engine.URL
 
 	data := map[string]interface{}{
 		"title":          "Create Form",
@@ -26,10 +27,11 @@ func create(T engines.EngineContract) *errors.AppError {
 
 		//> to retrieve the flashes from Store() or somewhere
 		//> that redirects back to Create()
-		"success": ses.GetFlash("success"),
-		"error":   ses.GetFlash("error"),
-		"fails":   ses.GetFlashMap("fails"),
-		"inputs":  ses.GetFlashMap("inputs"),
+		"success":      ses.GetFlash("success"),
+		"error":        ses.GetFlash("error"),
+		"fails":        ses.GetFlashMap("fails"),
+		"inputs":       ses.GetFlashMap("inputs"),
+		"previous_url": url.PreviousURL(),
 	}
 
 	if req.WantsJson() {

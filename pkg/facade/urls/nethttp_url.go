@@ -20,7 +20,7 @@ func NetHttp(w http.ResponseWriter, r *http.Request) *NetHttpURL {
 	return &u
 }
 
-func (u *NetHttpURL) CurrentURL() string {
+func (u *NetHttpURL) BaseURL() string {
 	h := u.HttpRequest.URL.Host
 	if len(h) > 0 {
 		return h
@@ -42,7 +42,7 @@ func (u *NetHttpURL) CurrentURL() string {
 }
 
 func (u *NetHttpURL) FullURL() string {
-	return u.CurrentURL() + u.HttpRequest.URL.RequestURI()
+	return u.BaseURL() + u.HttpRequest.URL.RequestURI()
 }
 
 func (u *NetHttpURL) PreviousURL() string {

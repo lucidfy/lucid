@@ -23,6 +23,7 @@ func lists(T engines.EngineContract) *errors.AppError {
 	ses := engine.Session
 	req := engine.Request
 	res := engine.Response
+	url := engine.URL
 
 	//> prepare the searchable structure
 	searchable, app_err := prepare(T)
@@ -40,6 +41,7 @@ func lists(T engines.EngineContract) *errors.AppError {
 		"title":          "Users List",
 		"data":           searchable,
 		"links_array":    searchable.Paginate.ToArray(),
+		"current_url":    url.FullURL(),
 		"success":        ses.GetFlash("success"),
 		"error":          ses.GetFlash("error"),
 		csrf.TemplateTag: csrf.TemplateField(r),

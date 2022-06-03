@@ -47,8 +47,9 @@ func show(T engines.EngineContract) *errors.AppError {
 		"isShow":         is_show,
 		csrf.TemplateTag: csrf.TemplateField(r),
 
-		"success": ses.GetFlash("success"),
-		"error":   ses.GetFlash("error"),
+		"success":      ses.GetFlash("success"),
+		"error":        ses.GetFlash("error"),
+		"previous_url": url.PreviousURL(),
 	}
 
 	//> for api based
