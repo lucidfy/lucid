@@ -6,7 +6,6 @@ import (
 	"github.com/lucidfy/lucid/app/models/##SMALL_CASE_NAME##"
 	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/errors"
-	"github.com/lucidfy/lucid/pkg/facade/session"
 )
 
 func delete(T engines.EngineContract) *errors.AppError {

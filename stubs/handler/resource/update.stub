@@ -9,13 +9,12 @@ import (
 	"github.com/lucidfy/lucid/app/models/##SMALL_CASE_NAME##"
 	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/errors"
-	"github.com/lucidfy/lucid/pkg/facade/session"
 )
 
 func show(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.NetHttpEngine)
 	// w := engine.ResponseWriter
-	// r := engine.HttpRequest
+	r := engine.HttpRequest
 	ses := engine.Session
 	req := engine.Request
 	res := engine.Response
@@ -42,7 +41,7 @@ func show(T engines.EngineContract) *errors.AppError {
 	}
 
 	respData := map[string]interface{}{
-		"title":          record.Name + "'s Info",
+		"title":          "Update",
 		"previousURL":    url.PreviousURL(),
 		"record":         record,
 		"isShow":         is_show,
@@ -67,7 +66,7 @@ func show(T engines.EngineContract) *errors.AppError {
 func update(T engines.EngineContract) *errors.AppError {
 	engine := T.(engines.NetHttpEngine)
 	// w := engine.ResponseWriter
-	r := engine.HttpRequest
+	// r := engine.HttpRequest
 	ses := engine.Session
 	req := engine.Request
 	res := engine.Response

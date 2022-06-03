@@ -8,7 +8,6 @@ import (
 	"github.com/lucidfy/lucid/app/validations"
 	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/errors"
-	"github.com/lucidfy/lucid/pkg/facade/session"
 )
 
 func create(T engines.EngineContract) *errors.AppError {
