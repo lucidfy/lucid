@@ -3,6 +3,7 @@ package routes
 import (
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/errors"
@@ -37,6 +38,10 @@ type Routing struct {
 
 // helpers
 
+func stripDoubleSlash(str string) string {
+	return strings.Replace(str, "//", "/", -1)
+}
+
 func resources(route Routing) []Routing {
 	routings := []Routing{}
 
@@ -49,7 +54,7 @@ func resources(route Routing) []Routing {
 		switch action {
 		case "index":
 			routings = append(routings, Routing{
-				Path:        route.Path,
+				Path:        stripDoubleSlash(route.Path),
 				Handler:     handler,
 				Method:      Method{"GET"},
 				Middlewares: route.Middlewares,
@@ -57,7 +62,7 @@ func resources(route Routing) []Routing {
 			})
 		case "create":
 			routings = append(routings, Routing{
-				Path:        route.Path + "/create",
+				Path:        stripDoubleSlash(route.Path + "/create"),
 				Handler:     handler,
 				Method:      Method{"GET"},
 				Middlewares: route.Middlewares,
@@ -65,7 +70,7 @@ func resources(route Routing) []Routing {
 			})
 		case "store":
 			routings = append(routings, Routing{
-				Path:        route.Path,
+				Path:        stripDoubleSlash(route.Path),
 				Handler:     handler,
 				Method:      Method{"POST"},
 				Middlewares: route.Middlewares,
@@ -73,7 +78,7 @@ func resources(route Routing) []Routing {
 			})
 		case "show":
 			routings = append(routings, Routing{
-				Path:        route.Path + "/" + id_regex,
+				Path:        stripDoubleSlash(route.Path + "/" + id_regex),
 				Handler:     handler,
 				Method:      Method{"GET"},
 				Middlewares: route.Middlewares,
@@ -81,7 +86,7 @@ func resources(route Routing) []Routing {
 			})
 		case "edit":
 			routings = append(routings, Routing{
-				Path:        route.Path + "/" + id_regex + "/edit",
+				Path:        stripDoubleSlash(route.Path + "/" + id_regex + "/edit"),
 				Handler:     handler,
 				Method:      Method{"GET"},
 				Middlewares: route.Middlewares,
@@ -91,14 +96,14 @@ func resources(route Routing) []Routing {
 			routings = append(
 				routings,
 				Routing{
-					Path:        route.Path + "/" + id_regex,
+					Path:        stripDoubleSlash(route.Path + "/" + id_regex),
 					Handler:     handler,
 					Method:      Method{"PUT"},
 					Middlewares: route.Middlewares,
 					Name:        route.Name + ".update",
 				},
 				Routing{
-					Path:        route.Path + "/" + id_regex + "/update",
+					Path:        stripDoubleSlash(route.Path + "/" + id_regex + "/update"),
 					Handler:     handler,
 					Method:      Method{"POST"},
 					Middlewares: route.Middlewares,
@@ -109,14 +114,14 @@ func resources(route Routing) []Routing {
 			routings = append(
 				routings,
 				Routing{
-					Path:        route.Path + "/" + id_regex,
+					Path:        stripDoubleSlash(route.Path + "/" + id_regex),
 					Handler:     handler,
 					Method:      Method{"DELETE"},
 					Middlewares: route.Middlewares,
 					Name:        route.Name + ".destroy",
 				},
 				Routing{
-					Path:        route.Path + "/" + id_regex + "/delete",
+					Path:        stripDoubleSlash(route.Path + "/" + id_regex + "/delete"),
 					Handler:     handler,
 					Method:      Method{"POST"},
 					Middlewares: route.Middlewares,
