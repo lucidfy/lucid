@@ -21,8 +21,8 @@ Handlers are the one responding to any http requests, the function will only be 
 ### [#](#-engine) Engine
 
 ```go
-func Sample(T engines.EngineContract) *errors.AppError {
-    engine := T.(engines.NetHttpEngine)
+func Sample(ctx lucid.Context) *errors.AppError {
+    engine := ctx.Engine()
 }
 ```
 
@@ -39,11 +39,12 @@ As of writing, we're currently using [gorilla/mux](https://github.com/gorilla/mu
 ### [#](#-request--response) Request & Response
 
 ```go
-engine := T.(engines.NetHttpEngine)
-w := engine.ResponseWriter
-r := engine.HttpRequest
-request := engine.Request
-response := engine.Response
+engine := ctx.Engine()
+request := engine.GetRequest()
+response := engine.GetResponse()
+url := GetURL()
+cookie := GetCookie()
+session := GetSession()
 ```
 
 The variable `w` and `r` were based from [net/http](https://pkg.go.dev/net/http), they are commonly known as `http.ResponseWriter` and `*http.Request` in the go community.
@@ -59,18 +60,17 @@ While the `request` and `response` were interpreters to some of the top framewor
 Here's a full example of our welcome page, the explaination can be seen inside as comment block
 
 ```go
-package handlers
+package single_handler
 
-import (
-    "net/http"
-    "github.com/lucidfy/lucid/pkg/engines"
-    "github.com/lucidfy/lucid/pkg/errors"
-)
+...
 
-func Welcome(T engines.EngineContract) *errors.AppError {
+func welcome(ctx lucid.Context) *errors.AppError {
     engine := T.(engines.NetHttpEngine)
-    request := engine.Request
-    response := engine.Response
+    request := engine.GetRequest()
+    response := engine.GetResponse()
+    // ... := GetURL()
+    // ... := GetCookie()
+    // ... := GetSession()
 
     // let us initialize how to create a data
     data := map[string]interface{}{
