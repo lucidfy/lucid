@@ -16,8 +16,8 @@ var ##CAMEL_CASE_NAME##Route = routes.Routing{
 	Handler: ##SNAKE_CASE_NAME##,
 }
 
-func ##SNAKE_CASE_NAME##(ctx context.Context) *errors.AppError {
-	engine := lucid.Context(ctx).Engine()
+func ##SNAKE_CASE_NAME##(ctx lucid.Context) *errors.AppError {
+	engine := ctx.Engine()
 	req := engine.GetRequest()
 	res := engine.GetResponse()
 

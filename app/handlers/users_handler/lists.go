@@ -1,7 +1,6 @@
 package users_handler
 
 import (
-	"context"
 	"net/http"
 	"strconv"
 
@@ -18,9 +17,9 @@ const PER_PAGE = "5"
 const SORT_COLUMN = "id"
 const SORT_TYPE = "desc"
 
-func lists(ctx context.Context) *errors.AppError {
-	engine := lucid.Context(ctx).Engine()
-	router := lucid.Context(ctx).Router()
+func lists(ctx lucid.Context) *errors.AppError {
+	engine := ctx.Engine()
+	router := ctx.Router()
 	ses := engine.GetSession()
 	req := engine.GetRequest()
 	res := engine.GetResponse()

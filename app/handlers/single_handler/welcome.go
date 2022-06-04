@@ -1,7 +1,6 @@
 package single_handler
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/lucidfy/lucid/pkg/errors"
@@ -16,8 +15,8 @@ var WelcomeRoute = routes.Routing{
 	Handler: welcome,
 }
 
-func welcome(ctx context.Context) *errors.AppError {
-	engine := lucid.Context(ctx).Engine()
+func welcome(ctx lucid.Context) *errors.AppError {
+	engine := ctx.Engine()
 	req := engine.GetRequest()
 	res := engine.GetResponse()
 

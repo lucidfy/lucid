@@ -2,7 +2,6 @@ package sample_handler
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -29,8 +28,8 @@ var ExecSampleRoute = routes.Routing{
 // ExecSample is a sample way to run a command via handler
 // as an example below, it will execute a php file containing
 // all the helpful variables.
-func execSample(ctx context.Context) *errors.AppError {
-	engine := lucid.Context(ctx).Engine()
+func execSample(ctx lucid.Context) *errors.AppError {
+	engine := ctx.Engine()
 	w := engine.(engines.NetHttpEngine).ResponseWriter
 	r := engine.(engines.NetHttpEngine).HttpRequest
 

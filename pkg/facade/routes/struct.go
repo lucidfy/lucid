@@ -1,9 +1,8 @@
 package routes
 
 import (
-	"context"
-
 	"github.com/lucidfy/lucid/pkg/errors"
+	"github.com/lucidfy/lucid/pkg/lucid"
 )
 
 // structs
@@ -12,7 +11,7 @@ type Middlewares []string
 type Queries []string
 type Method []string
 type Resources map[string]Handler
-type Handler func(context.Context) *errors.AppError // func(engines.EngineContract) *errors.AppError
+type Handler func(lucid.Context) *errors.AppError
 type Routing struct {
 	Name                 string
 	Path                 string

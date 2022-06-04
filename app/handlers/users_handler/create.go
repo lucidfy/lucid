@@ -1,7 +1,6 @@
 package users_handler
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/gorilla/csrf"
@@ -12,9 +11,9 @@ import (
 	"github.com/lucidfy/lucid/pkg/lucid"
 )
 
-func create(ctx context.Context) *errors.AppError {
-	engine := lucid.Context(ctx).Engine()
-	router := lucid.Context(ctx).Router()
+func create(ctx lucid.Context) *errors.AppError {
+	engine := ctx.Engine()
+	router := ctx.Router()
 	ses := engine.GetSession()
 	req := engine.GetRequest()
 	res := engine.GetResponse()
@@ -47,8 +46,8 @@ func create(ctx context.Context) *errors.AppError {
 	)
 }
 
-func store(ctx context.Context) *errors.AppError {
-	engine := lucid.Context(ctx).Engine()
+func store(ctx lucid.Context) *errors.AppError {
+	engine := ctx.Engine()
 	ses := engine.GetSession()
 	req := engine.GetRequest()
 	res := engine.GetResponse()

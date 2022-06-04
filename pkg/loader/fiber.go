@@ -11,6 +11,7 @@ import (
 	"github.com/lucidfy/lucid/pkg/facade/lang"
 	"github.com/lucidfy/lucid/pkg/facade/request"
 	"github.com/lucidfy/lucid/pkg/facade/routes"
+	"github.com/lucidfy/lucid/pkg/lucid"
 	"github.com/valyala/fasthttp"
 	"github.com/valyala/fasthttp/fasthttpadaptor"
 )
@@ -92,9 +93,9 @@ func (fr *FiberLoader) register(route routes.Routing) {
 		engine := *engines.NetHttp(w, r, fr.Translation)
 
 		ctx := context.Background()
-		ctx = context.WithValue(ctx, "engine", engine)
+		ctx = context.WithValue(ctx, lucid.EngineCtx{}, engine)
 
-		e := route.Handler(ctx)
+		e := route.Handler(lucid.NewContext(ctx))
 		if e != nil {
 			fr.HttpErrorHandler(engine, e, nil)
 		}

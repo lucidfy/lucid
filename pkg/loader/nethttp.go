@@ -88,7 +88,7 @@ func (mr *NetHttpLoader) register(route routes.Routing) {
 		ctx := context.Background()
 		ctx = context.WithValue(ctx, lucid.EngineCtx{}, engine)
 		ctx = context.WithValue(ctx, lucid.RouterCtx{}, mr.Router)
-		e := route.Handler(ctx)
+		e := route.Handler(lucid.NewContext(ctx))
 		ctx.Done()
 
 		if e != nil {

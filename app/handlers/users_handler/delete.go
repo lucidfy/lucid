@@ -1,7 +1,6 @@
 package users_handler
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/lucidfy/lucid/app/models/users"
@@ -9,8 +8,8 @@ import (
 	"github.com/lucidfy/lucid/pkg/lucid"
 )
 
-func delete(ctx context.Context) *errors.AppError {
-	engine := lucid.Context(ctx).Engine()
+func delete(ctx lucid.Context) *errors.AppError {
+	engine := ctx.Engine()
 	ses := engine.GetSession()
 	req := engine.GetRequest()
 	res := engine.GetResponse()

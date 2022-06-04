@@ -10,20 +10,20 @@ import (
 type EngineCtx struct{}
 type RouterCtx struct{}
 
-type ContextResolver struct {
+type Context struct {
 	ctx context.Context
 }
 
-func Context(ctx context.Context) *ContextResolver {
-	return &ContextResolver{
+func NewContext(ctx context.Context) Context {
+	return Context{
 		ctx: ctx,
 	}
 }
 
-func (resolver ContextResolver) Engine() engines.EngineContract {
+func (resolver Context) Engine() engines.EngineContract {
 	return resolver.ctx.Value(EngineCtx{}).(engines.EngineContract)
 }
 
-func (resolver ContextResolver) Router() *mux.Router {
+func (resolver Context) Router() *mux.Router {
 	return resolver.ctx.Value(RouterCtx{}).(*(mux.Router))
 }

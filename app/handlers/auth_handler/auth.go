@@ -1,7 +1,6 @@
 package auth_handler
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/lucidfy/lucid/app/models/users"
@@ -20,8 +19,8 @@ var RouteResource = routes.Routing{
 	},
 }
 
-func user(ctx context.Context) *errors.AppError {
-	engine := lucid.Context(ctx).Engine()
+func user(ctx lucid.Context) *errors.AppError {
+	engine := ctx.Engine()
 	ses := engine.GetSession()
 	res := engine.GetResponse()
 
@@ -40,8 +39,8 @@ func user(ctx context.Context) *errors.AppError {
 	}, http.StatusOK)
 }
 
-func loginAttempt(ctx context.Context) *errors.AppError {
-	engine := lucid.Context(ctx).Engine()
+func loginAttempt(ctx lucid.Context) *errors.AppError {
+	engine := ctx.Engine()
 	ses := engine.GetSession()
 	req := engine.GetRequest()
 	res := engine.GetResponse()

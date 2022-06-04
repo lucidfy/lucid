@@ -1,7 +1,6 @@
 package sample_handler
 
 import (
-	"context"
 	"net/http"
 	"strings"
 
@@ -23,8 +22,8 @@ var DocsRoute = routes.Routing{
 	Handler: docs,
 }
 
-func docs(ctx context.Context) *errors.AppError {
-	engine := lucid.Context(ctx).Engine()
+func docs(ctx lucid.Context) *errors.AppError {
+	engine := ctx.Engine()
 	req := engine.GetRequest()
 	res := engine.GetResponse()
 	url := engine.GetURL()

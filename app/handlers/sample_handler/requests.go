@@ -1,7 +1,6 @@
 package sample_handler
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/lucidfy/lucid/pkg/errors"
@@ -18,8 +17,8 @@ var RequestRoute = routes.Routing{
 	Handler: sampleRequests,
 }
 
-func sampleRequests(ctx context.Context) *errors.AppError {
-	engine := lucid.Context(ctx).Engine()
+func sampleRequests(ctx lucid.Context) *errors.AppError {
+	engine := ctx.Engine()
 	req := engine.GetRequest()
 	res := engine.GetResponse()
 

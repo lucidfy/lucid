@@ -1,7 +1,6 @@
 package users_handler
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"strings"
@@ -13,9 +12,9 @@ import (
 	"github.com/lucidfy/lucid/pkg/lucid"
 )
 
-func show(ctx context.Context) *errors.AppError {
-	engine := lucid.Context(ctx).Engine()
-	router := lucid.Context(ctx).Router()
+func show(ctx lucid.Context) *errors.AppError {
+	engine := ctx.Engine()
+	router := ctx.Router()
 	ses := engine.GetSession()
 	req := engine.GetRequest()
 	res := engine.GetResponse()
@@ -67,8 +66,8 @@ func show(ctx context.Context) *errors.AppError {
 	)
 }
 
-func update(ctx context.Context) *errors.AppError {
-	engine := lucid.Context(ctx).Engine()
+func update(ctx lucid.Context) *errors.AppError {
+	engine := ctx.Engine()
 	ses := engine.GetSession()
 	req := engine.GetRequest()
 	res := engine.GetResponse()
