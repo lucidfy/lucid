@@ -2,6 +2,7 @@ package response
 
 import (
 	"encoding/json"
+	"io"
 	"net/http"
 	"strings"
 	text "text/template"
@@ -20,6 +21,11 @@ func NetHttp(w http.ResponseWriter, r *http.Request) *NetHttpResponse {
 		ResponseWriter: w,
 		HttpRequest:    r,
 	}
+}
+
+func (m *NetHttpResponse) Text(str string) *errors.AppError {
+	io.WriteString(m.ResponseWriter, str)
+	return nil
 }
 
 func (m *NetHttpResponse) ViewWithStatus(filepaths []string, data interface{}, status int) *errors.AppError {

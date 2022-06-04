@@ -20,10 +20,13 @@ const SORT_TYPE = "desc"
 
 func lists(ctx context.Context) *errors.AppError {
 	engine := lucid.Context(ctx).Engine()
+	router := lucid.Context(ctx).Router()
 	ses := engine.GetSession()
 	req := engine.GetRequest()
 	res := engine.GetResponse()
 	url := engine.GetURL()
+
+	bUrl, _ := router.Get("users.lists").URL()
 
 	//> prepare the searchable structure
 	searchable, app_err := prepare(engine)
@@ -46,6 +49,8 @@ func lists(ctx context.Context) *errors.AppError {
 		"error":           ses.GetFlash("error"),
 
 		csrf.TemplateTag: csrf.TemplateField(engine.(engines.NetHttpEngine).HttpRequest),
+
+		"base_url": bUrl,
 	}
 
 	//> here, we determine if the requestor wants a json response
