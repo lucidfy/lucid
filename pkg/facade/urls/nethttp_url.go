@@ -41,7 +41,7 @@ func (u *NetHttpURL) BaseURL() string {
 	return BaseURL(nil)
 }
 
-func (u *NetHttpURL) FullURL() string {
+func (u *NetHttpURL) CurrentURL() string {
 	return u.BaseURL() + u.HttpRequest.URL.RequestURI()
 }
 

@@ -1,8 +1,10 @@
 package cookie
 
+import "github.com/lucidfy/lucid/pkg/errors"
+
 type CookieContract interface {
 	CreateSessionCookie() interface{}
-	Set(string, string) (bool, error)
-	Get(string) (interface{}, error)
+	Set(name string, value interface{}) (bool, *errors.AppError)
+	Get(name string) (interface{}, *errors.AppError)
 	Expire(string)
 }

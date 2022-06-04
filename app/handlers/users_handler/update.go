@@ -1,6 +1,7 @@
 package users_handler
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"strings"
@@ -9,16 +10,18 @@ import (
 	"github.com/lucidfy/lucid/app/models/users"
 	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/errors"
+	"github.com/lucidfy/lucid/pkg/lucid"
 )
 
-func show(T engines.EngineContract) *errors.AppError {
-	engine := T.(engines.NetHttpEngine)
-	// w := engine.ResponseWriter
-	r := engine.HttpRequest
-	ses := engine.Session
-	req := engine.Request
-	res := engine.Response
-	url := engine.URL
+func show(ctx context.Context) *errors.AppError {
+	engine := lucid.Context(ctx).Engine()
+	router := lucid.Context(ctx).Router()
+	ses := engine.GetSession()
+	req := engine.GetRequest()
+	res := engine.GetResponse()
+	url := engine.GetURL()
+
+	bUrl, _ := router.Get("users.lists").URL()
 
 	id := req.Input("id", nil).(string)
 	if app_err := users.Exists("id", &id); app_err != nil {
@@ -35,21 +38,21 @@ func show(T engines.EngineContract) *errors.AppError {
 	//> determine which template to be provided
 	is_show := true
 	view_file := "show"
-	if strings.Contains(r.URL.Path, "/edit") {
+	if strings.Contains(url.CurrentURL(), "/edit") {
 		is_show = false
 		// view_file = "edit"
 	}
 
 	respData := map[string]interface{}{
-		"title":          record.Name + "'s Info",
-		"previousURL":    url.PreviousURL(),
+		"title":          "Information",
 		"record":         record,
 		"isShow":         is_show,
-		csrf.TemplateTag: csrf.TemplateField(r),
+		csrf.TemplateTag: csrf.TemplateField(engine.(engines.NetHttpEngine).HttpRequest),
 
-		"success":      ses.GetFlash("success"),
-		"error":        ses.GetFlash("error"),
-		"previous_url": url.PreviousURL(),
+		"success": ses.GetFlash("success"),
+		"error":   ses.GetFlash("error"),
+
+		"base_url": bUrl,
 	}
 
 	//> for api based
@@ -64,14 +67,12 @@ func show(T engines.EngineContract) *errors.AppError {
 	)
 }
 
-func update(T engines.EngineContract) *errors.AppError {
-	engine := T.(engines.NetHttpEngine)
-	// w := engine.ResponseWriter
-	// r := engine.HttpRequest
-	ses := engine.Session
-	req := engine.Request
-	res := engine.Response
-	url := engine.URL
+func update(ctx context.Context) *errors.AppError {
+	engine := lucid.Context(ctx).Engine()
+	ses := engine.GetSession()
+	req := engine.GetRequest()
+	res := engine.GetResponse()
+	url := engine.GetURL()
 
 	message := "Successfully Updated!"
 	status := http.StatusOK

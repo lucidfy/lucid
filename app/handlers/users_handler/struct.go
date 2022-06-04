@@ -14,5 +14,5 @@ var RouteResource = routes.Routing{
 		"update":  update, //  PUT    /users/{id}, POST /users/{id}/update
 		"destroy": delete, //  DELETE /users/{id}, POST /users/{id}/delete
 	},
-	// Middlewares: r.Middlewares{"auth"}, // Un-comment this line if you want to prevent it from guests
+	// Middlewares: routes.Middlewares{"auth"}, // Un-comment this line if you want to prevent it from guests
 }

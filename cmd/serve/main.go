@@ -15,8 +15,7 @@ import (
 	"github.com/lucidfy/lucid/pkg/env"
 	"github.com/lucidfy/lucid/pkg/errors"
 	"github.com/lucidfy/lucid/pkg/facade/lang"
-	"github.com/lucidfy/lucid/pkg/facade/path"
-	"github.com/lucidfy/lucid/pkg/facade/routes"
+	"github.com/lucidfy/lucid/pkg/loader"
 	"github.com/lucidfy/lucid/registrar"
 	"github.com/lucidfy/lucid/resources/translations"
 )
@@ -54,7 +53,7 @@ func defaultRouterEngines() map[string]func() http.Handler {
 	return map[string]func() http.Handler{
 		"mux": func() http.Handler {
 
-			nethttp := routes.NetHttp(trans).
+			nethttp := loader.NetHttp(trans).
 				AddGlobalMiddlewares(app.GlobalMiddleware).
 				AddRouteMiddlewares(app.RouteMiddleware)
 
@@ -82,7 +81,7 @@ func defaultRouterEngines() map[string]func() http.Handler {
 		},
 
 		"fiber": func() http.Handler {
-			fiber := routes.Fiber(trans).
+			fiber := loader.Fiber(trans).
 				AddGlobalMiddlewares(app.GlobalMiddleware).
 				AddRouteMiddlewares(app.RouteMiddleware)
 
@@ -95,7 +94,6 @@ func defaultRouterEngines() map[string]func() http.Handler {
 
 func printEnvDefaults() {
 	log.Println("Defaults: ")
-	log.Println(fmt.Sprintf(` -> Lucid Root: %s`, path.Load().BasePath("")))
 	log.Println(fmt.Sprintf(` -> Environment: %s`, os.Getenv("APP_ENV")))
 	log.Println(fmt.Sprintf(` -> Timezone: %s`, os.Getenv("APP_TIMEZONE")))
 	log.Println(fmt.Sprintf(` -> Language: %s`, os.Getenv("APP_LANGUAGE")))

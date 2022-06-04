@@ -2,6 +2,7 @@ package sample_handler
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -14,6 +15,7 @@ import (
 	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/errors"
 	"github.com/lucidfy/lucid/pkg/facade/routes"
+	"github.com/lucidfy/lucid/pkg/lucid"
 )
 
 var ExecSampleRoute = routes.Routing{
@@ -27,10 +29,10 @@ var ExecSampleRoute = routes.Routing{
 // ExecSample is a sample way to run a command via handler
 // as an example below, it will execute a php file containing
 // all the helpful variables.
-func execSample(T engines.EngineContract) *errors.AppError {
-	engine := T.(engines.NetHttpEngine)
-	w := engine.ResponseWriter
-	r := engine.HttpRequest
+func execSample(ctx context.Context) *errors.AppError {
+	engine := lucid.Context(ctx).Engine()
+	w := engine.(engines.NetHttpEngine).ResponseWriter
+	r := engine.(engines.NetHttpEngine).HttpRequest
 
 	jsonErr := func(err error) *errors.AppError {
 		return &errors.AppError{

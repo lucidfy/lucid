@@ -8,6 +8,7 @@ import (
 )
 
 type RequestContract interface {
+	Vars() map[string]string
 	All() interface{}
 	Get(k string) interface{}
 	GetFirst(k string, dfault interface{}) interface{}
@@ -21,6 +22,6 @@ type RequestContract interface {
 	Validator(setOfRules *must.SetOfRules) *errors.AppError
 	GetIp() string
 	GetUserAgent() string
-	GetFileByName(name string) (*multipart.FileHeader, error)
-	GetFiles() (map[string][]*multipart.FileHeader, error)
+	GetFileByName(name string) (*multipart.FileHeader, *errors.AppError)
+	GetFiles() (map[string][]*multipart.FileHeader, *errors.AppError)
 }

@@ -27,7 +27,7 @@
         <div class="text-xs inline-block my-auto">
           <span class="border-dotted border-gray-400 border-b"><a href="/">Home</a></span>
           <i class="mx-2">&#8725;</i>
-          <span><a href="{{ $.previous_url }}">Users List</a></span>
+          <span><a href="{{ $.base_url }}">Users List</a></span>
           <i class="mx-2">&#8725;</i>
           <spa>{{ $.title }}</span>
         </div>
@@ -38,9 +38,9 @@
           <div class="p-5 bg-gray-100 shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
             <form class="w-full" method="POST"
               {{ if $.isCreate }}
-                action="{{ $.previous_url }}"
+                action="{{ $.base_url }}"
               {{ else }}
-                action="{{ $.previous_url }}/{{ $.record.ID }}/update"
+                action="{{ $.base_url }}/{{ $.record.ID }}/update"
               {{ end }}
             >
               <div class="flex flex-wrap -mx-3 mb-6">
@@ -130,7 +130,7 @@
 
                 {{ if $.isShow }}
                   <div class="w-1/2 md:w-full px-3 mb-6 mt-5 md:mb-0 text-center">
-                    <a href="{{ $.previous_url }}/{{ $.record.ID }}/edit" class="
+                    <a href="{{ $.base_url }}/{{ $.record.ID }}/edit" class="
                         uppercase text-xs
                         bg-gray-900 hover:bg-white
                         text-white hover:text-gray-700

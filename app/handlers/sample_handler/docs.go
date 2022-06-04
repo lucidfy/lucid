@@ -1,17 +1,18 @@
 package sample_handler
 
 import (
+	"context"
 	"net/http"
 	"strings"
 
 	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/parser"
 	"github.com/iancoleman/strcase"
-	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/errors"
 	"github.com/lucidfy/lucid/pkg/facade/path"
 	"github.com/lucidfy/lucid/pkg/facade/routes"
 	"github.com/lucidfy/lucid/pkg/functions/php"
+	"github.com/lucidfy/lucid/pkg/lucid"
 )
 
 var DocsRoute = routes.Routing{
@@ -22,15 +23,15 @@ var DocsRoute = routes.Routing{
 	Handler: docs,
 }
 
-func docs(T engines.EngineContract) *errors.AppError {
-	engine := T.(engines.NetHttpEngine)
-	r := engine.HttpRequest
-	req := engine.Request
-	res := engine.Response
+func docs(ctx context.Context) *errors.AppError {
+	engine := lucid.Context(ctx).Engine()
+	req := engine.GetRequest()
+	res := engine.GetResponse()
+	url := engine.GetURL()
 
 	//> detect the url path, just that we replace any suffix that has /docs
 	// then we fetch the remaining file name
-	f := strings.Replace(r.URL.Path, "/docs", "", -1)
+	f := strings.Replace(url.CurrentURL(), "/docs", "", -1)
 	title := strings.Trim(f, "/")
 	if len(title) == 0 {
 		title = "Lucid"

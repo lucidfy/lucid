@@ -1,6 +1,7 @@
 package users_handler
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/gorilla/csrf"
@@ -8,30 +9,32 @@ import (
 	"github.com/lucidfy/lucid/app/validations"
 	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/errors"
+	"github.com/lucidfy/lucid/pkg/lucid"
 )
 
-func create(T engines.EngineContract) *errors.AppError {
-	engine := T.(engines.NetHttpEngine)
-	// w := engine.ResponseWriter
-	r := engine.HttpRequest
-	ses := engine.Session
-	req := engine.Request
-	res := engine.Response
-	url := engine.URL
+func create(ctx context.Context) *errors.AppError {
+	engine := lucid.Context(ctx).Engine()
+	router := lucid.Context(ctx).Router()
+	ses := engine.GetSession()
+	req := engine.GetRequest()
+	res := engine.GetResponse()
+
+	bUrl, _ := router.Get("users.lists").URL()
 
 	data := map[string]interface{}{
 		"title":          "Create Form",
 		"record":         &users.Model{},
 		"isCreate":       true,
-		csrf.TemplateTag: csrf.TemplateField(r),
+		csrf.TemplateTag: csrf.TemplateField(engine.(engines.NetHttpEngine).HttpRequest),
 
 		//> to retrieve the flashes from Store() or somewhere
 		//> that redirects back to Create()
-		"success":      ses.GetFlash("success"),
-		"error":        ses.GetFlash("error"),
-		"fails":        ses.GetFlashMap("fails"),
-		"inputs":       ses.GetFlashMap("inputs"),
-		"previous_url": url.PreviousURL(),
+		"success": ses.GetFlash("success"),
+		"error":   ses.GetFlash("error"),
+		"fails":   ses.GetFlashMap("fails"),
+		"inputs":  ses.GetFlashMap("inputs"),
+
+		"base_url": bUrl,
 	}
 
 	if req.WantsJson() {
@@ -44,14 +47,12 @@ func create(T engines.EngineContract) *errors.AppError {
 	)
 }
 
-func store(T engines.EngineContract) *errors.AppError {
-	engine := T.(engines.NetHttpEngine)
-	// w := engine.ResponseWriter
-	// r := engine.HttpRequest
-	ses := engine.Session
-	req := engine.Request
-	res := engine.Response
-	url := engine.URL
+func store(ctx context.Context) *errors.AppError {
+	engine := lucid.Context(ctx).Engine()
+	ses := engine.GetSession()
+	req := engine.GetRequest()
+	res := engine.GetResponse()
+	url := engine.GetURL()
 
 	//> validate the inputs
 	if validator := req.Validator(validations.Users().Create()); validator != nil {

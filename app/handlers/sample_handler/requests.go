@@ -1,12 +1,13 @@
 package sample_handler
 
 import (
+	"context"
 	"net/http"
 
-	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/errors"
 	"github.com/lucidfy/lucid/pkg/facade/routes"
 	"github.com/lucidfy/lucid/pkg/helpers"
+	"github.com/lucidfy/lucid/pkg/lucid"
 	"github.com/lucidfy/lucid/pkg/rules/must"
 )
 
@@ -17,10 +18,10 @@ var RequestRoute = routes.Routing{
 	Handler: sampleRequests,
 }
 
-func sampleRequests(T engines.EngineContract) *errors.AppError {
-	engine := T.(engines.NetHttpEngine)
-	req := engine.Request
-	res := engine.Response
+func sampleRequests(ctx context.Context) *errors.AppError {
+	engine := lucid.Context(ctx).Engine()
+	req := engine.GetRequest()
+	res := engine.GetResponse()
 
 	// prepare the data
 	data := helpers.MP{

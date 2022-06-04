@@ -1,6 +1,7 @@
 package ##PACKAGE_NAME##
 
 import (
+	"context"
 	"net/http"
 	"strconv"
 
@@ -8,6 +9,7 @@ import (
 	"github.com/lucidfy/lucid/app/models/##SMALL_CASE_NAME##"
 	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/errors"
+	"github.com/lucidfy/lucid/pkg/lucid"
 	"github.com/lucidfy/lucid/pkg/paginate/searchable"
 )
 
@@ -16,16 +18,15 @@ const PER_PAGE = "5"
 const SORT_COLUMN = "id"
 const SORT_TYPE = "desc"
 
-func lists(T engines.EngineContract) *errors.AppError {
-	engine := T.(engines.NetHttpEngine)
-	// w := engine.ResponseWriter
-	r := engine.HttpRequest
-	ses := engine.Session
-	req := engine.Request
-	res := engine.Response
+func lists(ctx context.Context) *errors.AppError {
+	engine := lucid.Context(ctx).Engine()
+	ses := engine.GetSession()
+	req := engine.GetRequest()
+	res := engine.GetResponse()
+	url := engine.GetURL()
 
 	//> prepare the searchable structure
-	searchable, app_err := prepare(T)
+	searchable, app_err := prepare(engine)
 	if app_err != nil {
 		return app_err
 	}
@@ -37,12 +38,14 @@ func lists(T engines.EngineContract) *errors.AppError {
 	}
 
 	data := map[string]interface{}{
-		"title":          "##CAMEL_CASE_NAME## List",
-		"data":           searchable,
-		"links_array":    searchable.Paginate.ToArray(),
-		"success":        ses.GetFlash("success"),
-		"error":          ses.GetFlash("error"),
-		csrf.TemplateTag: csrf.TemplateField(r),
+		"title":           "Users List",
+		"data":            searchable,
+		"paginated_array": searchable.Paginate.ToArray(),
+		"current_url":     url.CurrentURL(),
+		"success":         ses.GetFlash("success"),
+		"error":           ses.GetFlash("error"),
+
+		csrf.TemplateTag: csrf.TemplateField(engine.(engines.NetHttpEngine).HttpRequest),
 	}
 
 	//> here, we determine if the requestor wants a json response
@@ -62,9 +65,8 @@ func lists(T engines.EngineContract) *errors.AppError {
 }
 
 func prepare(T engines.EngineContract) (*searchable.Table, *errors.AppError) {
-	engine := T.(engines.NetHttpEngine)
-	req := engine.Request
-	url := engine.URL
+	req := T.GetRequest()
+	url := T.GetURL()
 
 	//> get the current "page", literally the default of each current page should always be 1
 	current_page, err := strconv.Atoi(req.Input("page", PAGE).(string))
@@ -89,7 +91,7 @@ func prepare(T engines.EngineContract) (*searchable.Table, *errors.AppError) {
 
 	st.Paginate.CurrentPage = current_page
 	st.Paginate.PerPage = per_page
-	st.Paginate.BaseURL = req.Input("pagination_url", url.FullURL()).(string)
+	st.Paginate.BaseURL = req.Input("pagination_url", url.CurrentURL()).(string)
 
 	order_by_col := req.Input("sort-column", SORT_COLUMN).(string)
 	st.OrderByCol = &order_by_col
@@ -101,8 +103,7 @@ func prepare(T engines.EngineContract) (*searchable.Table, *errors.AppError) {
 }
 
 func table(T engines.EngineContract, st *searchable.Table) *searchable.Table {
-	engine := T.(engines.NetHttpEngine)
-	req := engine.Request
+	req := T.GetRequest()
 
 	st.Headers = []searchable.Header{
 		{

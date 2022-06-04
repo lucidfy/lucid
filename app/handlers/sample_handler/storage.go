@@ -1,13 +1,14 @@
 package sample_handler
 
 import (
+	"context"
 	"net/http"
 
-	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/errors"
 	"github.com/lucidfy/lucid/pkg/facade/logger"
 	"github.com/lucidfy/lucid/pkg/facade/routes"
 	"github.com/lucidfy/lucid/pkg/helpers"
+	"github.com/lucidfy/lucid/pkg/lucid"
 	"github.com/lucidfy/lucid/pkg/storage"
 )
 
@@ -18,10 +19,10 @@ var StorageRoute = routes.Routing{
 	Handler: sampleFileStorage,
 }
 
-func sampleFileStorage(T engines.EngineContract) *errors.AppError {
-	engine := T.(engines.NetHttpEngine)
-	req := engine.Request
-	res := engine.Response
+func sampleFileStorage(ctx context.Context) *errors.AppError {
+	engine := lucid.Context(ctx).Engine()
+	req := engine.GetRequest()
+	res := engine.GetResponse()
 
 	files, app_err := req.GetFiles()
 

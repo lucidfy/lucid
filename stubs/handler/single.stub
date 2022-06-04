@@ -1,11 +1,12 @@
 package single_handler
 
 import (
+	"context"
 	"net/http"
 
-	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/errors"
 	"github.com/lucidfy/lucid/pkg/facade/routes"
+	"github.com/lucidfy/lucid/pkg/lucid"
 )
 
 var ##CAMEL_CASE_NAME##Route = routes.Routing{
@@ -15,13 +16,10 @@ var ##CAMEL_CASE_NAME##Route = routes.Routing{
 	Handler: ##SNAKE_CASE_NAME##,
 }
 
-func ##SNAKE_CASE_NAME##(T engines.EngineContract) *errors.AppError {
-	engine := T.(engines.NetHttpEngine)
-	// w := engine.ResponseWriter
-	// r := engine.HttpRequest
-	// url := engine.URL
-	req := engine.Request
-	res := engine.Response
+func ##SNAKE_CASE_NAME##(ctx context.Context) *errors.AppError {
+	engine := lucid.Context(ctx).Engine()
+	req := engine.GetRequest()
+	res := engine.GetResponse()
 
 	// prepare the data
 	data := map[string]interface{}{

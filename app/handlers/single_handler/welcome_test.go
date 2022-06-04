@@ -1,6 +1,7 @@
 package single_handler
 
 import (
+	"context"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -11,6 +12,7 @@ import (
 	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/env"
 	"github.com/lucidfy/lucid/pkg/facade/lang"
+	"github.com/lucidfy/lucid/pkg/lucid"
 	"github.com/lucidfy/lucid/resources/translations"
 )
 
@@ -25,7 +27,11 @@ func TestWelcome(t *testing.T) {
 	method := WelcomeRoute.Method[0]
 	handler_func := func(w http.ResponseWriter, r *http.Request) {
 		engine := *engines.NetHttp(w, r, lang.Load(translations.Languages))
-		app_err := handler(engine)
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, lucid.EngineCtx{}, engine)
+		app_err := handler(ctx)
+		ctx.Done()
+
 		if app_err != nil {
 			handlers.HttpErrorHandler(engine, app_err, nil)
 		}

@@ -1,21 +1,20 @@
 package users_handler
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/lucidfy/lucid/app/models/users"
-	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/errors"
+	"github.com/lucidfy/lucid/pkg/lucid"
 )
 
-func delete(T engines.EngineContract) *errors.AppError {
-	engine := T.(engines.NetHttpEngine)
-	// w := engine.ResponseWriter
-	// r := engine.HttpRequest
-	ses := engine.Session
-	req := engine.Request
-	res := engine.Response
-	url := engine.URL
+func delete(ctx context.Context) *errors.AppError {
+	engine := lucid.Context(ctx).Engine()
+	ses := engine.GetSession()
+	req := engine.GetRequest()
+	res := engine.GetResponse()
+	url := engine.GetURL()
 
 	//> prepare message and status
 	message := "Successfully Deleted!"

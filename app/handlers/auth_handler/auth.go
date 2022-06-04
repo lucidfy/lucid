@@ -1,13 +1,14 @@
 package auth_handler
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/lucidfy/lucid/app/models/users"
-	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/errors"
 	"github.com/lucidfy/lucid/pkg/facade/hash"
 	"github.com/lucidfy/lucid/pkg/facade/routes"
+	"github.com/lucidfy/lucid/pkg/lucid"
 )
 
 var RouteResource = routes.Routing{
@@ -19,12 +20,10 @@ var RouteResource = routes.Routing{
 	},
 }
 
-func user(T engines.EngineContract) *errors.AppError {
-	engine := T.(engines.NetHttpEngine)
-	// w := engine.ResponseWriter
-	// r := engine.HttpRequest
-	ses := engine.Session
-	res := engine.Response
+func user(ctx context.Context) *errors.AppError {
+	engine := lucid.Context(ctx).Engine()
+	ses := engine.GetSession()
+	res := engine.GetResponse()
 
 	userID, app_err := ses.Get("authenticated")
 	if userID == nil || app_err != nil {
@@ -41,14 +40,12 @@ func user(T engines.EngineContract) *errors.AppError {
 	}, http.StatusOK)
 }
 
-func loginAttempt(T engines.EngineContract) *errors.AppError {
-	engine := T.(engines.NetHttpEngine)
-	// w := engine.ResponseWriter
-	// r := engine.HttpRequest
-	ses := engine.Session
-	req := engine.Request
-	res := engine.Response
-	url := engine.URL
+func loginAttempt(ctx context.Context) *errors.AppError {
+	engine := lucid.Context(ctx).Engine()
+	ses := engine.GetSession()
+	req := engine.GetRequest()
+	res := engine.GetResponse()
+	url := engine.GetURL()
 
 	email := req.Input("email", nil).(string)
 	password := req.Input("password", nil).(string)

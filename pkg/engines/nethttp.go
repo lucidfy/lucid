@@ -60,27 +60,27 @@ func NetHttp(w http.ResponseWriter, r *http.Request, t *lang.Translations) *NetH
 	}
 }
 
-func (m NetHttpEngine) GetTranslation() interface{} {
+func (m NetHttpEngine) GetTranslation() *lang.Translations {
 	return m.Translation
 }
 
-func (m NetHttpEngine) GetRequest() interface{} {
-	return m.Request
+func (m NetHttpEngine) GetRequest() request.RequestContract {
+	return &(m.Request)
 }
 
-func (m NetHttpEngine) GetResponse() interface{} {
-	return m.Response
+func (m NetHttpEngine) GetResponse() response.ResponseContract {
+	return &(m.Response)
 }
 
-func (m NetHttpEngine) GetURL() interface{} {
-	return m.URL
+func (m NetHttpEngine) GetURL() urls.URLContract {
+	return &(m.URL)
 }
 
-func (m NetHttpEngine) GetCookie() interface{} {
-	return m.Cookie
+func (m NetHttpEngine) GetCookie() cookie.CookieContract {
+	return &(m.Cookie)
 }
 
-func (m NetHttpEngine) GetSession() interface{} {
+func (m NetHttpEngine) GetSession() session.SessionContract {
 	return m.Session
 }
 

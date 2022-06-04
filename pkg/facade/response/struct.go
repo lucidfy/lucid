@@ -14,7 +14,7 @@ import (
 const DEFAULT_VIEW_EXT = ".go.html"
 
 type ResponseContract interface {
-	ViewWithStatus(filepaths []string, data interface{}, status *int) *errors.AppError
+	ViewWithStatus(filepaths []string, data interface{}, status int) *errors.AppError
 	View(filepaths []string, data interface{}) *errors.AppError
 	Json(data interface{}, status int) *errors.AppError
 }

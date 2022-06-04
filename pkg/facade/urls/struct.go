@@ -2,13 +2,15 @@ package urls
 
 import (
 	"os"
+
+	"github.com/lucidfy/lucid/pkg/errors"
 )
 
 type URLContract interface {
+	BaseURL() string
 	CurrentURL() string
-	FullURL() string
 	PreviousURL() string
-	RedirectPrevious()
+	RedirectPrevious() *errors.AppError
 }
 
 func GetAddr() string {

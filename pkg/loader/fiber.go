@@ -1,4 +1,4 @@
-package routes
+package loader
 
 import (
 	"context"
@@ -10,11 +10,12 @@ import (
 	"github.com/lucidfy/lucid/pkg/errors"
 	"github.com/lucidfy/lucid/pkg/facade/lang"
 	"github.com/lucidfy/lucid/pkg/facade/request"
+	"github.com/lucidfy/lucid/pkg/facade/routes"
 	"github.com/valyala/fasthttp"
 	"github.com/valyala/fasthttp/fasthttpadaptor"
 )
 
-type FiberRoutes struct {
+type FiberLoader struct {
 	App               *fiber.App
 	GlobalMiddlewares []interface{}
 	RouteMiddlewares  map[string]interface{}
@@ -22,16 +23,16 @@ type FiberRoutes struct {
 	Translation       *lang.Translations
 }
 
-func Fiber(t *lang.Translations) *FiberRoutes {
-	return &FiberRoutes{Translation: t}
+func Fiber(t *lang.Translations) *FiberLoader {
+	return &FiberLoader{Translation: t}
 }
 
-func (fr *FiberRoutes) AddGlobalMiddlewares(base []interface{}) *FiberRoutes {
+func (fr *FiberLoader) AddGlobalMiddlewares(base []interface{}) *FiberLoader {
 	fr.GlobalMiddlewares = base
 	return fr
 }
 
-func (fr *FiberRoutes) AddRouteMiddlewares(base map[string]interface{}) *FiberRoutes {
+func (fr *FiberLoader) AddRouteMiddlewares(base map[string]interface{}) *FiberLoader {
 	fr.RouteMiddlewares = base
 	return fr
 }
@@ -39,7 +40,7 @@ func (fr *FiberRoutes) AddRouteMiddlewares(base map[string]interface{}) *FiberRo
 // Here, you can find how we iterate the routes() function,
 // we're using gorilla/mux package to serve our routing with
 // extensive support with http requests + middlewares.
-func (fr *FiberRoutes) Register(routings *[]Routing) *FiberRoutes {
+func (fr *FiberLoader) Register(routings *[]routes.Routing) *FiberLoader {
 	fr.App = fiber.New()
 
 	for _, routing := range *fr.Explain(routings) {
@@ -49,8 +50,8 @@ func (fr *FiberRoutes) Register(routings *[]Routing) *FiberRoutes {
 	return fr
 }
 
-func (fr FiberRoutes) Explain(base *[]Routing) *[]Routing {
-	routings := []Routing{}
+func (fr FiberLoader) Explain(base *[]routes.Routing) *[]routes.Routing {
+	routings := []routes.Routing{}
 	for _, route := range *base {
 		if len(route.Resources) != 0 {
 			routings = append(routings, resources(route)...)
@@ -64,7 +65,7 @@ func (fr FiberRoutes) Explain(base *[]Routing) *[]Routing {
 	return &routings
 }
 
-func (fr *FiberRoutes) register(route Routing) {
+func (fr *FiberLoader) register(route routes.Routing) {
 	// serve static
 	if len(route.Static) != 0 {
 		fr.App.Static(route.Path, route.Static)
@@ -89,7 +90,11 @@ func (fr *FiberRoutes) register(route Routing) {
 	// get handler
 	fiber_handle := adaptorToHttpHandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		engine := *engines.NetHttp(w, r, fr.Translation)
-		e := route.Handler(engine)
+
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, "engine", engine)
+
+		e := route.Handler(ctx)
 		if e != nil {
 			fr.HttpErrorHandler(engine, e, nil)
 		}
