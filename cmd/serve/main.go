@@ -26,10 +26,12 @@ func init() {
 	var host string
 	var port string
 	var router_engine string
+	var show_defaults bool
 	flag.StringVar(&scheme, "scheme", os.Getenv("SCHEME"), "Scheme to use")
 	flag.StringVar(&host, "host", os.Getenv("HOST"), "Host to use")
 	flag.StringVar(&port, "port", os.Getenv("PORT"), "Port to use")
 	flag.StringVar(&router_engine, "router-engine", "mux", `By default we are using "mux"`)
+	flag.BoolVar(&show_defaults, "show-defaults", false, "Print out the default env")
 	flag.Parse()
 
 	flags := map[string]string{
@@ -44,14 +46,21 @@ func init() {
 			os.Setenv(k, v)
 		}
 	}
+
+	showDefaults()
 }
 
-func defaultRouterEngines() map[string]func() http.Handler {
+func main() {
+	lre := os.Getenv("LUCID_ROUTER_ENGINE")
+
+	bootstrap(lre)
+}
+
+func bootstrap(e string) {
 	trans := lang.Load(translations.Languages)
 
-	return map[string]func() http.Handler{
-		"mux": func() http.Handler {
-
+	lists := map[string]func(){
+		"mux": func() {
 			nethttp := loader.NetHttp(trans).
 				AddGlobalMiddlewares(app.GlobalMiddleware).
 				AddRouteMiddlewares(app.RouteMiddleware)
@@ -76,12 +85,25 @@ func defaultRouterEngines() map[string]func() http.Handler {
 				}, nil)
 			})
 
-			return nethttp.Register(&registrar.Routes)
+			handler := nethttp.Register(&registrar.Routes)
+
+			kernel.
+				NetHttp(handler).
+				Run().
+				WithGracefulShutdown()
 		},
 	}
+
+	callback, ok := lists[e]
+
+	if !ok {
+		panic(fmt.Errorf(`[%s] router engine does not exists`, e))
+	}
+
+	callback()
 }
 
-func printEnvDefaults() {
+func showDefaults() {
 	log.Println("Defaults: ")
 	log.Println(fmt.Sprintf(` -> Environment: %s`, os.Getenv("APP_ENV")))
 	log.Println(fmt.Sprintf(` -> Timezone: %s`, os.Getenv("APP_TIMEZONE")))
@@ -89,20 +111,4 @@ func printEnvDefaults() {
 	log.Println(fmt.Sprintf(` -> Scheme: %s`, os.Getenv("SCHEME")))
 	log.Println(fmt.Sprintf(` -> Host: %s`, os.Getenv("HOST")))
 	log.Println(fmt.Sprintf(` -> Port: %s`, os.Getenv("PORT")))
-}
-
-func main() {
-	printEnvDefaults()
-
-	lre := os.Getenv("LUCID_ROUTER_ENGINE")
-	handler, ok := defaultRouterEngines()[lre]
-
-	if !ok {
-		panic(fmt.Errorf(`[%s] router engine does not exists`, lre))
-	}
-
-	kernel.
-		New(handler()).
-		Run().
-		WithGracefulShutdown()
 }
