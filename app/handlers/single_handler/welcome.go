@@ -2,6 +2,7 @@ package single_handler
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/lucidfy/lucid/pkg/errors"
 	"github.com/lucidfy/lucid/pkg/facade/routes"
@@ -19,7 +20,9 @@ func welcome(ctx lucid.Context) *errors.AppError {
 	engine := ctx.Engine()
 	req := engine.GetRequest()
 	res := engine.GetResponse()
-	lang := engine.GetTranslation()
+	lang := engine.GetTranslation().SetLanguage(
+		req.Input("language", os.Getenv("APP_LANGUAGE")).(string),
+	)
 
 	// prepare the data
 	data := map[string]interface{}{

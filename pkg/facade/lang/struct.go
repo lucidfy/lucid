@@ -14,8 +14,9 @@ func Load(languages_data map[string]map[string]string) *Translations {
 	return &Translations{languages_data: languages_data}
 }
 
-func (t *Translations) SetLanguage(language string) {
+func (t *Translations) SetLanguage(language string) *Translations {
 	t.language = language
+	return t
 }
 
 // T translates based on the default language inside .env
