@@ -19,9 +19,11 @@ func welcome(ctx lucid.Context) *errors.AppError {
 	engine := ctx.Engine()
 	req := engine.GetRequest()
 	res := engine.GetResponse()
+	lang := engine.GetTranslation()
 
 	// prepare the data
 	data := map[string]interface{}{
+		"lang":  lang,
 		"title": "Lucid Rocks!",
 	}
 

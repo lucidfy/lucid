@@ -10,5 +10,11 @@ var ChineseSimplified = map[string]string{
 	"validations.strictpassword.uppercase": ":field 至少应包含 1 个大写字符",
 	"validations.strictpassword.lowercase": ":field 至少应包含 1 个小写字符",
 	"validations.strictpassword.digit":     ":field 至少应包含 1 位数字",
-	"Die Dump":                             "模具转储",
+
+	"Die Dump":   "模具转储",
+	"Welcome to": "欢迎来到",
+	"Lucid":      "清醒的",
+
+	"Running using GO HTML Template": "使用原生 HTML 运行",
+	"Sample Forms":                   "样本表格",
 }

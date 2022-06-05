@@ -34,8 +34,15 @@ func (t Translations) Get(key string, values map[string]string) string {
 
 func (t Translations) Direct(lang string, key string, values map[string]string) string {
 	sentence := t.languages_data[lang][key]
+
 	for k, v := range values {
 		sentence = strings.Replace(sentence, k, v, -1)
 	}
+
+	// return the key if the sentence is empty
+	if sentence == "" {
+		return key
+	}
+
 	return sentence
 }

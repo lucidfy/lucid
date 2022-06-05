@@ -10,5 +10,11 @@ var ChineseTraditional = map[string]string{
 	"validations.strictpassword.uppercase": ":field 至少應包含 1 個大寫字符",
 	"validations.strictpassword.lowercase": ":field 至少應包含 1 個小寫字符",
 	"validations.strictpassword.digit":     ":field 至少應包含 1 位數字",
-	"Die Dump":                             "模具轉儲",
+
+	"Welcome to": "歡迎來到",
+	"Lucid":      "清醒的",
+	"Die Dump":   "模具轉儲",
+
+	"Running using GO HTML Template": "使用原生 HTML 運行",
+	"Sample Forms":                   "樣本表格",
 }
