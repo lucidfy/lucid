@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/lucidfy/lucid/pkg/env"
-	"github.com/lucidfy/lucid/pkg/paginate/searchable"
+	"github.com/lucidfy/lucid/pkg/searchable"
 )
 
 func init() {

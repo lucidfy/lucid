@@ -9,7 +9,7 @@ import (
 	"github.com/lucidfy/lucid/pkg/errors"
 	"github.com/lucidfy/lucid/pkg/facade/hash"
 	"github.com/lucidfy/lucid/pkg/functions/php"
-	"github.com/lucidfy/lucid/pkg/paginate/searchable"
+	"github.com/lucidfy/lucid/pkg/searchable"
 
 	sq "github.com/Masterminds/squirrel"
 )

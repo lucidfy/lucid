@@ -10,7 +10,7 @@ import (
 	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/errors"
 	"github.com/lucidfy/lucid/pkg/lucid"
-	"github.com/lucidfy/lucid/pkg/paginate/searchable"
+	"github.com/lucidfy/lucid/pkg/searchable"
 )
 
 const PAGE = "1"

@@ -11,6 +11,21 @@ import (
 	"github.com/lucidfy/lucid/pkg/facade/response"
 )
 
+type Paginate struct {
+	Template string `json:"-"`
+
+	Total       int `json:"total"`
+	PerPage     int `json:"per_page"`
+	CurrentPage int `json:"current_page"`
+	LastPage    int `json:"last_page"`
+
+	BaseURL string      `json:"base_url"`
+	Items   interface{} `json:"items"`
+
+	OnEachSide int     `json:"on_each_side"`
+	Fragment   *string `json:"fragment"`
+}
+
 const DefaultTemplate = "pkg/pagination/tailwind.go.html"
 
 func Construct(items interface{}, total int, perPage int, currentPage int) *Paginate {
@@ -44,7 +59,7 @@ func (p *Paginate) ChangeTemplate(t string) *Paginate {
 	return p
 }
 
-func (p *Paginate) Render(view *string /*, data array*/) string {
+func (p *Paginate) Render(view *string) string {
 	if view == nil {
 		dv := p.Template
 		view = &dv
@@ -189,7 +204,7 @@ func (p Paginate) OnFirstPage() bool {
 	return p.CurrentPage <= 1
 }
 
-func (p *Paginate) SetOnEachSide(count int) *Paginate { // this is onEachSide() in illuminate
+func (p *Paginate) SetOnEachSide(count int) *Paginate {
 	p.OnEachSide = count
 	return p
 }

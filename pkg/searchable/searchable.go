@@ -29,7 +29,7 @@ type Table struct {
 	OrderBySort *string           `json:"order_by_sort"`
 }
 
-func (st *Table) QueryCount(table string) sq.SelectBuilder {
+func (st Table) QueryCount(table string) sq.SelectBuilder {
 	return sq.Select("count(*)").From(table)
 }
 
