@@ -20,7 +20,7 @@ const SORT_TYPE = "desc"
 func lists(ctx lucid.Context) *errors.AppError {
 	engine := ctx.Engine()
 	router := ctx.Router()
-	ses := engine.GetSession()
+	ses := ctx.Session()
 	req := engine.GetRequest()
 	res := engine.GetResponse()
 	url := engine.GetURL()

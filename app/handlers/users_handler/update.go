@@ -15,7 +15,7 @@ import (
 func show(ctx lucid.Context) *errors.AppError {
 	engine := ctx.Engine()
 	router := ctx.Router()
-	ses := engine.GetSession()
+	ses := ctx.Session()
 	req := engine.GetRequest()
 	res := engine.GetResponse()
 	url := engine.GetURL()
@@ -68,7 +68,7 @@ func show(ctx lucid.Context) *errors.AppError {
 
 func update(ctx lucid.Context) *errors.AppError {
 	engine := ctx.Engine()
-	ses := engine.GetSession()
+	ses := ctx.Session()
 	req := engine.GetRequest()
 	res := engine.GetResponse()
 	url := engine.GetURL()

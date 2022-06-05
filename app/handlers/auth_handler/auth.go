@@ -21,7 +21,7 @@ var RouteResource = routes.Routing{
 
 func user(ctx lucid.Context) *errors.AppError {
 	engine := ctx.Engine()
-	ses := engine.GetSession()
+	ses := ctx.Session()
 	res := engine.GetResponse()
 
 	userID, app_err := ses.Get("authenticated")
@@ -41,7 +41,7 @@ func user(ctx lucid.Context) *errors.AppError {
 
 func loginAttempt(ctx lucid.Context) *errors.AppError {
 	engine := ctx.Engine()
-	ses := engine.GetSession()
+	ses := ctx.Session()
 	req := engine.GetRequest()
 	res := engine.GetResponse()
 	url := engine.GetURL()

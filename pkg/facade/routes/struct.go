@@ -5,8 +5,6 @@ import (
 	"github.com/lucidfy/lucid/pkg/lucid"
 )
 
-// structs
-
 type Middlewares []string
 type Queries []string
 type Method []string

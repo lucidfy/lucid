@@ -10,7 +10,7 @@ import (
 
 func delete(ctx lucid.Context) *errors.AppError {
 	engine := ctx.Engine()
-	ses := engine.GetSession()
+	ses := ctx.Session()
 	req := engine.GetRequest()
 	res := engine.GetResponse()
 	url := engine.GetURL()

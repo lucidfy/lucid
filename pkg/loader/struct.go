@@ -2,7 +2,6 @@ package loader
 
 import (
 	"net/http"
-	"os"
 	"strings"
 
 	"github.com/lucidfy/lucid/pkg/facade/routes"
@@ -19,11 +18,7 @@ func stripDoubleSlash(str string) string {
 
 func resources(route routes.Routing) []routes.Routing {
 	routings := []routes.Routing{}
-
 	id_regex := "{id:[0-9]+}"
-	if os.Getenv("LUCID_ROUTER_ENGINE") == "fiber" {
-		id_regex = ":id"
-	}
 
 	for action, handler := range route.Resources {
 		switch action {

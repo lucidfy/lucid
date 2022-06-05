@@ -1,7 +1,6 @@
 package engines
 
 import (
-	e "errors"
 	"fmt"
 	"net/http"
 
@@ -10,9 +9,7 @@ import (
 	"github.com/lucidfy/lucid/pkg/facade/lang"
 	"github.com/lucidfy/lucid/pkg/facade/request"
 	"github.com/lucidfy/lucid/pkg/facade/response"
-	"github.com/lucidfy/lucid/pkg/facade/session"
 	"github.com/lucidfy/lucid/pkg/facade/urls"
-	"github.com/lucidfy/lucid/pkg/helpers"
 )
 
 type NetHttpEngine struct {
@@ -24,7 +21,6 @@ type NetHttpEngine struct {
 	Request  request.NetHttpRequest
 	URL      urls.NetHttpURL
 	Cookie   cookie.NetHttpCookie
-	Session  session.SessionContract
 
 	HttpErrorHandler func(EngineContract, *errors.AppError, interface{})
 }
@@ -34,19 +30,6 @@ func NetHttp(w http.ResponseWriter, r *http.Request, t *lang.Translations) *NetH
 	url := urls.NetHttp(w, r)
 	req := request.NetHttp(w, r, t, url)
 	coo := cookie.NetHttp(w, r)
-	var ses session.SessionContract
-
-	if helpers.IsTrue(helpers.Getenv("SESSION_ENABLED", "true")) {
-		sessionKey, app_err := coo.Get(helpers.Getenv("SESSION_NAME", "lucid_session"))
-		if app_err != nil && e.Is(app_err.Error, http.ErrNoCookie) {
-			sessionKey = coo.CreateSessionCookie()
-		}
-
-		ses = session.Driver(
-			helpers.Getenv("SESSION_DRIVER", "file"),
-			sessionKey.(string),
-		)
-	}
 
 	return &NetHttpEngine{
 		ResponseWriter: w,
@@ -56,7 +39,6 @@ func NetHttp(w http.ResponseWriter, r *http.Request, t *lang.Translations) *NetH
 		Request:        *req,
 		URL:            *url,
 		Cookie:         *coo,
-		Session:        ses,
 	}
 }
 
@@ -78,10 +60,6 @@ func (m NetHttpEngine) GetURL() urls.URLContract {
 
 func (m NetHttpEngine) GetCookie() cookie.CookieContract {
 	return &(m.Cookie)
-}
-
-func (m NetHttpEngine) GetSession() session.SessionContract {
-	return m.Session
 }
 
 func (m NetHttpEngine) DD(data ...interface{}) {

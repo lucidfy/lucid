@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/gofiber/adaptor/v2"
 	"github.com/lucidfy/lucid/app"
 	"github.com/lucidfy/lucid/app/handlers"
 	"github.com/lucidfy/lucid/internal/kernel"
@@ -78,16 +77,6 @@ func defaultRouterEngines() map[string]func() http.Handler {
 			})
 
 			return nethttp.Register(&registrar.Routes)
-		},
-
-		"fiber": func() http.Handler {
-			fiber := loader.Fiber(trans).
-				AddGlobalMiddlewares(app.GlobalMiddleware).
-				AddRouteMiddlewares(app.RouteMiddleware)
-
-			fiber.HttpErrorHandler = handlers.HttpErrorHandler
-
-			return adaptor.FiberApp(fiber.Register(&registrar.Routes).App)
 		},
 	}
 }

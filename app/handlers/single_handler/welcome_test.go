@@ -29,7 +29,7 @@ func TestWelcome(t *testing.T) {
 		engine := *engines.NetHttp(w, r, lang.Load(translations.Languages))
 		ctx := context.Background()
 		ctx = context.WithValue(ctx, lucid.EngineCtx{}, engine)
-		app_err := handler(lucid.NewContext(ctx))
+		app_err := handler(lucid.New(ctx))
 		ctx.Done()
 
 		if app_err != nil {
