@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/lucidfy/lucid/app"
 	"github.com/lucidfy/lucid/app/handlers"
 	"github.com/lucidfy/lucid/internal/kernel"
 	"github.com/lucidfy/lucid/pkg/engines"
@@ -62,8 +61,8 @@ func bootstrap(e string) {
 	lists := map[string]func(){
 		"mux": func() {
 			nethttp := loader.NetHttp(trans).
-				AddGlobalMiddlewares(app.GlobalMiddleware).
-				AddRouteMiddlewares(app.RouteMiddleware)
+				AddGlobalMiddlewares(registrar.GlobalMiddleware).
+				AddRouteMiddlewares(registrar.RouteMiddleware)
 
 			nethttp.HttpErrorHandler = handlers.HttpErrorHandler
 

@@ -2,7 +2,6 @@ package registrar
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/lucidfy/lucid/app"
 	"github.com/lucidfy/lucid/app/commands"
 	"github.com/lucidfy/lucid/pkg/facade/lang"
 	"github.com/lucidfy/lucid/pkg/facade/routes"
@@ -23,14 +22,14 @@ var LucidCommands = []*cli.Command{
 	lucid_commands.DatabaseMigration(Migrations),
 	lucid_commands.RouteRegistered(func() *mux.Router {
 		return loader.NetHttp(lang.Load(translations.Languages)).
-			AddGlobalMiddlewares(app.GlobalMiddleware).
-			AddRouteMiddlewares(app.RouteMiddleware).
+			AddGlobalMiddlewares(GlobalMiddleware).
+			AddRouteMiddlewares(RouteMiddleware).
 			Register(&Routes)
 	}),
 	lucid_commands.RouteDefined(func() *[]routes.Routing {
 		return loader.NetHttp(lang.Load(translations.Languages)).
-			AddGlobalMiddlewares(app.GlobalMiddleware).
-			AddRouteMiddlewares(app.RouteMiddleware).
+			AddGlobalMiddlewares(GlobalMiddleware).
+			AddRouteMiddlewares(RouteMiddleware).
 			Explain(&Routes)
 	}),
 }

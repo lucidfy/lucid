@@ -1,8 +1,6 @@
-package app
+package registrar
 
-import (
-	"github.com/lucidfy/lucid/app/middlewares"
-)
+import "github.com/lucidfy/lucid/app/middlewares"
 
 // Global Middleware
 var GlobalMiddleware = []interface{}{
