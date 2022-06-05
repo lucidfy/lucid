@@ -26,7 +26,7 @@ func lists(ctx lucid.Context) *errors.AppError {
 	res := engine.GetResponse()
 	url := engine.GetURL()
 
-	bUrl, _ := router.Get("users.lists").URL()
+	bUrl, _ := router.Get("##SMALL_CASE_NAME##.lists").URL()
 
 	//> prepare the searchable structure
 	searchable, app_err := prepare(engine)
