@@ -1,21 +1,93 @@
-# Installation {#\" class="text-4xl"}
+# Installation
 
-<p class="mt-5">Nulla ea ullamco amet laboris ea adipisicing nisi ad deserunt in reprehenderit veniam incididunt exercitation. Deserunt id voluptate non ex eu dolore ipsum tempor id excepteur labore adipisicing enim ea. Qui est sit proident veniam labore in consequat pariatur enim qui veniam velit occaecat duis. Officia aute voluptate aute exercitation ex ipsum quis commodo eiusmod et incididunt. Proident ex ipsum voluptate tempor fugiat sunt aliqua id. Nostrud labore do velit ipsum.</p>
+- [# Host Machine](#-host-machine)
+  - [# Lucid "GO"](#-lucid-go)
+  - [# Lucid "SvelteKit"](#-lucid-sveltekit)
+- [# Via Docker](#-via-docker)
 
-<p class="mt-5">Culpa culpa dolor labore sit. Et consequat enim voluptate minim nostrud eu. Et id consectetur proident consectetur ipsum non eiusmod duis et minim consectetur nulla. Labore consectetur quis velit quis qui dolor aliqua ut magna id ad tempor sunt dolor. Sit excepteur irure voluptate dolore qui incididunt excepteur id. Dolor ullamco occaecat ipsum veniam exercitation non occaecat nostrud quis occaecat culpa deserunt sit.</p>
+---
 
-<p class="mt-5">Ullamco laborum voluptate dolore dolore commodo anim irure enim proident amet ea. Cupidatat officia cupidatat incididunt sint non mollit laborum esse. Nisi ea in nulla est eiusmod anim anim qui. Exercitation velit velit magna tempor consectetur minim cillum nisi. Sit ex et quis quis dolore enim elit Lorem officia irure. Deserunt do in anim irure aliquip culpa. Dolor occaecat irure magna elit occaecat veniam nostrud.</p>
+{#-host-machine}
 
-<p class="mt-5">Ea nulla ex excepteur eu laborum sunt cupidatat nostrud reprehenderit. Cupidatat magna tempor anim et ad eu mollit eu. Deserunt reprehenderit minim labore reprehenderit adipisicing nulla amet mollit consectetur. Duis aliquip dolore aliquip fugiat excepteur id reprehenderit laborum sit.</p>
+## [#](#-host-machine) Host Machine
 
-<p class="mt-5">Laboris fugiat duis sunt velit. Consequat dolore aute magna ullamco magna amet magna ipsum dolor. Veniam commodo esse nisi elit ea laboris laboris dolor minim cillum fugiat in ex.</p>
+{#-lucid-go}
 
-<p class="mt-5">Id cillum anim ut mollit ullamco nostrud occaecat sit tempor. Do enim sit laborum elit qui mollit esse. Ut fugiat labore laborum irure nulla eiusmod ipsum sunt sit excepteur fugiat quis sint. Non anim duis duis do magna qui anim reprehenderit dolor Lorem esse sit non. Labore ullamco commodo consequat non deserunt velit cillum magna do excepteur elit excepteur. Incididunt qui voluptate exercitation magna sit voluptate deserunt esse non sit ipsum eu nisi amet. Qui magna ex fugiat aliqua excepteur Lorem officia ad reprehenderit magna.</p>
+### [#](#-lucid-go) Lucid "GO"
 
-<p class="mt-5">Eiusmod aliqua ex voluptate tempor eiusmod tempor cupidatat ea tempor commodo. Do sint ex culpa sunt ipsum fugiat dolore officia eiusmod consectetur cupidatat mollit pariatur. Nulla fugiat incididunt incididunt magna velit cillum. Dolore exercitation aute ex velit consectetur consectetur voluptate adipisicing occaecat quis do cupidatat. Voluptate ullamco fugiat est eu. Ullamco est qui amet elit. Deserunt ullamco consequat non adipisicing ullamco dolor cillum excepteur.</p>
+I should assume you've successfully [installed your go](https://go.dev/dl/) in your machine.
 
-<p class="mt-5">Ex in laboris deserunt sunt non occaecat adipisicing sit est tempor incididunt id consectetur. Laborum elit enim ex ad esse laborum. Nostrud in occaecat amet culpa dolor sit reprehenderit aute ipsum nulla.</p>
+If you want to quickly try Lucid, please follow below source, make sure your port `8080` is open to serve your local http, or modify your lucid `.env` file.
 
-<p class="mt-5">Lorem irure laboris commodo adipisicing cillum pariatur. Reprehenderit quis ea fugiat cillum nisi sint. Lorem aliquip tempor labore sit aliquip culpa. Enim eu aliquip aute labore esse anim ea ad est consectetur dolore cillum consectetur.</p>
+```bash
+> wget -c https://github.com/lucidfy/lucid/archive/refs/heads/develop.tar.gz -O - | tar -xz
+> cd lucid-develop
+> go mod download
+> bash ./serve
+```
 
-<p class="mt-5">Anim laborum officia laboris ea eu Lorem do eu magna exercitation nostrud Lorem anim. Excepteur ea aliqua sit fugiat ipsum officia do ad excepteur nostrud tempor. Cupidatat eiusmod voluptate laborum anim enim. Reprehenderit aute ad excepteur consequat laboris in quis.</p>
+{#-lucid-sveltekit}
+
+### [#](#-lucid-sveltekit) Lucid "SvelteKit"
+
+```bash
+> wget -c https://github.com/lucidfy/ui/archive/refs/heads/develop.tar.gz -O - | tar -xz
+> cd ui-develop/
+> npm install
+> ./make guest dev -- --host=0.0.0.0 --port=8081
+```
+
+After executing above, it should automatically sere `src/guest/` and opens a browser pointing to localhost:8081
+
+```bash
+> ./make docs dev -- --host=0.0.0.0 --port=8082
+```
+
+Then running above should serve the `src/docs/`, it should automatically open a browser pointing to localhost:8082
+
+---
+
+{#-via-docker}
+
+## [#](#-via-docker) Via Docker
+
+Make sure you have installed [Docker Desktop](https://www.docker.com/products/docker-desktop/) in your machine, then download the [lucidfy/setup](https://github.com/lucidfy/setup)
+
+```bash
+ > wget -c https://github.com/lucidfy/setup/archive/refs/heads/develop.tar.gz -O - | tar -xz
+ > mv setup-develop lucid-setup
+ > cd lucid-setup/
+```
+
+After placing the lucidfy/setup into your machine, we then need to download the [Lucid Svelte](https://github.com/lucidfy/ui) and [Lucid Go](https://github.com/lucidfy/lucid)
+
+```bash
+> wget -c https://github.com/lucidfy/lucid/archive/refs/heads/develop.tar.gz -O - | tar -xz
+> mv lucid-develop/ src/lucid/
+> wget -c https://github.com/lucidfy/ui/archive/refs/heads/develop.tar.gz -O - | tar -xz
+> mv ui-develop/ src/lucid-ui/
+```
+
+after setting up all the folders, therefore execute the `./setup-container`
+
+```bash
+> sudo ./setup-container
+```
+
+After that, once you've successfully built your own container, to tail the console stdout for both go and sveltekit, try below command.
+
+```bash
+> ./tail
+```
+
+To `restart` your container
+
+```bash
+> ./restart
+```
+
+To `stop` your container
+
+```bash
+> docker container stop lucid-container
+```

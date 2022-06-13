@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/daison12006013/gorvel/pkg/facade/path"
+	"github.com/lucidfy/lucid/pkg/facade/path"
 )
 
 // determine if the file logging is enabled
@@ -23,6 +23,7 @@ func MakeWriter() (io.Writer, *os.File) {
 	)
 	if err != nil {
 		log.Fatalf("Error opening file: %v", err)
+		f.Close()
 	}
 	wrt := io.MultiWriter(os.Stdout, f)
 	return wrt, f
@@ -59,6 +60,12 @@ func Error(title string, data ...interface{}) {
 func text(txt string, title string, data ...interface{}) {
 	l, file := New(fmt.Sprintf(txt, os.Getenv("APP_ENV")))
 	defer file.Close()
+
+	// check if data is empty, then hide that %MISSING
+	// when logging an interface variable
+	if len(data) == 0 {
+		data = append(data, "")
+	}
 	data = prepend(title, data...)
 	l.Printf("%s %+v\n", data...)
 }

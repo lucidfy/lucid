@@ -6,20 +6,19 @@ import (
 	"github.com/golang-module/carbon"
 )
 
-const Table = "##TABLE_NAME##"
-const PrimaryKey = "id"
+const Table = "##PACKAGE_NAME##"
 
 var Updatables = []string{
-	// define the updatable columns here!
+	// add the columns you want to be updatable
 }
 
 type Model struct {
-	ID              uint           `gorm:"primarykey;auto_increment;not_null" json:"id"`
+	ID uint `gorm:"primarykey;auto_increment;not_null" json:"id"`
 
-	// define the missing columns here!
+	// add your columns here...
 
-	CreatedAt       time.Time      `gorm:"column:created_at" json:"created_at"`
-	UpdatedAt       time.Time      `gorm:"column:updated_at" json:"updated_at"`
+	CreatedAt time.Time `gorm:"column:created_at" json:"created_at"`
+	UpdatedAt time.Time `gorm:"column:updated_at" json:"updated_at"`
 }
 
 func (Model) TableName() string { // https://gorm.io/docs/conventions.html#TableName

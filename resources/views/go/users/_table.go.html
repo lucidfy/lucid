@@ -8,7 +8,7 @@
       </div>
 
       <div class="text-xs inline-block my-auto basis-1/4">
-        <a href="/users/create" class="
+        <a href="{{ $.base_url }}/create" class="
           uppercase text-xs
           bg-transparent hover:bg-white
           text-white hover:text-gray-700
@@ -82,14 +82,7 @@
               {{ range $idx, $record := $.data.Paginate.Items }}
               <tr>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="flex items-center">
-                    <div class="flex-shrink-0 h-10 w-10">
-                      <img class="h-10 w-10 rounded-full" src="https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png" alt="">
-                    </div>
-                    <div class="ml-4">
-                      <div class="text-sm font-medium text-gray-900">{{ $record.Name }}</div>
-                    </div>
-                  </div>
+                  <div class="text-sm font-medium text-gray-900">{{ $record.Name }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <div class="text-sm text-gray-500">{{ $record.Email }}</div>
@@ -101,8 +94,8 @@
                   <div class="text-sm text-gray-500">{{ $record.ReadableUpdatedAt }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                  <a href="/users/{{ $record.ID }}" class="text-indigo-600 hover:text-indigo-900 px-2">View</a>
-                  <form class="px-2 inline-block" action="/users/{{ $record.ID }}/delete" method="POST">
+                  <a href="{{ $.base_url }}/{{ $record.ID }}" class="text-indigo-600 hover:text-indigo-900 px-2">View</a>
+                  <form class="px-2 inline-block" action="{{ $.base_url }}/{{ $record.ID }}/delete" method="POST">
                     {{ $.csrfField }}
                     <button class="text-red-600 hover:text-red-900">Delete</button>
                   </form>

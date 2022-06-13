@@ -2,13 +2,15 @@ package urls
 
 import (
 	"os"
+
+	"github.com/lucidfy/lucid/pkg/errors"
 )
 
-type UrlContract interface {
-	CurrentUrl() string
-	FullUrl() string
-	PreviousUrl() string
-	RedirectPrevious()
+type URLContract interface {
+	BaseURL() string
+	CurrentURL() string
+	PreviousURL() string
+	RedirectPrevious() *errors.AppError
 }
 
 func GetAddr() string {
@@ -19,7 +21,7 @@ func GetAddr() string {
 	return os.Getenv("HOST") + port
 }
 
-func BaseUrl(uri *string) string {
+func BaseURL(uri *string) string {
 	var u string = ""
 	if uri != nil {
 		u = *uri

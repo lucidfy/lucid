@@ -1,0 +1,39 @@
+package single_handler
+
+import (
+	"context"
+	"net/http"
+
+	"github.com/lucidfy/lucid/pkg/errors"
+	"github.com/lucidfy/lucid/pkg/facade/routes"
+	"github.com/lucidfy/lucid/pkg/lucid"
+)
+
+var ##CAMEL_CASE_NAME##Route = routes.Routing{
+	Path:    "/##KEBAB_CASE_NAME##",
+	Name:    "##KEBAB_CASE_NAME##",
+	Method:  routes.Method{"GET"},
+	Handler: ##SNAKE_CASE_NAME##,
+}
+
+func ##SNAKE_CASE_NAME##(ctx lucid.Context) *errors.AppError {
+	engine := ctx.Engine()
+	req := engine.GetRequest()
+	res := engine.GetResponse()
+
+	// prepare the data
+	data := map[string]interface{}{
+		"title": "##CAMEL_CASE_NAME## handler!",
+	}
+
+	// this is api request
+	if req.WantsJson() {
+		return res.Json(data, http.StatusOK)
+	}
+
+	// render the template
+	return res.View(
+		[]string{"empty"},
+		data,
+	)
+}

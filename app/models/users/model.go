@@ -4,32 +4,33 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/daison12006013/gorvel/databases"
-	"github.com/daison12006013/gorvel/pkg/errors"
-	"github.com/daison12006013/gorvel/pkg/facade/hash"
-	"github.com/daison12006013/gorvel/pkg/functions/php"
-	"github.com/daison12006013/gorvel/pkg/paginate/searchable"
 	"github.com/golang-module/carbon"
+	"github.com/lucidfy/lucid/databases"
+	"github.com/lucidfy/lucid/pkg/errors"
+	"github.com/lucidfy/lucid/pkg/facade/hash"
+	"github.com/lucidfy/lucid/pkg/functions/php"
+	"github.com/lucidfy/lucid/pkg/searchable"
 
 	sq "github.com/Masterminds/squirrel"
 )
 
-func Lists(st *searchable.Table) error {
+func Lists(st *searchable.Table) *errors.AppError {
 	db := databases.Resolve()
+	defer databases.Close(db)
 
 	// fetch counts
 	var total int
 	countStmt, countArgs, err := st.QueryCount(Table).ToSql()
-	if errors.Handler("error fetching count", err) {
-		panic(err)
+	if err != nil {
+		return errors.InternalServerError("st.QueryCount() error", err)
 	}
 	db.Raw(countStmt, countArgs...).Scan(&total)
 
 	// fetch the data
 	var records []Model
 	selectStmt, selectArgs, err := st.QuerySelect(Table).ToSql()
-	if errors.Handler("error fetching data", err) {
-		panic(err)
+	if err != nil {
+		return errors.InternalServerError("st.QuerySelect() error", err)
 	}
 	db.Raw(selectStmt, selectArgs...).Scan(&records)
 
@@ -48,6 +49,7 @@ func Exists(column string, value *string) *errors.AppError {
 	}
 
 	db := databases.Resolve()
+	defer databases.Close(db)
 
 	stmt, args, _ := sq.Select("1").From(Table).Where(sq.Eq{column: *value}).ToSql()
 	stmt, args, _ = sq.Expr("select exists("+stmt+") as found", args).ToSql()
@@ -67,13 +69,14 @@ func Exists(column string, value *string) *errors.AppError {
 
 func Create(i interface{}) (*Finder, *errors.AppError) {
 	db := databases.Resolve()
+	defer databases.Close(db)
 
 	// here, we call the sanitizer function
-	i, appErr := sanitize(i)
+	i, app_err := sanitize(i)
 	inputs := i.(map[string]interface{})
 
-	if appErr != nil {
-		return nil, appErr
+	if app_err != nil {
+		return nil, app_err
 	}
 
 	// here, we validate if the email existence is present
@@ -116,8 +119,9 @@ type Finder struct {
 	Model *Model
 }
 
-func Find(id *string, col interface{}) (*Finder, *errors.AppError) {
+func Find(id interface{}, col interface{}) (*Finder, *errors.AppError) {
 	db := databases.Resolve()
+	defer databases.Close(db)
 	record := new(Model)
 
 	if col == nil || col.(string) == "" {
@@ -138,13 +142,14 @@ func Find(id *string, col interface{}) (*Finder, *errors.AppError) {
 
 func (f *Finder) Updates(i interface{}) *errors.AppError {
 	db := databases.Resolve()
+	defer databases.Close(db)
 
 	// here, we call the sanitizer function
-	i, appErr := sanitize(i)
+	i, app_err := sanitize(i)
 	inputs := i.(map[string]interface{})
 
-	if appErr != nil {
-		return appErr
+	if app_err != nil {
+		return app_err
 	}
 
 	// here, we can safely update the inputs
@@ -154,6 +159,7 @@ func (f *Finder) Updates(i interface{}) *errors.AppError {
 
 func (f *Finder) Delete() bool {
 	db := databases.Resolve()
+	defer databases.Close(db)
 	db.Delete(f.Model)
 	return true
 }
@@ -173,14 +179,10 @@ func sanitize(i interface{}) (interface{}, *errors.AppError) {
 	if pw, ok := inputs["password"]; ok {
 		password := pw.(string)
 		if len(password) > 0 {
-			hashed, err := hash.Make(password)
+			hashed, app_err := hash.Make(password)
 			inputs["password"] = hashed
-			if err != nil {
-				return inputs, &errors.AppError{
-					Error:   fmt.Errorf("app.models.users.model@sanitize: crypt.Encrypt(): throws an error %s", err),
-					Message: "Encrypting password seems not possible",
-					Code:    http.StatusInternalServerError,
-				}
+			if app_err != nil {
+				return inputs, app_err
 			}
 		}
 	}

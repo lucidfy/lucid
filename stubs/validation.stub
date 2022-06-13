@@ -1,0 +1,31 @@
+package validations
+
+import (
+	"github.com/lucidfy/lucid/pkg/rules/must"
+)
+
+type ##CAMEL_CASE_NAME##Validator struct {
+	Rules *must.SetOfRules
+}
+
+func ##CAMEL_CASE_NAME##() *##CAMEL_CASE_NAME##Validator {
+	return &##CAMEL_CASE_NAME##Validator{
+		Rules: &must.SetOfRules{
+			// "form_input": {
+			// 	&must.Required{},
+			// },
+		},
+	}
+}
+
+func (v ##CAMEL_CASE_NAME##Validator) Create() *must.SetOfRules {
+	return v.Rules
+}
+
+func (v ##CAMEL_CASE_NAME##Validator) Update() *must.SetOfRules {
+	sets := *v.Rules
+
+	// sets["form_input"] = []must.Rule{}
+
+	return &sets
+}

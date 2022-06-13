@@ -1,17 +1,14 @@
 package request
 
 import (
-	"github.com/daison12006013/gorvel/pkg/errors"
-	"github.com/daison12006013/gorvel/pkg/rules/must"
 	"mime/multipart"
+
+	"github.com/lucidfy/lucid/pkg/errors"
+	"github.com/lucidfy/lucid/pkg/rules/must"
 )
 
 type RequestContract interface {
-	CurrentUrl() string
-	FullUrl() string
-	PreviousUrl() string
-	RedirectPrevious()
-
+	Vars() map[string]string
 	All() interface{}
 	Get(k string) interface{}
 	GetFirst(k string, dfault interface{}) interface{}
@@ -25,6 +22,6 @@ type RequestContract interface {
 	Validator(setOfRules *must.SetOfRules) *errors.AppError
 	GetIp() string
 	GetUserAgent() string
-	GetFileByName(name string) (*multipart.FileHeader, error)
-	GetFiles() (map[string][]*multipart.FileHeader, error)
+	GetFileByName(name string) (*multipart.FileHeader, *errors.AppError)
+	GetFiles() (map[string][]*multipart.FileHeader, *errors.AppError)
 }

@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/lucidfy/lucid/pkg/lucid"
 )
 
-func HttpAccessLogMiddleware(next http.Handler) http.Handler {
+func HttpAccessLogMiddleware(ctx lucid.Context, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Println(fmt.Sprintf("Access on [%s]", r.Method), r.Host, r.RequestURI)
 

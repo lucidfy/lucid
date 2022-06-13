@@ -7,30 +7,30 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"os"
 	"strings"
 
 	"github.com/dchest/uniuri"
 	"github.com/forgoer/openssl"
+	"github.com/lucidfy/lucid/pkg/errors"
 	"github.com/techoner/gophp/serialize"
 )
 
 // https://developpaper.com/go-implements-laravels-encrypt-and-decrypt-methods/
 
 //Encryption
-func Encrypt(value string) (string, error) {
+func Encrypt(value interface{}) (string, *errors.AppError) {
 	iv := make([]byte, 16)
 	_, err := rand.Read(iv)
 	if err != nil {
-		return "", err
+		return "", errors.InternalServerError("rand.Read() error", err)
 	}
 
 	//Deserialization
 	message, err := serialize.Marshal(value)
 	if err != nil {
-		return "", err
+		return "", errors.InternalServerError("serialize.Marshal() error", err)
 	}
 
 	key := getKey()
@@ -38,7 +38,7 @@ func Encrypt(value string) (string, error) {
 	//Encryptionvalue
 	res, err := openssl.AesCBCEncrypt(message, []byte(key), iv, openssl.PKCS7_PADDING)
 	if err != nil {
-		return "", err
+		return "", errors.InternalServerError("openssl.AesCBCEncrypt() error", err)
 	}
 
 	//Base64 encryption
@@ -58,7 +58,7 @@ func Encrypt(value string) (string, error) {
 	//JSON serialization
 	resTicket, err := json.Marshal(ticket)
 	if err != nil {
-		return "", err
+		return "", errors.InternalServerError("json.Marshal() error", err)
 	}
 	//Base64 encryptionticket
 	ticketR := base64.StdEncoding.EncodeToString(resTicket)
@@ -67,27 +67,25 @@ func Encrypt(value string) (string, error) {
 }
 
 //Decryption
-func Decrypt(value string) (string, error) {
+func Decrypt(value string) (string, *errors.AppError) {
 	//Base64 decryption
 	token, err := base64.StdEncoding.DecodeString(value)
-	fmt.Println("token---", string(token))
 	if err != nil {
-		return "", err
+		return "", errors.InternalServerError("base64.StdEncoding.DecodeString() error", err)
 	}
 
 	//JSON deserialization
 	tokenJson := make(map[string]string)
 	err = json.Unmarshal(token, &tokenJson)
-	fmt.Println("tokenJson---", tokenJson)
 	if err != nil {
-		return "", err
+		return "", errors.InternalServerError("json.Unmarshal() error", err)
 	}
 
 	tokenJsonIv, okIv := tokenJson["iv"]
 	tokenJsonValue, okValue := tokenJson["value"]
 	tokenJsonMac, okMac := tokenJson["mac"]
 	if !okIv || !okValue || !okMac {
-		return "", errors.New("value is not full")
+		return "", errors.InternalServerError("crypt.Decrypt() error", fmt.Errorf("value is not complete"))
 	}
 
 	key := getKey()
@@ -96,29 +94,29 @@ func Decrypt(value string) (string, error) {
 	data := tokenJsonIv + tokenJsonValue
 	check := checkMAC(data, tokenJsonMac, key)
 	if !check {
-		return "", errors.New("mac valid failed")
+		return "", errors.InternalServerError("crypt.Decrypt() error", fmt.Errorf("mac is invalid"))
 	}
 
 	//Base64 decryptioniv和value
 	tokenIv, err := base64.StdEncoding.DecodeString(tokenJsonIv)
 	if err != nil {
-		return "", err
+		return "", errors.InternalServerError("base64.StdEnconding.DecodeString() error", err)
 	}
 	tokenValue, err := base64.StdEncoding.DecodeString(tokenJsonValue)
 	if err != nil {
-		return "", err
+		return "", errors.InternalServerError("base64.StdEnconding.DecodeString() error", err)
 	}
 	//AES decryption value
 	dst, err := openssl.AesCBCDecrypt(tokenValue, []byte(key), tokenIv, openssl.PKCS7_PADDING)
-	fmt.Println("dst", string(dst))
+	// fmt.Println("dst", string(dst))
 	if err != nil {
-		return "", err
+		return "", errors.InternalServerError("openssl.AesCBCDecrypt() error", err)
 	}
 
 	//Deserialization
 	res, err := serialize.UnMarshal(dst)
 	if err != nil {
-		return "", err
+		return "", errors.InternalServerError("serialize.UnMarshal() error", err)
 	}
 	return res.(string), nil
 }
@@ -126,7 +124,7 @@ func Decrypt(value string) (string, error) {
 //Compare the expected hash with the actual hash
 func checkMAC(message, msgMac, secret string) bool {
 	expectedMAC := computeHmacSha256(message, secret)
-	fmt.Println(expectedMAC, msgMac)
+	// fmt.Println(expectedMAC, msgMac)
 	return hmac.Equal([]byte(expectedMAC), []byte(msgMac))
 }
 

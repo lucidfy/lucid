@@ -3,12 +3,12 @@
 {{define "body"}}
     <body class="bg-gray-900 flex h-screen raleway font-thin">
         <div class="text-white m-auto">
-            <h1 class="text-8xl mb-5">
-                Welcome to <a href="https://github.com/daison12006013/gorvel" class="font-light">Go</a>rvel!
+            <h1 class="text-4xl md:text-6xl lg:text-8xl mb-5">
+                {{ $.lang.Get "Welcome to" nil }} <a href="https://github.com/lucidfy/lucid" class="font-light">{{ $.lang.Get "Lucid" nil }}</a>
             </h1>
 
             <div class="text-center mt-5">
-                <p class="my-3">Running using GO HTML Template</p>
+                <p class="my-3">{{ $.lang.Get "Running using GO HTML Template" nil }}</p>
                 <a class="
                     uppercase text-xs
                     bg-transparent hover:bg-white
@@ -16,7 +16,7 @@
                     font-light
                     py-2 px-4
                     border border-white-500 hover:border
-                    rounded" href="/users">Sample Forms</a>
+                    rounded" href="/users">{{ $.lang.Get "Sample Forms" nil }}</a>
             </div>
         </div>
     </body>

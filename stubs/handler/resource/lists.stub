@@ -1,0 +1,197 @@
+package ##PACKAGE_NAME##
+
+import (
+	"context"
+	"net/http"
+	"strconv"
+
+	"github.com/gorilla/csrf"
+	"github.com/lucidfy/lucid/app/models/##SMALL_CASE_NAME##"
+	"github.com/lucidfy/lucid/pkg/engines"
+	"github.com/lucidfy/lucid/pkg/errors"
+	"github.com/lucidfy/lucid/pkg/lucid"
+	"github.com/lucidfy/lucid/pkg/searchable"
+)
+
+const PAGE = "1"
+const PER_PAGE = "5"
+const SORT_COLUMN = "id"
+const SORT_TYPE = "desc"
+
+func lists(ctx lucid.Context) *errors.AppError {
+	engine := ctx.Engine()
+	router := ctx.Router()
+	ses := ctx.Session()
+	req := engine.GetRequest()
+	res := engine.GetResponse()
+	url := engine.GetURL()
+
+	bUrl, _ := router.Get("##SMALL_CASE_NAME##.lists").URL()
+
+	//> prepare the searchable structure
+	searchable, app_err := prepare(engine)
+	if app_err != nil {
+		return app_err
+	}
+
+	//> fetch the searchable
+	app_err = ##SMALL_CASE_NAME##.Lists(searchable)
+	if app_err != nil {
+		return app_err
+	}
+
+	data := map[string]interface{}{
+		"title":           "Users List",
+		"data":            searchable,
+		"paginated_array": searchable.Paginate.ToArray(),
+		"current_url":     url.CurrentURL(),
+		"success":         ses.GetFlash("success"),
+		"error":           ses.GetFlash("error"),
+
+		csrf.TemplateTag: csrf.TemplateField(engine.(engines.NetHttpEngine).HttpRequest),
+
+		"base_url": bUrl,
+	}
+
+	//> here, we determine if the requestor wants a json response
+	if req.WantsJson() {
+		return res.Json(data, http.StatusOK)
+	}
+
+	//> or else, provide an html response instead.
+	return res.View(
+		[]string{
+			"base",
+			"##SMALL_CASE_NAME##/lists",
+			"##SMALL_CASE_NAME##/_table",
+		},
+		data,
+	)
+}
+
+func prepare(T engines.EngineContract) (*searchable.Table, *errors.AppError) {
+	req := T.GetRequest()
+	url := T.GetURL()
+
+	//> get the current "page", literally the default of each current page should always be 1
+	current_page, err := strconv.Atoi(req.Input("page", PAGE).(string))
+	if err != nil {
+		return nil, errors.InternalServerError("atoi error: ", err)
+	}
+
+	//> get the "per-page", though the default will be relying to defaultPerPage
+	//> then check if the per page reaches the cap of 20 records per page
+	//> if ever someone tries to bypass the value, we over-write it to 20
+	per_page, err := strconv.Atoi(req.Input("per-page", PER_PAGE).(string))
+	if err != nil {
+		return nil, errors.InternalServerError("atoi error: ", err)
+	}
+
+	if per_page > 20 {
+		per_page = 20
+	}
+
+	var st searchable.Table
+	st = *table(T, &st)
+
+	st.Paginate.CurrentPage = current_page
+	st.Paginate.PerPage = per_page
+	st.Paginate.BaseURL = req.Input("pagination_url", url.CurrentURL()).(string)
+
+	order_by_col := req.Input("sort-column", SORT_COLUMN).(string)
+	st.OrderByCol = &order_by_col
+
+	order_by_sort := req.Input("sort-type", SORT_TYPE).(string)
+	st.OrderBySort = &order_by_sort
+
+	return &st, nil
+}
+
+func table(T engines.EngineContract, st *searchable.Table) *searchable.Table {
+	req := T.GetRequest()
+
+	st.Headers = []searchable.Header{
+		{
+			Name: "name",
+			Input: searchable.Input{
+				Visible:       true,
+				Placeholder:   "Name*",
+				Value:         req.Input("search[name]", "").(string),
+				CanSearch:     true,
+				SearchColumn:  []string{"name"},
+				SearchPattern: "->",
+			},
+		},
+		{
+			Name: "email",
+			Input: searchable.Input{
+				Visible:       true,
+				Placeholder:   "Email",
+				Value:         req.Input("search[email]", "").(string),
+				CanSearch:     true,
+				SearchColumn:  []string{"email"},
+				SearchPattern: "-",
+			},
+		},
+		{
+			Name: "created_at",
+			Input: searchable.Input{
+				Visible:     true,
+				Placeholder: "Created At",
+				CanSearch:   false,
+			},
+		},
+		{
+			Name: "updated_at",
+			Input: searchable.Input{
+				Visible:     true,
+				Placeholder: "Updated At",
+				CanSearch:   false,
+			},
+		},
+		{
+			Name: "search",
+			Input: searchable.Input{
+				Visible:       false,
+				Placeholder:   "*Search*",
+				Value:         req.Input("search", "").(string),
+				CanSearch:     true,
+				SearchColumn:  []string{"email", "name"},
+				SearchPattern: "<->",
+			},
+		},
+		{
+			Name: "page",
+			Input: searchable.Input{
+				Visible:   false,
+				Value:     req.Input("page", PAGE).(string),
+				CanSearch: false,
+			},
+		},
+		{
+			Name: "per-page",
+			Input: searchable.Input{
+				Visible:   false,
+				Value:     req.Input("per-page", PER_PAGE).(string),
+				CanSearch: false,
+			},
+		},
+		{
+			Name: "sort-column",
+			Input: searchable.Input{
+				Visible:   false,
+				Value:     req.Input("sort-column", SORT_COLUMN).(string),
+				CanSearch: false,
+			},
+		},
+		{
+			Name: "sort-type",
+			Input: searchable.Input{
+				Visible:   false,
+				Value:     req.Input("sort-type", SORT_TYPE).(string),
+				CanSearch: false,
+			},
+		},
+	}
+	return st
+}

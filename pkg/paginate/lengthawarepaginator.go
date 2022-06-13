@@ -6,12 +6,27 @@ import (
 	"reflect"
 	"strconv"
 
-	"github.com/daison12006013/gorvel/pkg/errors"
-	"github.com/daison12006013/gorvel/pkg/facade/logger"
-	"github.com/daison12006013/gorvel/pkg/facade/response"
+	"github.com/lucidfy/lucid/pkg/errors"
+	"github.com/lucidfy/lucid/pkg/facade/logger"
+	"github.com/lucidfy/lucid/pkg/facade/response"
 )
 
-const DefaultView = "pkg/pagination/tailwind.go.html"
+type Paginate struct {
+	Template string `json:"-"`
+
+	Total       int `json:"total"`
+	PerPage     int `json:"per_page"`
+	CurrentPage int `json:"current_page"`
+	LastPage    int `json:"last_page"`
+
+	BaseURL string      `json:"base_url"`
+	Items   interface{} `json:"items"`
+
+	OnEachSide int     `json:"on_each_side"`
+	Fragment   *string `json:"fragment"`
+}
+
+const DefaultTemplate = "pkg/pagination/tailwind.go.html"
 
 func Construct(items interface{}, total int, perPage int, currentPage int) *Paginate {
 	p := Paginate{
@@ -19,6 +34,7 @@ func Construct(items interface{}, total int, perPage int, currentPage int) *Pagi
 		CurrentPage: currentPage,
 	}
 	p.Reconstruct(items, total)
+	p.Template = DefaultTemplate
 	return &p
 }
 
@@ -29,6 +45,7 @@ func (p *Paginate) Reconstruct(items interface{}, total int) *Paginate {
 
 	p.OnEachSide = 3
 	p.Fragment = nil
+	p.Template = DefaultTemplate
 
 	return p
 }
@@ -37,9 +54,14 @@ func (p *Paginate) Links() string {
 	return p.Render(nil)
 }
 
-func (p *Paginate) Render(view *string /*, data array*/) string {
+func (p *Paginate) ChangeTemplate(t string) *Paginate {
+	p.Template = t
+	return p
+}
+
+func (p *Paginate) Render(view *string) string {
 	if view == nil {
-		dv := DefaultView
+		dv := p.Template
 		view = &dv
 	}
 
@@ -52,17 +74,16 @@ func (p *Paginate) Render(view *string /*, data array*/) string {
 			"hasMorePages":    p.HasMorePages(),
 			"hasPages":        p.HasPages(),
 			"lastItem":        p.LastItem(),
-			"nextPageUrl":     p.NextPageUrl(),
+			"nextPageURL":     p.NextPageURL(),
 			"onFirstPage":     p.OnFirstPage(),
-			"previousPageUrl": p.PreviousPageUrl(),
+			"previousPageURL": p.PreviousPageURL(),
 
 			// here we provide the $elements
 			"elements": p.Elements(),
 		},
 	)
 	if err != nil {
-		logger.Fatal(err)
-		panic(err)
+		logger.Error("lengthawarepaginator.Render error: ", err)
 	}
 	return result
 }
@@ -71,9 +92,9 @@ func (p *Paginate) HasMorePages() bool {
 	return p.CurrentPage < p.LastPage
 }
 
-func (p *Paginate) NextPageUrl() *string {
+func (p *Paginate) NextPageURL() *string {
 	if p.HasMorePages() {
-		s := p.Url(p.CurrentPage + 1)
+		s := p.URL(p.CurrentPage + 1)
 		return &s
 	}
 	return nil
@@ -92,20 +113,20 @@ func (p *Paginate) ToArray() map[string]interface{} {
 		// default data
 		"current_page":   p.CurrentPage,
 		"data":           p.Items,
-		"first_page_url": p.Url(1),
+		"first_page_url": p.URL(1),
 		"from":           p.FirstItem(),
 		"last_page":      p.LastPage,
-		"last_page_url":  p.Url(p.LastPage),
-		"next_page_url":  p.NextPageUrl(),
+		"last_page_url":  p.URL(p.LastPage),
+		"next_page_url":  p.NextPageURL(),
 		"per_page":       p.PerPage,
-		"prev_page_url":  p.PreviousPageUrl(),
+		"prev_page_url":  p.PreviousPageURL(),
 		"to":             p.LastItem(),
 		"total":          p.Total,
 	}
 }
 
 func (p *Paginate) Elements() map[int]string {
-	window := UrlWindow(*p).Get()
+	window := URLWindow(*p).Get()
 	elems := window.first
 	p.elementsLoop(&elems, window.slider)
 	p.elementsLoop(&elems, window.last)
@@ -123,24 +144,24 @@ func (p *Paginate) elementsLoop(elems *map[int]string, m map[int]string) map[int
 	return *elems
 }
 
-func (p Paginate) PreviousPageUrl() *string {
+func (p Paginate) PreviousPageURL() *string {
 	if p.CurrentPage > 1 {
-		url := p.Url(p.CurrentPage - 1)
+		url := p.URL(p.CurrentPage - 1)
 		return &url
 	}
 	return nil
 }
 
-func (p Paginate) GetUrlRange(start int, end int) map[int]string {
+func (p Paginate) GetURLRange(start int, end int) map[int]string {
 	r := map[int]string{}
 	for i := start; i <= end; i++ {
-		r[i] = p.Url(i)
+		r[i] = p.URL(i)
 	}
 	return r
 }
 
-func (p *Paginate) Url(page int) string {
-	URL, err := url.Parse(p.BaseUrl)
+func (p *Paginate) URL(page int) string {
+	URL, err := url.Parse(p.BaseURL)
 	if errors.Handler("url.Parse error", err) {
 		return ""
 	}
@@ -183,7 +204,7 @@ func (p Paginate) OnFirstPage() bool {
 	return p.CurrentPage <= 1
 }
 
-func (p *Paginate) SetOnEachSide(count int) *Paginate { // this is onEachSide() in illuminate
+func (p *Paginate) SetOnEachSide(count int) *Paginate {
 	p.OnEachSide = count
 	return p
 }
@@ -232,8 +253,8 @@ func (p *Paginate) GetLastPage() int {
 	return p.LastPage
 }
 
-func (p *Paginate) GetBaseUrl() string {
-	return p.BaseUrl
+func (p *Paginate) GetBaseURL() string {
+	return p.BaseURL
 }
 
 func (p *Paginate) GetItems() interface{} {

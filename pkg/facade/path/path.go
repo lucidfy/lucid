@@ -7,6 +7,7 @@ import (
 )
 
 type PathStruct struct {
+	BASE_PATH        string
 	CONSOLE_PATH     string
 	HANDLERS_PATH    string
 	MIDDLEWARES_PATH string
@@ -16,10 +17,17 @@ type PathStruct struct {
 	VIEW_PATH        string
 	ROUTES_PATH      string
 	STORAGE_PATH     string
+	SESSION_PATH     string
 }
 
 func Load() *PathStruct {
+	basePath, err := RootPath()
+	if err != nil {
+		panic(err)
+	}
+
 	p := &PathStruct{
+		BASE_PATH:        *basePath,
 		CONSOLE_PATH:     PathTo(os.Getenv("CONSOLE_PATH")),
 		HANDLERS_PATH:    PathTo(os.Getenv("HANDLERS_PATH")),
 		MIDDLEWARES_PATH: PathTo(os.Getenv("MIDDLEWARES_PATH")),
@@ -29,10 +37,14 @@ func Load() *PathStruct {
 		VIEW_PATH:        PathTo(os.Getenv("VIEW_PATH")),
 		ROUTES_PATH:      PathTo(os.Getenv("ROUTES_PATH")),
 		STORAGE_PATH:     PathTo(os.Getenv("STORAGE_PATH")),
+		SESSION_PATH:     PathTo(os.Getenv("SESSION_PATH")),
 	}
 	return p
 }
 
+func (p *PathStruct) BasePath(str string) string {
+	return append(p.BASE_PATH, str)
+}
 func (p *PathStruct) ConsolePath(str string) string {
 	return append(p.CONSOLE_PATH, str)
 }
@@ -60,6 +72,9 @@ func (p *PathStruct) RoutesPath(str string) string {
 func (p *PathStruct) StoragePath(str string) string {
 	return append(p.STORAGE_PATH, str)
 }
+func (p *PathStruct) SessionPath(str string) string {
+	return append(p.SESSION_PATH, str)
+}
 
 func append(path string, str string) string {
 	if str != "" {
@@ -68,7 +83,14 @@ func append(path string, str string) string {
 	return path + str
 }
 
-func BasePath() (*string, error) {
+func RootPath() (*string, error) {
+	if len(os.Getenv("LUCID_ROOT")) != 0 {
+		projectpath := os.Getenv("LUCID_ROOT")
+		return &projectpath, nil
+	}
+
+	// if LUCID_ROOT isn't present
+	// let's try to look up the runtime caller
 	_, callerFile, _, _ := runtime.Caller(0)
 	path := filepath.Dir(callerFile)
 	projectpath, err := filepath.Abs(path + "/../../../")
@@ -81,7 +103,7 @@ func BasePath() (*string, error) {
 }
 
 func PathTo(path string) string {
-	basepath, err := BasePath()
+	basepath, err := RootPath()
 	if err != nil {
 		panic(err)
 	}

@@ -1,20 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" {{/* class="dark" color-theme="system" */}}
->
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ .title }}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100;0,200;0,300;0,400;1,100;1,200;1,300&display=swap" rel="stylesheet">
-    <style>
-        .raleway {
-            font-family: 'Raleway', sans-serif;
-        }
-    </style>
+    <script src="/static/tailwind.js"></script>
+    <script src="/static/main.js"></script>
+    <link rel="stylesheet" href="/static/main.css">
     {{ template "head"}}
 </head>
     {{/* The dot means we're going to share all declared variables */}}

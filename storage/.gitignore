@@ -1,2 +1,3 @@
+logs/*.log
+cache.json
 !.gitignore
-logs/gorvel.log

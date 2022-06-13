@@ -1,2 +1,2 @@
 #!/bin/sh
-reflex -c ./cmd/serve/serve$1.conf
+LUCID_ROOT=${PWD} reflex -c ./cmd/serve/serve$1.conf

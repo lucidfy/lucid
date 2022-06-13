@@ -1,0 +1,17 @@
+package ##PACKAGE_NAME##
+
+import "github.com/lucidfy/lucid/pkg/facade/routes"
+
+var RouteResource = routes.Routing{
+	Path: "/##KEBAB_CASE_NAME##",
+	Name: "##KEBAB_CASE_NAME##",
+	Resources: routes.Resources{
+		"index":   lists,  //  GET    /##SMALL_CASE_NAME##
+		"create":  create, //  GET    /##SMALL_CASE_NAME##/create
+		"store":   store,  //  POST   /##SMALL_CASE_NAME##
+		"show":    show,   //  GET    /##SMALL_CASE_NAME##/{id}
+		"edit":    show,   //  GET    /##SMALL_CASE_NAME##/{id}/edit
+		"update":  update, //  PUT    /##SMALL_CASE_NAME##/{id}, POST /##SMALL_CASE_NAME##/{id}/update
+		"destroy": delete, //  DELETE /##SMALL_CASE_NAME##/{id}, POST /##SMALL_CASE_NAME##/{id}/delete
+	},
+}

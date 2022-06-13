@@ -6,9 +6,14 @@ import (
 	"os"
 	"time"
 
-	"github.com/daison12006013/gorvel/pkg/errors"
-	"github.com/daison12006013/gorvel/pkg/facade/path"
+	"github.com/lucidfy/lucid/pkg/errors"
+	"github.com/lucidfy/lucid/pkg/facade/logger"
+	"github.com/lucidfy/lucid/pkg/facade/path"
+	"gorm.io/driver/clickhouse"
+	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
+	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 )
 
@@ -21,10 +26,17 @@ func Resolve() *gorm.DB {
 	})
 
 	if errors.Handler("SQL connection error", err) {
-		panic(err)
+		logger.Error("SQL connection error", err)
+		Close(db)
+		return nil
 	}
 
 	return db
+}
+
+func Close(db *gorm.DB) {
+	d, _ := db.DB()
+	d.Close()
 }
 
 func Dialector() *gorm.Dialector {
@@ -32,16 +44,14 @@ func Dialector() *gorm.Dialector {
 	switch os.Getenv("DB_CONNECTION") {
 	case "sqlite":
 		dialect = SQLite()
-		/*
-			case "mysql":
-				return MySQL()
-			case "postgres":
-				return PostgreSQL()
-			case "sqlserver":
-				return SQLServer()
-			case "clickhouse":
-				return ClickHouse()
-		*/
+	case "mysql":
+		return MySQL()
+	case "postgres":
+		return PostgreSQL()
+	case "sqlserver":
+		return SQLServer()
+	case "clickhouse":
+		return ClickHouse()
 	}
 	return dialect
 }
@@ -52,8 +62,6 @@ func SQLite() *gorm.Dialector {
 	return &dialect
 }
 
-/*
-// install it using `go get gorm.io/driver/mysql`
 func MySQL() *gorm.Dialector {
 	dialect := mysql.New(mysql.Config{
 		DriverName: os.Getenv("DB_DRIVER"),
@@ -62,7 +70,6 @@ func MySQL() *gorm.Dialector {
 	return &dialect
 }
 
-// install it using `go get gorm.io/driver/postgres`
 func PostgreSQL() *gorm.Dialector {
 	dialect := postgres.New(postgres.Config{
 		DriverName: os.Getenv("DB_DRIVER"),
@@ -71,15 +78,12 @@ func PostgreSQL() *gorm.Dialector {
 	return &dialect
 }
 
-// install it using `go get gorm.io/driver/sqlserver`
 func SQLServer() *gorm.Dialector {
 	dialect := sqlserver.Open(os.Getenv("DB_DATABASE"))
 	return &dialect
 }
 
-// install it using `go get gorm.io/driver/clickhouse`
 func ClickHouse() *gorm.Dialector {
 	dialect := clickhouse.Open(os.Getenv("DB_DATABASE"))
 	return &dialect
 }
-*/

@@ -2,13 +2,12 @@
 
 {{define "body"}}
 <body class="bg-gray-900 flex h-screen m-auto">
-  <div class="text-white m-auto w-6/12">
+  <div class="text-white m-auto w-full md:w-6/12">
       {{ if $.success }}
           <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800" role="alert">
               {{ $.success }}
           </div>
       {{ end }}
-
 
       {{ if $.fails }}
         {{ $length := len $.fails }} {{ if gt $length 0 }}
@@ -27,7 +26,7 @@
         <div class="text-xs inline-block my-auto">
           <span class="border-dotted border-gray-400 border-b"><a href="/">Home</a></span>
           <i class="mx-2">&#8725;</i>
-          <span><a href="/users">Users List</a></span>
+          <span><a href="{{ $.base_url }}">Users List</a></span>
           <i class="mx-2">&#8725;</i>
           <spa>{{ $.title }}</span>
         </div>
@@ -38,9 +37,9 @@
           <div class="p-5 bg-gray-100 shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
             <form class="w-full" method="POST"
               {{ if $.isCreate }}
-                action="/users"
+                action="{{ $.base_url }}"
               {{ else }}
-                action="/users/{{ $.record.ID }}/update"
+                action="{{ $.base_url }}/{{ $.record.ID }}/update"
               {{ end }}
             >
               <div class="flex flex-wrap -mx-3 mb-6">
@@ -129,8 +128,8 @@
                 {{ end }}
 
                 {{ if $.isShow }}
-                  <div class="w-1/2 md:w-full px-3 mb-6 mt-5 md:mb-0 text-center">
-                    <a href="/users/{{ $.record.ID }}/edit" class="
+                  <div class="w-full md:w-full px-3 mb-6 mt-5 md:mb-0 text-right">
+                    <a href="{{ $.base_url }}/{{ $.record.ID }}/edit" class="
                         uppercase text-xs
                         bg-gray-900 hover:bg-white
                         text-white hover:text-gray-700
@@ -142,7 +141,7 @@
                   </div>
                 {{ else }}
                   {{ $.csrfField }}
-                  <div class="w-1/2 md:w-full px-3 mb-6 md:mb-0 text-right">
+                  <div class="w-full md:w-full px-3 mb-6 md:mb-0 text-right">
                     <button class="
                         uppercase text-xs
                         bg-gray-900 hover:bg-white

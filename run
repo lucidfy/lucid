@@ -1,0 +1,2 @@
+#!/bin/bash
+LUCID_ROOT=${PWD} go run ./cmd/gopher/main.go ${@}

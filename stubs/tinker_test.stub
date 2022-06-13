@@ -1,0 +1,32 @@
+// it is intentional that we put this file inside .gitignore, if ever you're working in an organization
+// better yet to update the one inside stubs/tinker_test.stub
+package tinker
+
+import (
+	"testing"
+
+	"github.com/lucidfy/lucid/app/models/users"
+	"github.com/lucidfy/lucid/databases"
+	"github.com/lucidfy/lucid/pkg/env"
+)
+
+func init() {
+	env.LoadEnv()
+}
+
+func TestMyThing(t *testing.T) {
+	t.Logf("Hello World!")
+}
+
+func TestDatabaseQuery(t *testing.T) {
+	stmt := `select * from users limit 10`
+	db := databases.Resolve()
+	defer databases.Close(db)
+
+	var records []users.Model
+	db.Raw(stmt).Scan(&records)
+
+	for _, record := range records {
+		t.Logf("%+v", record)
+	}
+}
