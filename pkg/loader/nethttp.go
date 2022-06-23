@@ -125,13 +125,13 @@ func (mr *NetHttpLoader) register(route routes.Routing) {
 
 		ctx := newContext(engine, mr.Router)
 		e := route.Handler(lucid.New(ctx))
-		ctx.Done()
+		defer ctx.Done()
 
 		if e != nil {
 			mr.HttpErrorHandler(engine, e, nil)
 		}
 
-		r.Body.Close()
+		defer r.Body.Close()
 	}
 
 	if route.Prefix {
