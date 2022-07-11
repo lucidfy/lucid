@@ -3,6 +3,7 @@ package response
 import (
 	"bytes"
 	html "html/template"
+	"net/http"
 	"strings"
 	text "text/template"
 
@@ -14,6 +15,8 @@ import (
 const DEFAULT_VIEW_EXT = ".go.html"
 
 type ResponseContract interface {
+	Default() http.ResponseWriter
+
 	Text(str string) *errors.AppError
 	ViewWithStatus(filepaths []string, data interface{}, status int) *errors.AppError
 	View(filepaths []string, data interface{}) *errors.AppError

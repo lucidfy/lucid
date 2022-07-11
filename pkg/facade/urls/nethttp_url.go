@@ -2,6 +2,7 @@ package urls
 
 import (
 	"net/http"
+	"net/url"
 	"strings"
 
 	"github.com/lucidfy/lucid/pkg/errors"
@@ -18,6 +19,10 @@ func NetHttp(w http.ResponseWriter, r *http.Request) *NetHttpURL {
 		HttpRequest:    r,
 	}
 	return &u
+}
+
+func (u NetHttpURL) Default() *url.URL {
+	return u.HttpRequest.URL
 }
 
 func (u *NetHttpURL) BaseURL() string {

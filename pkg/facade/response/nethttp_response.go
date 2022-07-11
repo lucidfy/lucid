@@ -23,6 +23,10 @@ func NetHttp(w http.ResponseWriter, r *http.Request) *NetHttpResponse {
 	}
 }
 
+func (m NetHttpResponse) Default() http.ResponseWriter {
+	return m.ResponseWriter
+}
+
 func (m *NetHttpResponse) Text(str string) *errors.AppError {
 	io.WriteString(m.ResponseWriter, str)
 	return nil

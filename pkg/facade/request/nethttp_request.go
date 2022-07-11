@@ -37,6 +37,10 @@ func NetHttp(w http.ResponseWriter, r *http.Request, t *lang.Translations, u *ur
 	return &n
 }
 
+func (t NetHttpRequest) Default() *http.Request {
+	return t.HttpRequest
+}
+
 type contextKey int
 
 const (

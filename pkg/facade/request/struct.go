@@ -2,12 +2,15 @@ package request
 
 import (
 	"mime/multipart"
+	"net/http"
 
 	"github.com/lucidfy/lucid/pkg/errors"
 	"github.com/lucidfy/lucid/pkg/rules/must"
 )
 
 type RequestContract interface {
+	Default() *http.Request
+
 	Vars() map[string]string
 	All() interface{}
 	Get(k string) interface{}

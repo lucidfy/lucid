@@ -30,7 +30,7 @@ func docs(ctx lucid.Context) *errors.AppError {
 
 	//> detect the url path, just that we replace any suffix that has /docs
 	// then we fetch the remaining file name
-	f := strings.Replace(url.CurrentURL(), "/docs", "", -1)
+	f := strings.Replace(url.Default().Path, "/docs", "", -1)
 	title := strings.Trim(f, "/")
 	if len(title) == 0 {
 		title = "Lucid"

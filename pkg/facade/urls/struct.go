@@ -1,12 +1,15 @@
 package urls
 
 import (
+	"net/url"
 	"os"
 
 	"github.com/lucidfy/lucid/pkg/errors"
 )
 
 type URLContract interface {
+	Default() *url.URL
+
 	BaseURL() string
 	CurrentURL() string
 	PreviousURL() string
