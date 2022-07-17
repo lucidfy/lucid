@@ -7,7 +7,7 @@ import (
 )
 
 func init() {
-	env.LoadEnv()
+	env.LoadEnvForTests()
 }
 
 func TestFileCache(t *testing.T) {

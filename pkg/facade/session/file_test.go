@@ -7,7 +7,7 @@ import (
 )
 
 func init() {
-	env.LoadEnv()
+	env.LoadEnvForTests()
 }
 
 func TestFileSessionFlash(t *testing.T) {

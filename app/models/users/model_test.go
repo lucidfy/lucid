@@ -8,7 +8,7 @@ import (
 )
 
 func init() {
-	env.LoadEnv()
+	env.LoadEnvForTests()
 }
 
 func TestLists(t *testing.T) {

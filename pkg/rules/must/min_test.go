@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	env.LoadEnv()
+	env.LoadEnvForTests()
 }
 
 func TestMinValid(t *testing.T) {

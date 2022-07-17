@@ -17,7 +17,7 @@ import (
 )
 
 func init() {
-	env.LoadEnv()
+	env.LoadEnvForTests()
 }
 
 func TestWelcome(t *testing.T) {

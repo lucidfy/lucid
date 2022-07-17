@@ -21,13 +21,8 @@ type PathStruct struct {
 }
 
 func Load() *PathStruct {
-	basePath, err := RootPath()
-	if err != nil {
-		panic(err)
-	}
-
 	p := &PathStruct{
-		BASE_PATH:        *basePath,
+		BASE_PATH:        RootPath(),
 		CONSOLE_PATH:     PathTo(os.Getenv("CONSOLE_PATH")),
 		HANDLERS_PATH:    PathTo(os.Getenv("HANDLERS_PATH")),
 		MIDDLEWARES_PATH: PathTo(os.Getenv("MIDDLEWARES_PATH")),
@@ -83,29 +78,35 @@ func append(path string, str string) string {
 	return path + str
 }
 
-func RootPath() (*string, error) {
+var root_path = ""
+
+func RootPath() string {
+	if len(root_path) > 0 {
+		return root_path
+	}
+
 	if len(os.Getenv("LUCID_ROOT")) != 0 {
-		projectpath := os.Getenv("LUCID_ROOT")
-		return &projectpath, nil
+		root_path = os.Getenv("LUCID_ROOT")
+		return root_path
 	}
 
-	// if LUCID_ROOT isn't present
-	// let's try to look up the runtime caller
-	_, callerFile, _, _ := runtime.Caller(0)
-	path := filepath.Dir(callerFile)
-	projectpath, err := filepath.Abs(path + "/../../../")
+	if len(os.Getenv("LUCID_TESTS")) > 0 {
+		// if LUCID_ROOT isn't present
+		// let's try to look up the runtime caller
+		_, callerFile, _, _ := runtime.Caller(0)
+		path := filepath.Dir(callerFile)
+		root_path, err := filepath.Abs(path + "/../../../")
 
-	if err != nil {
-		return nil, err
+		if err != nil {
+			panic(err)
+		}
+
+		return root_path
 	}
 
-	return &projectpath, nil
+	panic(`Undefined env "LUCID_ROOT"`)
 }
 
 func PathTo(path string) string {
-	basepath, err := RootPath()
-	if err != nil {
-		panic(err)
-	}
-	return *basepath + path
+	return RootPath() + path
 }

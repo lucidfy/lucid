@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	env.LoadEnv()
+	env.LoadEnvForTests()
 }
 
 func TestRequiredValid(t *testing.T) {

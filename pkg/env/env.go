@@ -13,6 +13,11 @@ func LoadEnv() {
 	LoadEnvFrom(basepath)
 }
 
+func LoadEnvForTests() {
+	os.Setenv("LUCID_TESTS", "1")
+	LoadEnv()
+}
+
 func LoadEnvFrom(basepath string) {
 	LoadFile(basepath + ".env")
 	env := os.Getenv("APP_ENV")
