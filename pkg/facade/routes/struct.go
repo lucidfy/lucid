@@ -39,13 +39,48 @@ type RoutingTest struct {
 	Request          *http.Request
 	Err              error
 	Testing          *testing.T
+	Content          string
+	Routing          Routing
 }
 
-func (r Routing) TestLoad(body io.Reader) RoutingTest {
+func (r Routing) LoadTester(res *httptest.ResponseRecorder, req *http.Request) *RoutingTest {
 	path := r.Path
-	handler := r.Handler
 	method := r.Method[0]
 
+	// check response record if nil then initialize it
+	if res == nil {
+		res = httptest.NewRecorder()
+	}
+
+	// make a new request basing from the handler's method and path
+	// and get the body provided from param
+	var err error
+	if req == nil {
+		req, err = http.NewRequest(method, path, nil)
+	}
+
+	return &RoutingTest{
+		ResponseRecorder: res,
+		Request:          req,
+		Err:              err,
+		Routing:          r,
+	}
+}
+
+func (rt *RoutingTest) AssertUsing(t *testing.T) {
+	rt.Testing = t
+}
+
+func (rt RoutingTest) AssertStatus(expectation uint) {
+	result := rt.ResponseRecorder.Result()
+
+	if status := result.StatusCode; status != int(expectation) {
+		rt.Testing.Errorf("status: got [[%d]] expects [[%d]]", result.StatusCode, expectation)
+	}
+}
+
+func (rt *RoutingTest) CallHandler() {
+	handler := rt.Routing.Handler
 	handler_func := func(w http.ResponseWriter, r *http.Request) {
 		engine := *engines.NetHttp(w, r, lang.Load(translations.Languages))
 		ctx := context.Background()
@@ -58,40 +93,20 @@ func (r Routing) TestLoad(body io.Reader) RoutingTest {
 		}
 	}
 
-	// httptest
-	rr := httptest.NewRecorder()
-	req, err := http.NewRequest(method, path, body)
-	handler_func(rr, req)
+	// now bootstrap the handler
+	handler_func(rt.ResponseRecorder, rt.Request)
 
-	return RoutingTest{
-		ResponseRecorder: rr,
-		Request:          req,
-		Err:              err,
-	}
-}
-
-func (r *RoutingTest) Uses(t *testing.T) {
-	r.Testing = t
-}
-
-func (r RoutingTest) AssertStatus(expectation uint) {
-	result := r.ResponseRecorder.Result()
-
-	if status := result.StatusCode; status != int(expectation) {
-		r.Testing.Errorf("status: got [[%d]] expects [[%d]]", result.StatusCode, expectation)
-	}
-}
-
-func (r RoutingTest) AssertResponseContains(expectation string) {
-	result := r.ResponseRecorder.Result()
-
+	result := rt.ResponseRecorder.Result()
 	b, err := io.ReadAll(result.Body)
 	if err != nil {
-		r.Testing.Fatal(err)
+		rt.Testing.Fatal(err)
 	}
-	content := string(b)
+	rt.Content = string(b)
+}
 
+func (rt RoutingTest) AssertResponseContains(expectation string) {
+	content := rt.Content
 	if has := strings.Contains(content, expectation); !has {
-		r.Testing.Errorf("content: got [[%s]] does not contain with [[%s]]", content, expectation)
+		rt.Testing.Errorf("content: got [[%s]] does not contain with [[%s]]", content, expectation)
 	}
 }

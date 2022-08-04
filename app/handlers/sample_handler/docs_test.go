@@ -42,8 +42,10 @@ func responseRecord(handler routes.Handler, method string, path string, body io.
 }
 
 func TestDocs(t *testing.T) {
-	rt := DocsRoute.TestLoad(nil)
-	rt.Uses(t)
+	rt := DocsRoute.LoadTester(nil, nil)
+	rt.CallHandler()
+
+	rt.AssertUsing(t)
 	rt.AssertStatus(200)
 	rt.AssertResponseContains("# Installation")
 }
