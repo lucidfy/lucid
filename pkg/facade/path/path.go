@@ -104,7 +104,7 @@ func RootPath() string {
 		return root_path
 	}
 
-	panic(`Undefined env "LUCID_ROOT"`)
+	panic(`You need to explicitly define the os.Setenv("LUCID_ROOT", ...), hence you can pass the os.Getwd()`)
 }
 
 func PathTo(path string) string {

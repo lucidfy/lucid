@@ -21,10 +21,9 @@ func LoadEnvForTests() {
 func LoadEnvFrom(basepath string) {
 	LoadFile(basepath + ".env")
 	env := os.Getenv("APP_ENV")
-	if env == "" {
-		env = "dev"
+	if env != "" {
+		LoadFile(basepath + ".env." + env)
 	}
-	LoadFile(basepath + ".env." + env)
 }
 
 func LoadFile(filepath string) {
