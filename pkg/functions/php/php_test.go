@@ -5,6 +5,7 @@ import (
 
 	"github.com/lucidfy/lucid/pkg/env"
 	"github.com/lucidfy/lucid/pkg/facade/path"
+	"github.com/lucidfy/lucid/pkg/helpers"
 )
 
 func init() {
@@ -50,5 +51,17 @@ func TestJsonDecode(t *testing.T) {
 	}
 	if ret["attributes"].(map[string]interface{})["age"] == nil {
 		t.Errorf("JsonDecode is not working!")
+	}
+}
+
+func TestStrtr(t *testing.T) {
+	got := Strtr("Hello World!", helpers.MS{
+		"Hello": "Hi",
+		"World": "Earth",
+	})
+	expect := "Hi Earth!"
+
+	if got != expect {
+		t.Errorf("got %q, expect %q", got, expect)
 	}
 }

@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"reflect"
+	"strings"
 
 	"github.com/lucidfy/lucid/pkg/errors"
 	"github.com/lucidfy/lucid/pkg/facade/logger"
@@ -89,4 +90,16 @@ func InArray(val interface{}, arr interface{}) int {
 		}
 	}
 	return -1
+}
+
+// Strtr
+// php equivalent for https://www.php.net/manual/en/function.strtr.php
+func Strtr(str string, replace map[string]string) string {
+	if len(replace) == 0 || len(str) == 0 {
+		return str
+	}
+	for old, new := range replace {
+		str = strings.ReplaceAll(str, old, new)
+	}
+	return str
 }
