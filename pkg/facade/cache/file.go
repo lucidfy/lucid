@@ -3,6 +3,7 @@ package cache
 import (
 	"encoding/json"
 	"fmt"
+	"io/fs"
 	"net/http"
 	"os"
 
@@ -17,17 +18,34 @@ import (
 type FileCache struct {
 	ResponseWriter http.ResponseWriter
 	HttpRequest    *http.Request
+	FilePath       string
 	FileMode       os.FileMode
 }
 
-func File() *FileCache {
+func File(args ...interface{}) *FileCache {
+	var fp string
+	var fm fs.FileMode
+
+	if len(args) > 0 {
+		fp = args[0].(string)
+	} else {
+		fp = path.Load().StoragePath("cache.json")
+	}
+
+	if len(args) > 1 {
+		fm = args[1].(fs.FileMode)
+	} else {
+		fm = 0744
+	}
+
 	return &FileCache{
-		FileMode: 0744,
+		FilePath: fp,
+		FileMode: fm,
 	}
 }
 
-func (s *FileCache) getFilePath() string {
-	return path.Load().StoragePath("cache.json")
+func (s FileCache) getFilePath() string {
+	return s.FilePath
 }
 
 func (s *FileCache) initializeFile(filepath string) string {
@@ -40,7 +58,7 @@ func (s *FileCache) initializeFile(filepath string) string {
 }
 
 func (s *FileCache) updateContent(content interface{}) *errors.AppError {
-	filepath := s.getFilePath()
+	filepath := s.FilePath
 	if app_err := php.FilePutContents(filepath, content, s.FileMode); app_err != nil {
 		return app_err
 	}
@@ -48,7 +66,7 @@ func (s *FileCache) updateContent(content interface{}) *errors.AppError {
 }
 
 func (s *FileCache) Put(name string, value interface{}) (bool, *errors.AppError) {
-	filepath := s.initializeFile(s.getFilePath())
+	filepath := s.initializeFile(s.FilePath)
 	content := *php.JsonDecode(string(*php.FileGetContents(filepath)))
 	value, err := crypt.Encrypt(helpers.Stringify(value))
 	if err != nil {
@@ -62,7 +80,7 @@ func (s *FileCache) Put(name string, value interface{}) (bool, *errors.AppError)
 }
 
 func (s *FileCache) Get(name string) (interface{}, *errors.AppError) {
-	filepath := s.initializeFile(s.getFilePath())
+	filepath := s.initializeFile(s.FilePath)
 	content := *php.JsonDecode(string(*php.FileGetContents(filepath)))
 
 	if content[name] != nil {
@@ -86,7 +104,7 @@ func (s *FileCache) GetAs(name string, m interface{}) {
 }
 
 func (s *FileCache) Forget(name string) (interface{}, *errors.AppError) {
-	filepath := s.initializeFile(s.getFilePath())
+	filepath := s.initializeFile(s.FilePath)
 	content := *php.JsonDecode(string(*php.FileGetContents(filepath)))
 	delete(content, name)
 	if err := s.updateContent(content); err != nil {
