@@ -4,6 +4,7 @@ import (
 	"context"
 	e "errors"
 	"net/http"
+	"time"
 
 	"github.com/lucidfy/lucid/pkg/engines"
 	"github.com/lucidfy/lucid/pkg/facade/session"
@@ -23,20 +24,16 @@ func New(ctx context.Context) Context {
 	return Context{ctx: ctx}
 }
 
-func (resolver Context) Original() context.Context {
-	return resolver.ctx
+func (c Context) Engine() engines.EngineContract {
+	return c.ctx.Value(EngineCtx{}).(engines.EngineContract)
 }
 
-func (resolver Context) Engine() engines.EngineContract {
-	return resolver.ctx.Value(EngineCtx{}).(engines.EngineContract)
+func (c Context) Router() RouterContract {
+	return c.ctx.Value(RouterCtx{}).(RouterContract)
 }
 
-func (resolver Context) Router() RouterContract {
-	return resolver.ctx.Value(RouterCtx{}).(RouterContract)
-}
-
-func (resolver Context) Session() session.SessionContract {
-	coo := resolver.Engine().GetCookie()
+func (c Context) Session() session.SessionContract {
+	coo := c.Engine().GetCookie()
 	var ses session.SessionContract
 
 	if helpers.IsTrue(helpers.Getenv("SESSION_ENABLED", "true")) {
@@ -54,14 +51,40 @@ func (resolver Context) Session() session.SessionContract {
 	return ses
 }
 
-func (resolver Context) Stop() Middleware {
+func (c Context) Stop() Middleware {
 	return Middleware{
 		Continue: false,
 	}
 }
 
-func (resolver Context) Next() Middleware {
+func (c Context) Next() Middleware {
 	return Middleware{
 		Continue: true,
 	}
+}
+
+func (c *Context) Bind(key interface{}, value interface{}) *Context {
+	c.ctx = context.WithValue(c.ctx, key, value)
+	return c
+}
+
+// this should be similar to Value()
+func (c Context) Resolve(key any) any {
+	return c.Value(key)
+}
+
+func (c Context) Deadline() (deadline time.Time, ok bool) {
+	return c.ctx.Deadline()
+}
+
+func (c Context) Done() <-chan struct{} {
+	return c.ctx.Done()
+}
+
+func (c Context) Err() error {
+	return c.ctx.Err()
+}
+
+func (c Context) Value(key any) any {
+	return c.ctx.Value(key)
 }
