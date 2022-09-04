@@ -69,7 +69,7 @@ func (c *Context) Bind(key interface{}, value interface{}) *Context {
 }
 
 // this should be similar to Value()
-func (c Context) Resolve(key any) any {
+func (c Context) Resolve(key interface{}) interface{} {
 	return c.Value(key)
 }
 
@@ -85,6 +85,6 @@ func (c Context) Err() error {
 	return c.ctx.Err()
 }
 
-func (c Context) Value(key any) any {
+func (c Context) Value(key interface{}) interface{} {
 	return c.ctx.Value(key)
 }
