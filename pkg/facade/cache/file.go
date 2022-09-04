@@ -44,10 +44,6 @@ func File(args ...interface{}) *FileCache {
 	}
 }
 
-func (s FileCache) getFilePath() string {
-	return s.FilePath
-}
-
 func (s *FileCache) initializeFile(filepath string) string {
 	if !php.FileExists(filepath) {
 		s.updateContent(map[string]interface{}{

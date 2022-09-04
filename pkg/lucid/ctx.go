@@ -23,6 +23,10 @@ func New(ctx context.Context) Context {
 	return Context{ctx: ctx}
 }
 
+func (resolver Context) Original() context.Context {
+	return resolver.ctx
+}
+
 func (resolver Context) Engine() engines.EngineContract {
 	return resolver.ctx.Value(EngineCtx{}).(engines.EngineContract)
 }
